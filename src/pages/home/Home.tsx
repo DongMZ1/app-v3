@@ -7,19 +7,23 @@ import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-p
 import { ResponsiveLink } from "@fulhaus/react.ui.responsive-link";
 import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
+
+import InvitePeople from "./components/InvitePeople";
 const Home = (): JSX.Element => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
-  return (
+  const [showInvitePeople, setshowInvitePeople] = useState(false);
+  return (<>
+    {showInvitePeople && <InvitePeople close={()=>setshowInvitePeople(false)} /> }
     <div className="app-v3-home-page">
       <div className="px-8 py-4 flex bg-white">
         <FulhausIcon />
         <ShareAlt className="ml-auto my-auto mr-4 cursor-pointer" />
-        <ResponsiveLink
-          className="my-auto font-semibold text-sm border-solid border-black border-b mr-8"
-          url=""
+        <div
+          onClick={() => setshowInvitePeople(true)}
+          className="my-auto font-semibold text-sm border-solid border-black border-b mr-8 cursor-pointer"
         >
           Invite people
-        </ResponsiveLink>
+        </div>
         <HomePageExit className="my-auto cursor-pointer" />
       </div>
       <div className="mt-10 mx-8percent bg-second">
@@ -39,9 +43,10 @@ const Home = (): JSX.Element => {
           onChange={(e) => setsearchKeyWord((e.target as any).value)}
         />
       </div>
-      <div className='flex'><HomePageEmptyCover className='mx-auto' /></div>
+      <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
       <div className='flex'><div className='text-3xl moret mx-auto'>Get started with a new project</div></div>
     </div>
+    </>
   );
 };
 
