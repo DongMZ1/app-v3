@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.4.0",
+    "@fulhaus/react.ui.button": "0.0.9",
     "@fulhaus/react.ui.responsive-link": "0.0.17",
+    "@fulhaus/react.ui.text-input": "0.0.8",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -13,6 +15,7 @@
     "@types/react": "^17.0.30",
     "@types/react-dom": "^17.0.10",
     "@types/react-helmet": "^6.1.4",
+    "postcss-import": "^14.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-flexbox-grid": "^2.1.2",
