@@ -5,7 +5,7 @@ type InvitePeopleProps = {
     close: () => void
 }
 const InvitePeople = ({close}:InvitePeopleProps) =>{
-    return <ClickOutsideAnElementHandler onClickedOutside={()=>close()}><div className='invite-people border-solid border border-black'>
+    return <ClickOutsideAnElementHandler onClickedOutside={()=>close()}><div className='invite-people bg-sand border-solid border border-black'>
 
     </div></ClickOutsideAnElementHandler>
 }
