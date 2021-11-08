@@ -15,7 +15,7 @@ module.exports = {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-
+      sand:'#F7EFE7',
       black: colors.black,
       white: colors.white,
       gray: colors.coolGray,
@@ -239,6 +239,7 @@ module.exports = {
       DEFAULT: '1',
     },
     fontFamily: {
+      ssp:['"Source Sans Pro"'],
       sans: [
         'ui-sans-serif',
         'system-ui',
