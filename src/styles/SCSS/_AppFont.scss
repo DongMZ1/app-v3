@@ -7,3 +7,23 @@
   unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F,
     U+FE2E-FE2F;
 }
+@font-face {
+  font-family: 'Moret-Book';
+  src: url('webFonts/Moret-Book/font.woff2') format('woff2'),
+    url('webFonts/Moret-Book/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'ParalucentText-Book';
+  src: url('webFonts/ParalucentText-Book/font.woff2') format('woff2'),
+    url('webFonts/ParalucentText-Book/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'Paralucent-Medium';
+  src: url('webFonts/Paralucent-Medium/font.woff2') format('woff2'),
+    url('webFonts/Paralucent-Medium/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'ParalucentText-BookItalic';
+  src: url('webFonts/ParalucentText-BookItalic/font.woff2') format('woff2'),
+    url('webFonts/ParalucentText-BookItalic/font.woff') format('woff');
+}

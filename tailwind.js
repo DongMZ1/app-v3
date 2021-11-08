@@ -5,6 +5,11 @@ module.exports = {
   presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    extend : {
+      colors: {
+        'secondary': "#5E5E5E",
+      },
+    },
     screens: {
       sm: '640px',
       md: '768px',
@@ -15,9 +20,10 @@ module.exports = {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      sand:'#F7EFE7',
-      black: colors.black,
-      white: colors.white,
+      sand: '#F7EFE7',
+      black: '#000000',
+      primary: '#000D03',
+      white: '#ffffff',
       gray: colors.coolGray,
       red: colors.red,
       yellow: colors.amber,
@@ -48,6 +54,7 @@ module.exports = {
       12: '3rem',
       14: '3.5rem',
       16: '4rem',
+      18: '4.5rem',
       20: '5rem',
       24: '6rem',
       28: '7rem',
@@ -239,7 +246,7 @@ module.exports = {
       DEFAULT: '1',
     },
     fontFamily: {
-      sans: [
+      'sans': [
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
@@ -255,8 +262,8 @@ module.exports = {
         '"Segoe UI Symbol"',
         '"Noto Color Emoji"',
       ],
-      serif: ['ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-      mono: [
+      'serif': ['ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+      'mono': [
         'ui-monospace',
         'SFMono-Regular',
         'Menlo',
@@ -266,8 +273,8 @@ module.exports = {
         '"Courier New"',
         'monospace',
       ],
-      sssp: [
-        '"Source Sans Pro"', 'monospace'
+      'ssp': [
+        '"Source Sans Pro"'
       ]
     },
     fontSize: {
