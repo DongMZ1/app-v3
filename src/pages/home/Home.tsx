@@ -20,7 +20,7 @@ const Home = (): JSX.Element => {
         <ShareAlt className="ml-auto my-auto mr-4 cursor-pointer" />
         <div
           onClick={() => setshowInvitePeople(true)}
-          className="my-auto font-semibold text-sm border-solid border-black border-b mr-8 cursor-pointer"
+          className="my-auto font-semibold font-ssp text-sm border-solid border-black border-b mr-8 cursor-pointer"
         >
           Invite people
         </div>
