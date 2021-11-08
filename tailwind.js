@@ -239,7 +239,6 @@ module.exports = {
       DEFAULT: '1',
     },
     fontFamily: {
-      ssp:['"Source Sans Pro"'],
       sans: [
         'ui-sans-serif',
         'system-ui',
@@ -267,6 +266,9 @@ module.exports = {
         '"Courier New"',
         'monospace',
       ],
+      sssp: [
+        '"Source Sans Pro"', 'monospace'
+      ]
     },
     fontSize: {
       xs: ['0.75rem', { lineHeight: '1rem' }],
