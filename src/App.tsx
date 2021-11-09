@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
-import { Home } from "./pages";
+import { Home, Project } from "./pages";
 import "./styles/index.scss";
 import { appUrl, accountsPageUrl } from "./Constant/url.constant";
 const App = () => {
@@ -9,6 +9,7 @@ const App = () => {
     <>
       <Switch>
         <Route exact path={`/`} component={Home} />
+        <Route exact path={`/project`} component={Project} />
       </Switch>
     </>
   ) : (

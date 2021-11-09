@@ -30,8 +30,9 @@ const Home = () => {
         <HomePageExit className="my-auto cursor-pointer" />
       </div>
       <div className="mt-10 mx-8percent bg-second">
-        <div className="flex justify-between">
+        <div className="flex">
           <div className="text-4xl moret">SELECT A PROJECT</div>
+          <Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>
           <Button className="my-2 font-ssp">Start a new project</Button>
         </div>
       </div>
