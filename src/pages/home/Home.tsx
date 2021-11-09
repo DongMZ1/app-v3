@@ -4,23 +4,26 @@ import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageExit } from "../../styles/images/home-page-exit.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
-import { ResponsiveLink } from "@fulhaus/react.ui.responsive-link";
 import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 
 import InvitePeople from "./components/InvitePeople";
-const Home = (): JSX.Element => {
+import RemoveThisSeason from "./components/RemoveThisSeason";
+
+const Home = () => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
   const [showInvitePeople, setshowInvitePeople] = useState(false);
+  const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
   return (<>
+    {showConfirmRemoveThisSeason && <RemoveThisSeason close={()=>setshowConfirmRemoveThisSeason(false)} />}
     {showInvitePeople && <InvitePeople close={()=>setshowInvitePeople(false)} /> }
     <div className="app-v3-home-page">
-      <div className="px-8 py-4 flex bg-white">
+      <div className="flex px-8 py-4 bg-white">
         <FulhausIcon />
-        <ShareAlt className="ml-auto my-auto mr-4 cursor-pointer" />
+        <ShareAlt className="my-auto ml-auto mr-4 cursor-pointer" />
         <div
           onClick={() => setshowInvitePeople(true)}
-          className="my-auto font-semibold font-ssp text-sm border-solid border-black border-b mr-8 cursor-pointer"
+          className="my-auto mr-8 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp"
         >
           Invite people
         </div>
@@ -29,7 +32,7 @@ const Home = (): JSX.Element => {
       <div className="mt-10 mx-8percent bg-second">
         <div className="flex justify-between">
           <div className="text-4xl moret">SELECT A PROJECT</div>
-          <Button className="my-2">Start a new project</Button>
+          <Button className="my-2 font-ssp">Start a new project</Button>
         </div>
       </div>
       <div className="mx-8percent">
@@ -44,7 +47,7 @@ const Home = (): JSX.Element => {
         />
       </div>
       <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
-      <div className='flex'><div className='text-3xl moret mx-auto'>Get started with a new project</div></div>
+      <div className='flex'><div className='mx-auto text-3xl moret'>Get started with a new project</div></div>
     </div>
     </>
   );

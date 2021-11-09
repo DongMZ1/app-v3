@@ -31,7 +31,8 @@ module.exports = {
       indigo: colors.indigo,
       purple: colors.violet,
       pink: colors.pink,
-      sand: '#f7efe7'
+      sand: '#f7efe7',
+      error: '#F16020'
     },
     spacing: {
       px: '1px',
