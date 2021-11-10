@@ -50,7 +50,7 @@ const Project = () => {
             }
             {QuoteOrDesign === 'Quote' && <Quote />}
             {QuoteOrDesign === 'Design' && <Design />}
-            <div className='fixed bottom-0 flex w-full px-6 text-white font-ssp bg-selectedBlue h-14'>
+            <div className='flex w-full px-6 text-white font-ssp bg-selectedBlue h-14'>
                 <div className='my-auto mr-4 text-lg font-semibold'>1BD</div>
                 <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
                 <div className='my-auto text-lg font-semibold'>1 Unit</div>

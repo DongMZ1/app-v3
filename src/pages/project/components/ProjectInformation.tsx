@@ -86,7 +86,8 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
             </div>
             <div className='flex mt-8'>
                 <div className='my-auto text-sm font-semibold font-ssp'>Files</div>
-                <FilesIcon className='my-auto ml-auto cursor-pointer' />
+                <FilesIcon onClick={() => document.getElementById('project-info-fileupload')?.click()} className='my-auto ml-auto cursor-pointer' />
+                <input id='project-info-fileupload' type='file' className='hidden' />
             </div>
             <div className='flex mt-6 mb-4'>
                 <div className='my-auto text-sm font-semibold font-ssp'>Notes</div>
@@ -97,6 +98,29 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     seteditNotes(false);
                 }} onChange={e => setnotesContent(e.target.value)} value={notesContent} /> : <div className='text-sm font-ssp'>{notesContent}</div>
             }
+            <div className='mt-6 text-sm font-semibold font-ssp'>
+                Contact Information
+            </div>
+            <div className='flex mt-4 font-ssp'>
+                <div className='w-1/2'>
+                    <div className='text-xs'>Client Name</div>
+                    <div className='mt-1 text-sm'>Albert Schuey</div>
+                </div>
+                <div className='w-1/2'>
+                    <div className='text-xs'>Email</div>
+                    <div className='mt-1 text-sm'>aschuey@theassociates.com</div>
+                </div>
+            </div>
+            <div className='flex mt-4 font-ssp'>
+                <div className='w-1/2'>
+                    <div className='text-xs'>Project Address</div>
+                    <div className='mt-1 text-sm'>123 Spring Run Ave</div>
+                </div>
+                <div className='w-1/2'>
+                    <div className='text-xs'>Phone</div>
+                    <div className='mt-1 text-sm'>123-456-7890</div>
+                </div>
+            </div>
         </div>
     )
 }
