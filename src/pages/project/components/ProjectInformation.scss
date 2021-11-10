@@ -1,17 +1,25 @@
 .project-information {
-    padding: 1rem 1rem;
+  padding: 1rem 1rem;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  .dropdown-list-input-wrapper {
+    font-size: 0.75rem !important;
+    .dropdown-list-input-options {
+      font-size: 0.75rem !important;
+    }
+  }
+  .drop-down-bg-sand {
     .dropdown-list-input-wrapper {
-        font-size: 0.75rem !important;
-        .dropdown-list-input-options {
-            font-size: 0.75rem !important;
-        }
+      background-color: #f7efe7 !important;
     }
-    .drop-down-bg-sand {
-        .dropdown-list-input-wrapper {
-            background-color: #f7efe7 !important;
-        }
-        input:focus {
-            outline: none;
-        }
+    input:focus {
+      outline: none;
     }
+  }
+  textarea:focus {
+    outline: none;
+  }
 }
