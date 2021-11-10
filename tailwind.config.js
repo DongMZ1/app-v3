@@ -32,7 +32,8 @@ module.exports = {
       purple: colors.violet,
       pink: colors.pink,
       sand: '#f7efe7',
-      error: '#F16020'
+      error: '#F16020',
+      link:'#0050B5',
     },
     spacing: {
       px: '1px',

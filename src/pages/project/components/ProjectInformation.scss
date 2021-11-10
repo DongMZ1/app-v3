@@ -1,0 +1,17 @@
+.project-information {
+    padding: 1rem 1rem;
+    .dropdown-list-input-wrapper {
+        font-size: 0.75rem !important;
+        .dropdown-list-input-options {
+            font-size: 0.75rem !important;
+        }
+    }
+    .drop-down-bg-sand {
+        .dropdown-list-input-wrapper {
+            background-color: #f7efe7 !important;
+        }
+        input:focus {
+            outline: none;
+        }
+    }
+}

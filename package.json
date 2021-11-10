@@ -6,6 +6,7 @@
     "@craco/craco": "^6.4.0",
     "@fulhaus/react.ui.button": "0.0.9",
     "@fulhaus/react.ui.click-outside-an-element-handler": "0.0.4",
+    "@fulhaus/react.ui.dropdown-list-input": "0.0.5",
     "@fulhaus/react.ui.responsive-link": "0.0.17",
     "@fulhaus/react.ui.text-input": "0.0.5",
     "@testing-library/jest-dom": "^5.14.1",
