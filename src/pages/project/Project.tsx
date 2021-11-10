@@ -18,13 +18,18 @@ const Project = () => {
     const [QuoteOrDesign, setQuoteOrDesign] = useState<'Quote' | 'Design'>('Quote')
     const [showHistory, setshowHistory] = useState(false);
     const [showProjectInfor, setshowProjectInfor] = useState(false);
+    const [showProjectStyleList, setshowProjectStyleList] = useState(false);
     return (
         <div className="project bg-sand">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
                     <Link className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
                     <div className='my-auto mr-4 text-lg'>PROJECT NAME</div>
-                    <div className='my-auto cursor-pointer'>···</div>
+                    <div className='relative my-auto cursor-pointer'>···
+                    {showProjectStyleList && <div className='absolute'>
+                        hello!
+                    </div>}
+                    </div>
                 </div>
                 <div className='flex ml-auto'>
                     <div role='button' onClick={() => setQuoteOrDesign('Quote')} className={`my-auto ml-auto mr-8 cursor-pointer ${QuoteOrDesign === 'Quote' ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Quote</div>

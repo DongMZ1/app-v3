@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { Home, Project } from "./pages";
 import "./styles/index.scss";
 import { appUrl, accountsPageUrl } from "./Constant/url.constant";
 const App = () => {
   const loginState = true;
+  useEffect(
+    () => {
+      if(!loginState){
+        //open app url
+      }
+    },[]
+  );
   return loginState ? (
     <>
       <Switch>
