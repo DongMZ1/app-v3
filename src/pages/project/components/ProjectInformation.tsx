@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
 import { ReactComponent as CopyIcon } from '../../../styles/images/copy-black.svg'
 import { ReactComponent as EditPenIcon } from '../../../styles/images/edit-pen.svg'
+import { ReactComponent as FilesIcon } from '../../../styles/images/files-black.svg'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 type ProjectInformationType = {
     close: () => void
@@ -20,7 +21,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const [shippingUnit, setshippingUnit] = useState('CAD')
     const [shippingValue, setshippingValue] = useState<number | undefined>();
 
-    return <div className='fixed right-0 z-10 w-5/12 h-full border-l border-black border-solid project-information'>
+    return <div className='fixed right-0 z-10 w-5/12 h-full overflow-auto border-l border-black border-solid bg-sand project-information'>
         <div className='flex'>
             <div className='text-2xl uppercase font-moret'>project information</div>
             <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
@@ -63,7 +64,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                             initialValue={installationUnit}
                             onSelect={value => setinstallationUnit(value)}
                             options={['%', 'CAD', 'USD', 'EURO']} />
-                        <input type='number' value={installationValue} onChange={(e)=>setinstallationValue(e.target.valueAsNumber)} className='w-20 pl-1 text-xs border border-black border-solid' />
+                        <input type='number' value={installationValue} onChange={(e) => setinstallationValue(e.target.valueAsNumber)} className='w-20 pl-1 text-xs border border-black border-solid' />
                     </div>
                 </div>
                 <div className='w-40 font-ssp'>
@@ -71,13 +72,21 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='flex drop-down-bg-sand'>
                         <DropdownListInput
                             initialValue={shippingUnit}
-                            onSelect={(value)=>setshippingUnit(value)}
+                            onSelect={(value) => setshippingUnit(value)}
                             options={['CAD', 'USD', 'EURO']} />
                         <div className='flex bg-white border-t border-b border-black border-solid'><div className='my-auto'>$</div></div>
                         <input className='w-20 text-xs border-t border-b border-r border-black border-solid' />
                     </div>
                 </div>
             </div>
+        </div>
+        <div className='flex mt-8'>
+            <div className='my-auto text-sm font-semibold font-ssp'>Files</div>
+            <FilesIcon className='my-auto ml-auto cursor-pointer' />
+        </div>
+        <div className='flex mt-6'>
+            <div className='my-auto text-sm font-semibold font-ssp'>Notes</div>
+            <EditPenIcon className='my-auto ml-auto cursor-pointer' />
         </div>
     </div>
 }

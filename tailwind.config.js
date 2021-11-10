@@ -34,6 +34,7 @@ module.exports = {
       sand: '#f7efe7',
       error: '#F16020',
       link:'#0050B5',
+      selectedBlue : '#80AAD7',
     },
     spacing: {
       px: '1px',
