@@ -11,7 +11,7 @@ const InvitePeople = ({ close }: InvitePeopleProps) => {
     const [peopleKeyWord, setpeopleKeyWord] = useState('');
   return (
     <ClickOutsideAnElementHandler onClickedOutside={() => close()}>
-      <div className="invite-people bg-sand border-solid border border-black">
+      <div className="invite-people bg-cream border-solid border border-black">
           <div className='flex justify-between'>
               <div className='text-2xl font-moret'>INVITE PEOPLE</div>
               <ExitIcon onClick={()=>close()} className='my-auto cursor-pointer' role='button' />

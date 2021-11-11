@@ -25,7 +25,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const [notesContent, setnotesContent] = useState('Dexter "The Blade" Jackson (born November 25, 1969) is a retired American IFBB professional bodybuilder and the 2008 Mr. Olympia bodybuilding champion.');
 
     return (
-        <div className='fixed right-0 z-10 w-5/12 h-full overflow-auto border-l border-black border-solid bg-sand project-information'>
+        <div className='fixed right-0 z-10 w-5/12 h-full overflow-auto border-l border-black border-solid bg-cream project-information'>
             <div className='flex'>
                 <div className='text-2xl uppercase font-moret'>project information</div>
                 <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
@@ -63,7 +63,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     </div>
                     <div className='w-40 mr-8 font-ssp'>
                         <div className='mb-1 text-xs'>Installation Fee</div>
-                        <div className='flex drop-down-bg-sand'>
+                        <div className='flex drop-down-bg-cream'>
                             <DropdownListInput
                                 initialValue={installationUnit}
                                 onSelect={value => setinstallationUnit(value)}
@@ -73,7 +73,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     </div>
                     <div className='w-40 font-ssp'>
                         <div className='mb-1 text-xs'>Shipping Fee</div>
-                        <div className='flex drop-down-bg-sand'>
+                        <div className='flex drop-down-bg-cream'>
                             <DropdownListInput
                                 initialValue={shippingUnit}
                                 onSelect={(value) => setshippingUnit(value)}

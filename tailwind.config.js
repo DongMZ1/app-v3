@@ -1,5 +1,5 @@
-const colors = require('tailwindcss/colors')
-
+const colors = require('tailwindcss/colors');
+const FulhausColors = require('@fulhaus/react.ui.colors');
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   presets: [],
@@ -20,21 +20,26 @@ module.exports = {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      black: '#000000',
-      primary: '#000D03',
-      white: '#ffffff',
+      black: FulhausColors.colors.black,
+      primary: FulhausColors.colors.primary,
+      primaryPressed: FulhausColors.colors.primaryPressed,
+      primaryHover: FulhausColors.colors.primaryHover,
+      success: FulhausColors.colors.success,
+      white: FulhausColors.colors.white,
       gray: colors.coolGray,
-      red: colors.red,
+      red: FulhausColors.colors.red,
       yellow: colors.amber,
       green: colors.emerald,
       blue: colors.blue,
       indigo: colors.indigo,
       purple: colors.violet,
-      pink: colors.pink,
-      sand: '#f7efe7',
-      error: '#F16020',
-      link:'#0050B5',
-      selectedBlue : '#80AAD7',
+      pink: FulhausColors.colors.pink,
+      sand: FulhausColors.colors.sand,
+      cream: FulhausColors.colors.cream,
+      error: FulhausColors.colors.error,
+      link:FulhausColors.colors.link,
+      linkSelected : FulhausColors.colors.linkSelected,
+      disabled: FulhausColors.colors.disabled,
     },
     spacing: {
       px: '1px',

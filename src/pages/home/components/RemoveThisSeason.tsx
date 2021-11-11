@@ -8,7 +8,7 @@ type RemoveThisSeasonProps = {
 const RemoveThisSeason = ({ close }: RemoveThisSeasonProps) => {
   return (
     <ClickOutsideAnElementHandler onClickedOutside={()=>close()}>
-      <div className="border border-black border-solid remove-this-season bg-sand">
+      <div className="border border-black border-solid remove-this-season bg-cream">
         <div className="flex">
           <div className="mx-auto text-2xl font-moret">REMOVE THIS SEASON</div>
         </div>

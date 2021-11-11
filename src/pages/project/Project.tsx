@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import "./Project.scss";
 import { Link } from 'react-router-dom'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
@@ -20,7 +20,7 @@ const Project = () => {
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showProjectStyleList, setshowProjectStyleList] = useState(false);
     return (
-        <div className="project bg-sand">
+        <div className="project bg-cream">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
                     <Link className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
@@ -55,7 +55,7 @@ const Project = () => {
             }
             {QuoteOrDesign === 'Quote' && <Quote />}
             {QuoteOrDesign === 'Design' && <Design />}
-            <div className='flex w-full px-6 text-white font-ssp bg-selectedBlue h-14'>
+            <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
                 <div className='my-auto mr-4 text-lg font-semibold'>1BD</div>
                 <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
                 <div className='my-auto text-lg font-semibold'>1 Unit</div>
