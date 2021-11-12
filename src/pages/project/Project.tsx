@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { ReactComponent as RightArrowWhiteIcon } from "../../styles/images/right-arrow-white.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
-import { ReactComponent as HistoryVersionIcon } from "../../styles/images/save.svg";
+import { ReactComponent as SaveIcon } from "../../styles/images/save.svg";
 import { ReactComponent as InformationIcon } from "../../styles/images/information.svg";
-import { ReactComponent as ProjectInforIcon } from "../../styles/images/history.svg";
+import { ReactComponent as HistoryIcon } from "../../styles/images/history.svg";
 import { ReactComponent as ExitIcon } from "../../styles/images/home-page-exit.svg";
 
 import Quote from './Quote/Quote';
 import Design from './Design/Design';
-import ProjectInformation from './components/ProjectInformation';
-import VersionHistory from './components/VersionHistory';
+import ProjectInformation from './ProjectComponents/ProjectInformation';
+import VersionHistory from './ProjectComponents/VersionHistory';
 
 const Project = () => {
     const [QuoteOrDesign, setQuoteOrDesign] = useState<'Quote' | 'Design'>('Quote')
@@ -39,9 +39,9 @@ const Project = () => {
                     <div className='my-auto ml-auto mr-6 text-sm font-ssp'>v0</div>
                     <div className='my-auto mr-8 text-sm font-ssp'>Never saved</div>
                     <ShareAlt className='my-auto mr-8 cursor-pointer' />
-                    <InformationIcon className='my-auto mr-8 cursor-pointer' />
-                    <ProjectInforIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
-                    <HistoryVersionIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
+                    <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
+                    <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
+                    <SaveIcon className='my-auto mr-8 cursor-pointer' />
                     <ExitIcon className='my-auto mr-10 cursor-pointer' />
                 </div>
             </div>

@@ -9,6 +9,7 @@ const App = () => {
     () => {
       if(!loginState){
         //open app url
+        window.location.assign('http://www.google.com');
       }
     },[]
   );
