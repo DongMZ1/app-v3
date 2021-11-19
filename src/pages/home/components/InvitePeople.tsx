@@ -22,16 +22,19 @@ const InvitePeople = ({ close }: InvitePeopleProps) => {
               <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
               <div className='w-1/12'><Button className='w-full'>Invite</Button></div>
           </div>
-          <div className='flex justify-between pr-10 my-2'>
+          <div className='flex justify-between pr-8 my-2'>
               <div className='text-sm font-ssp'>Ryan Smith(you)</div>
               <div className='text-sm font-ssp'>ryan.smith@gmail.com</div>
-              <div className='text-sm font-ssp'>Owner</div>
+              <div className='px-3 text-sm font-ssp'>Owner</div>
           </div>
-          <div className='flex justify-between pr-10 my-2'>
+          <div className='flex justify-between pr-8 my-2'>
               <div className='text-sm font-ssp'>Ryan Terry(you)</div>
               <div className='text-sm font-ssp'>ryan.terry@gmail.com</div>
               <div className='flex text-sm font-ssp'><div className='my-auto'>User</div>
-              <DropdownListInput prefixIcon={<AngleDown className='my-auto ml-1 cursor-pointer' />} options={['Owner', 'User', 'Remove User']} />
+              <DropdownListInput 
+              listWrapperClassName='last-child-red'
+              wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
+              options={['Owner', 'User', 'Remove User']} />
               </div>
           </div>
       </div>

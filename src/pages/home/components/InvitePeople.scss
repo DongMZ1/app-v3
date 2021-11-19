@@ -1,3 +1,4 @@
+@use "@fulhaus/react.ui.colors/dist/scss" as color;
 .invite-people {
     padding: 1rem 2rem;
     z-index: 10;
@@ -14,4 +15,14 @@
         line-height: normal !important;
         height: 43px;
     }
+    .dropdown-list-input-options-wrapper {
+        width: max-content !important;
+    }
+    .dropdown-list-input-wrapper {
+        background-color: transparent !important;
+        border: none !important;
+    }
+    .last-child-red > *:last-child {
+        color: color.$red !important;
+      }
 }
