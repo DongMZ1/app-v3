@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import "./Project.scss";
-import { Link } from 'react-router-dom'
-import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
+import { Link, useHistory } from 'react-router-dom'
 import { ReactComponent as RightArrowWhiteIcon } from "../../styles/images/right-arrow-white.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as SaveIcon } from "../../styles/images/save.svg";
@@ -15,7 +14,6 @@ import ProjectInformation from './ProjectComponents/ProjectInformation';
 import VersionHistory from './ProjectComponents/VersionHistory';
 
 const Project = () => {
-    const [QuoteOrDesign, setQuoteOrDesign] = useState<'Quote' | 'Design'>('Quote')
     const [showHistory, setshowHistory] = useState(false);
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showProjectStyleList, setshowProjectStyleList] = useState(false);
@@ -32,8 +30,8 @@ const Project = () => {
                     </div>
                 </div>
                 <div className='flex ml-auto'>
-                    <div role='button' onClick={() => setQuoteOrDesign('Quote')} className={`my-auto ml-auto mr-8 cursor-pointer ${QuoteOrDesign === 'Quote' ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Quote</div>
-                    <div role='button' onClick={() => setQuoteOrDesign('Design')} className={`my-auto cursor-pointer ${QuoteOrDesign === 'Design' ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>Design</div>
+                    <Link to='/project/quote' className={`my-auto ml-auto mr-8 cursor-pointer ${window.location.href.includes('project/quote') ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Quote</Link>
+                    <Link to='/project/design' role='button' className={`my-auto cursor-pointer ${window.location.href.includes('project/design') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>Design</Link>
                 </div>
                 <div className='flex w-3/6'>
                     <div className='my-auto ml-auto mr-6 text-sm font-ssp'>v0</div>
@@ -45,16 +43,12 @@ const Project = () => {
                     <ExitIcon className='my-auto mr-10 cursor-pointer' />
                 </div>
             </div>
-            {showHistory && <ClickOutsideAnElementHandler onClickedOutside={() => setshowHistory(false)}>
-                <VersionHistory close={()=>setshowHistory(false)} />
-            </ClickOutsideAnElementHandler>}
+            {showHistory &&  <VersionHistory close={()=>setshowHistory(false)} />}
             {
-                showProjectInfor && <ClickOutsideAnElementHandler onClickedOutside={() => setshowProjectInfor(false)}>
-                    <ProjectInformation close={() => setshowProjectInfor(false)} />
-                </ClickOutsideAnElementHandler>
+                showProjectInfor && <ProjectInformation close={() => setshowProjectInfor(false)} />  
             }
-            {QuoteOrDesign === 'Quote' && <Quote />}
-            {QuoteOrDesign === 'Design' && <Design />}
+            {window.location.href.includes('project/quote') && <Quote />}
+            {window.location.href.includes('project/design') && <Design />}
             <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
                 <div className='my-auto mr-4 text-lg font-semibold'>1BD</div>
                 <div className='my-auto mr-4 text-3xl font-semibold'>·</div>

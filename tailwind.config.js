@@ -5,7 +5,7 @@ module.exports = {
   presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend : {
+    extend: {
       colors: {
         'secondary': "#5E5E5E",
       },
@@ -14,8 +14,9 @@ module.exports = {
       sm: '640px',
       md: '768px',
       lg: '1024px',
-      xl: '1280px',
+      xl: '1240px',
       '2xl': '1536px',
+      'desktop-l': '1800px',
     },
     colors: {
       transparent: 'transparent',
@@ -37,8 +38,8 @@ module.exports = {
       sand: FulhausColors.colors.sand,
       cream: FulhausColors.colors.cream,
       error: FulhausColors.colors.error,
-      link:FulhausColors.colors.link,
-      linkSelected : FulhausColors.colors.linkSelected,
+      link: FulhausColors.colors.link,
+      linkSelected: FulhausColors.colors.linkSelected,
       disabled: FulhausColors.colors.disabled,
     },
     spacing: {
@@ -168,6 +169,7 @@ module.exports = {
       DEFAULT: '1px',
       0: '0px',
       2: '2px',
+      3: '3px',
       4: '4px',
       8: '8px',
     },
@@ -285,7 +287,16 @@ module.exports = {
         '"Source Sans Pro"'
       ],
       'moret': [
-        '"Moret-Book"'
+        '"Moret-Book"', 'serif'
+      ],
+      'para-text':[
+        'ParalucentText-Book', 'sans-serif'
+      ],
+      'para-med': [
+        'Paralucent-Medium', 'sans-serif'
+      ],
+      'para-text-i': [
+        'ParalucentText-BookItalic', 'sans-serif'
       ]
     },
     fontSize: {
