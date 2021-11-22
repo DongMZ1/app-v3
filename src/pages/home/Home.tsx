@@ -7,8 +7,8 @@ import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-p
 import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 
-import InvitePeople from "./components/InvitePeople";
-import RemoveThisSeason from "./components/RemoveThisSeason";
+import InvitePeople from "./homeComponents/InvitePeople";
+import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 
 const Home = () => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
