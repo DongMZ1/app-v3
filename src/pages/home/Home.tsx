@@ -1,5 +1,6 @@
 import "./HomePage.scss";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageExit } from "../../styles/images/home-page-exit.svg";
@@ -33,7 +34,7 @@ const Home = () => {
         <div className="flex">
           <div className="text-4xl moret">SELECT A PROJECT</div>
           <Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>
-          <Button className="my-2 font-ssp">Start a new project</Button>
+          <Link className='flex px-2 my-2 text-sm font-semibold text-white bg-black font-ssp' to='/start-new-project'><div className='my-auto'>Start a new project</div></Link>
         </div>
       </div>
       <div className="mx-8percent">
