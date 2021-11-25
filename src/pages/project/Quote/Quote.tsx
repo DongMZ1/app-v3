@@ -2,7 +2,7 @@ import './Quote.scss'
 import { ReactComponent as AddUnitIcon } from "../../../styles/images/add-a-unit-to-get-start.svg";
 const Quote = () => {
     return <div className='flex quote'>
-        <div className='w-3/12 h-full'></div>
+        <div className='h-full'></div>
         {true ?
             <div className='flex w-full h-full'>
                 <div className='m-auto'>
