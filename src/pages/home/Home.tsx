@@ -81,7 +81,7 @@ const Home = () => {
                     wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' 
                     suffixIcon={<div>···</div>}
                     listWrapperFloatDirection='left' disabled={true}
-                    options={['Owner', 'User', 'Remove User']} />
+                    options={['Duplicate Project', 'Rename Project', 'Delete Project']} />
                     </div>
               </div>
           </>
