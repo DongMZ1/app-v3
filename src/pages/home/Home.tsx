@@ -7,6 +7,7 @@ import { ReactComponent as HomePageExit } from "../../styles/images/home-page-ex
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
 import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
+import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 
 import InvitePeople from "./homeComponents/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
@@ -51,12 +52,39 @@ const Home = () => {
           <Button variant='secondary' className="mr-4 font-ssp fulhaus-button-bg-cream">PipeDrive Projects</Button>
           <Button active>Add Projects</Button>
         </div>
-        {true ?
+        {false ?
           <>
             <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
             <div className='flex'><div className='mx-auto text-3xl moret'>No App Projects exist yet</div></div>
           </>
-          : ''
+          :
+          <>
+            <div className='flex mt-4 mb-2 text-sm font-ssp'>
+              <div className='w-6/12 pl-4'>Project name</div>
+              <div className='width-10-percent'>Last updated</div>
+              <div className='width-10-percent'>Last edited by</div>
+              <div className='width-10-percent'>Created on</div>
+              <div className='width-10-percent'>Created by</div>
+              <div className='width-10-percent'>Total Units</div>
+            </div>
+              <div className='flex text-sm border border-black border-solid font-ssp'>
+                <Link to='/project/quote' className='flex w-6/12 pl-4'><div className='my-auto'>Test Project</div></Link>
+                <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/2021</div></Link>
+                <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
+                <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/1911</div></Link>
+                <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
+                <div className='flex justify-between width-10-percent'>
+                  <div className='my-auto'>0</div>
+                  <DropdownListInput
+                    listWrapperClassName='last-child-red'
+                    onSelect={v => { }}
+                    wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' 
+                    suffixIcon={<div>···</div>}
+                    listWrapperFloatDirection='left' disabled={true}
+                    options={['Owner', 'User', 'Remove User']} />
+                    </div>
+              </div>
+          </>
         }
       </div>
     </div>

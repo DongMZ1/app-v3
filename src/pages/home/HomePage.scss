@@ -1,21 +1,36 @@
-.app-v3-home-page{
-    width: 100vw;
-    min-height: 100vh;
-    background-color: #f7efe7;
-    a {
-        font-family: "Source Sans Pro";
-    }
-    .mx-8percent {
-        margin-left: 8%;
-        margin-right: 8%;
-    }
-    .moret {
-        font-family: 'Moret-Book';
-    }
-    .fui-button {
-        font-size: 0.875rem !important;
-    }
-    .fulhaus-button-bg-cream {
-        background-color:  rgba(247, 239, 231, 1) !important;
-    }
+@use "@fulhaus/react.ui.colors/dist/scss" as color;
+.app-v3-home-page {
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f7efe7;
+  a {
+    font-family: "Source Sans Pro";
+  }
+  .mx-8percent {
+    margin-left: 8%;
+    margin-right: 8%;
+  }
+  .moret {
+    font-family: "Moret-Book";
+  }
+  .fui-button {
+    font-size: 0.875rem !important;
+  }
+  .fulhaus-button-bg-cream {
+    background-color: rgba(247, 239, 231, 1) !important;
+  }
+  .width-10-percent {
+    width: 10%;
+  }
+  .dropdown-list-input-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+  }
+  .last-child-red > *:last-child {
+    color: color.$red !important;
+  }
+  .dropdown-list-input-options-wrapper {
+    width: max-content !important;
+  }
 }
