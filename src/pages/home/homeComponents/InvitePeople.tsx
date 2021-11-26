@@ -6,14 +6,31 @@ import { ReactComponent as AngleDown } from '../../../styles/images/angle-down.s
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { Button } from "@fulhaus/react.ui.button";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
+import apiRequest from '../../../Service/apiRequest'
 type InvitePeopleProps = {
   close: () => void;
 };
 const InvitePeople = ({ close }: InvitePeopleProps) => {
   const [peopleKeyWord, setpeopleKeyWord] = useState('');
+  const [invitePeopleSearchList, setinvitePeopleSearchList] = useState([]);
   const dropdownListAction = (v :string) => {
       console.log(v);
   }
+  const invite = async () => {
+    const invitePeopleNameArray = peopleKeyWord.split(',');
+    const res = await apiRequest({
+      url: "/auth/invite-users",
+      method: 'POST',
+      body: {
+        emails: invitePeopleNameArray
+      }
+    })
+    if (res?.success) {
+      setinvitePeopleSearchList(res);
+    }else{
+      console.log('search invite people failed @ InvitePeople.tsx line 31')
+    }
+  } 
   return (
     <ClickOutsideAnElementHandler onClickedOutside={() => close()}>
       <div className="border border-black border-solid invite-people bg-cream">
@@ -23,7 +40,7 @@ const InvitePeople = ({ close }: InvitePeopleProps) => {
         </div>
         <div className='flex mt-4'>
           <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
-          <div className='w-1/12'><Button className='w-full'>Invite</Button></div>
+          <div className='w-1/12'><Button onClick={()=>invite()} className='w-full'>Invite</Button></div>
         </div>
         <div className='flex justify-between pr-8 my-2'>
           <div className='text-sm font-ssp'>Ryan Smith(you)</div>
