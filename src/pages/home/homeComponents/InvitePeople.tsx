@@ -17,7 +17,7 @@ const InvitePeople = ({ close }: InvitePeopleProps) => {
       console.log(v);
   }
   const invite = async () => {
-    const invitePeopleNameArray = peopleKeyWord.split(',');
+    const invitePeopleNameArray = peopleKeyWord.split(', ');
     const res = await apiRequest({
       url: "/auth/invite-users",
       method: 'POST',
@@ -27,8 +27,11 @@ const InvitePeople = ({ close }: InvitePeopleProps) => {
     })
     if (res?.success) {
       setinvitePeopleSearchList(res);
+      alert(`invite ${peopleKeyWord} successfully`)
+      setpeopleKeyWord('');
     }else{
-      console.log('search invite people failed @ InvitePeople.tsx line 31')
+      console.log('search invite people failed @ InvitePeople.tsx line 31');
+      alert(res.message);
     }
   } 
   return (
