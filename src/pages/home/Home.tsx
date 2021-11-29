@@ -1,9 +1,9 @@
-import "./HomePage.scss";
+import "./Home.scss";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
-import { ReactComponent as HomePageExit } from "../../styles/images/home-page-exit.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
 import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
@@ -107,8 +107,29 @@ const Home = () => {
 export default Home;
 
 const EachProjectQuoteDesignRow = () => {
+  const history = useHistory();
+  const [showRenameProject, setshowRenameProject] = useState(false);
+  const handleDropDown = (v: string) => {
+    switch (v) {
+      case 'Duplicate Project':
+        break;
+      case 'Rename Project':
+        setshowRenameProject(true)
+        break;
+      case 'Delete Project':
+        break;
+    }
+  }
   return <div className='flex text-sm border border-black border-solid font-ssp'>
-    <Link to='/project/quote' className='flex w-6/12 pl-4'><div className='my-auto'>Test Project</div></Link>
+    <div onClick={()=>history.push('/project/quote')} className='flex w-6/12 pl-4'>
+      {showRenameProject ?
+        <input onKeyDown={e => {if(e.code === 'Enter'){
+          setshowRenameProject(false);
+        }}} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} />
+        :
+        <div className='my-auto'>Test Project</div>
+      }
+    </div>
     <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/2021</div></Link>
     <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
     <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/1911</div></Link>
@@ -117,7 +138,7 @@ const EachProjectQuoteDesignRow = () => {
       <div className='my-auto'>0</div>
       <DropdownListInput
         listWrapperClassName='last-child-red'
-        onSelect={v => { }}
+        onSelect={v => handleDropDown(v)}
         wrapperClassName='border-none cursor-pointer w-40 last:text-error mr-4' labelClassName='hidden'
         suffixIcon={<div>···</div>}
         listWrapperFloatDirection='left' disabled={true}
