@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
-import './StartNewProject.scss'
-import { Link } from 'react-router-dom'
-import { AiOutlineArrowLeft } from 'react-icons/ai'
+import './StartNewProjectQuoteDesign.scss'
+import {GrFormClose} from 'react-icons/gr'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Button } from '@fulhaus/react.ui.button'
-const StartNewProject = () => {
+
+type StartNewProjectProps = {
+    type: 'project' | 'quote' | 'design'
+    close: () => void
+}
+const StartNewProject = ({type, close}:StartNewProjectProps) => {
     const [projectTitle, setprojectTitle] = useState('');
     const [currency, setcurrency] = useState('');
     const [budget, setbudget] = useState('');
@@ -20,9 +24,17 @@ const StartNewProject = () => {
     const [province, setprovince] = useState('');
     const [city, setcity] = useState('');
     const [postalCode, setpostalCode] = useState('');
+
     return (
-        <div className='bg-white border border-black border-solid start-new-project-form'>
-            <div className='flex'><div className='mx-auto text-4xl font-moret'>Create A New Project</div></div>
+        <div className='relative px-6 py-6 bg-white border border-black border-solid start-new-project start-new-project-form'>
+            <GrFormClose onClick={()=>close()} size={22} className='absolute top-0 right-0 mt-4 mr-4 cursor-pointer' />
+            <div className='flex'>
+                <div className='mx-auto text-4xl font-moret'>
+                {type === 'project' && 'Create A New Project'}
+                {type === 'quote' && 'Create A New Quote'}
+                {type === 'design' && 'Create A New Design'}
+                </div>
+                </div>
             <TextInput className='mt-2' inputName='project title' variant='box' placeholder='Project Title' value={projectTitle} onChange={e => setprojectTitle((e.target as any).value)} />
             <div className='flex mt-4'>
                 <div className='w-1/2 mr-2'><DropdownListInput placeholder='Currency' onSelect={v => setcurrency(v)} options={['USD', 'CAD', 'EUR']} /></div>

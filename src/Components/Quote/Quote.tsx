@@ -1,5 +1,5 @@
 import './Quote.scss'
-import { ReactComponent as AddUnitIcon } from "../../../styles/images/add-a-unit-to-get-start.svg";
+import { ReactComponent as AddUnitIcon } from "../../styles/images/add-a-unit-to-get-start.svg";
 const Quote = () => {
     return <div className='flex quote'>
         <div className='h-full'></div>

@@ -8,8 +8,8 @@ import { ReactComponent as InformationIcon } from "../../styles/images/informati
 import { ReactComponent as HistoryIcon } from "../../styles/images/history.svg";
 import { ReactComponent as ExitIcon } from "../../styles/images/home-page-exit.svg";
 
-import Quote from './Quote/Quote';
-import Design from './Design/Design';
+import Quote from '../../Components/Quote/Quote';
+import Design from '../../Components/Design/Design';
 import ProjectInformation from './ProjectComponents/ProjectInformation';
 import VersionHistory from './ProjectComponents/VersionHistory';
 
