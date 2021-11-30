@@ -9,7 +9,7 @@ import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Popup } from '@fulhaus/react.ui.popup'
-
+import { InfiniteScroll } from '@fulhaus/react.ui.infinite-scroll'
 import InvitePeople from "./homeComponents/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDesign"
@@ -19,6 +19,8 @@ const Home = () => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
   const [showInvitePeople, setshowInvitePeople] = useState(false);
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
+  const [projectListNeedToRender, setprojectListNeedToRender] = useState<any[]>(Array.from({ length: 20 }));
+  const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string }>();
 
   const chooseProjectQuoteDesignStart = (v: string) => {
     switch (v) {
@@ -36,12 +38,27 @@ const Home = () => {
   }
 
   return (<>
-    {<Popup onClose={() => setshowStartNewProjectQuotoDesign(false)} show={showStartNewProjectQuotoDesign}><StartNewProjectQuotoDesign
-      type={StartNewProjectQuoteDesignType}
-      close={() => setshowStartNewProjectQuotoDesign(false)}
-    /></Popup>}
-    {showConfirmRemoveThisSeason && <RemoveThisSeason close={() => setshowConfirmRemoveThisSeason(false)} />}
-    {showInvitePeople && <InvitePeople close={() => setshowInvitePeople(false)} />}
+    {<Popup
+      onClose={() => {
+        setshowStartNewProjectQuotoDesign(false);
+      }}
+      show={showStartNewProjectQuotoDesign}><StartNewProjectQuotoDesign
+        type={StartNewProjectQuoteDesignType}
+        close={() => setshowStartNewProjectQuotoDesign(false)}
+      />
+    </Popup>}
+    {showConfirmRemoveThisSeason &&
+      <RemoveThisSeason
+        close={() => setshowConfirmRemoveThisSeason(false)}
+      />}
+    {showInvitePeople &&
+      <InvitePeople
+        projectName={SelectedProjectToInvite?.name}
+        projectID={SelectedProjectToInvite?.id}
+        close={() => {
+          setSelectedProjectToInvite(undefined);
+          setshowInvitePeople(false);
+        }} />}
     <div className="app-v3-home-page">
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
@@ -97,23 +114,18 @@ const Home = () => {
               <div className='width-10-percent'>Created by</div>
               <div className='width-10-percent'>Total Units</div>
             </div>
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
-            <EachProjectQuoteDesignRow />
+            <InfiniteScroll
+              className='w-full h-auto'
+              length={projectListNeedToRender.length}
+              fetchMore={() => {
+                setTimeout(() => {
+                  setprojectListNeedToRender(state => state.concat(Array.from({ length: 20 })));
+                }, 1000)
+              }}
+              hasMore={true}
+            >
+              {projectListNeedToRender.map(each => <EachProjectQuoteDesignRow setSelectedProjectToInvite={setSelectedProjectToInvite} name='Tester 1' projectID='123456' showInvitePeople={() => setshowInvitePeople(true)} type='design-only' />)}
+            </InfiniteScroll>
           </>
         }
       </div>
@@ -126,28 +138,57 @@ export default Home;
 
 
 type EachProjecyQuoDesignRowProps = {
-  name?: string,
-  projectID?: string,
+  name: string,
+  projectID: string,
   type?: 'design-only' | 'project' | 'quote-only',
   lastUpdated?: string,
   lastEditby?: string,
   createdOn?: string,
   createdBy?: string,
   totalUnits?: number,
+  showInvitePeople?: () => void,
+  setSelectedProjectToInvite?: (object: { name: string, id: string }) => void
 }
-const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits }: EachProjecyQuoDesignRowProps) => {
+const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits, showInvitePeople, setSelectedProjectToInvite }: EachProjecyQuoDesignRowProps) => {
   const history = useHistory();
   const [showRenameProject, setshowRenameProject] = useState(false);
   const handleDropDown = (v: string) => {
     switch (v) {
       case 'Duplicate Project':
+      case 'Duplicate Quote':
+      case 'Duplicate Design':
         break;
       case 'Rename Project':
+      case 'Rename Quote':
+      case 'Rename Design':
         setshowRenameProject(true)
         break;
+      case 'Share Design':
+      case 'Share Quote':
+      case 'Share Project':
+        if (setSelectedProjectToInvite) {
+          setSelectedProjectToInvite({
+            name,
+            id: projectID
+          })
+        }
+        if (showInvitePeople) { showInvitePeople(); }
+        break;
       case 'Delete Project':
+      case 'Delete Quote':
+      case 'Delete Design':
         break;
     }
+  }
+  let optionList = [''];
+  if (type === 'design-only') {
+    optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
+  }
+  if (type === 'quote-only') {
+    optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
+  }
+  if (type === 'project') {
+    optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
   }
   return <div className='flex text-sm border border-black border-solid font-ssp'>
     <div onClick={() => history.push('/project/quote')} className='flex w-3/12 pl-4 cursor-pointer'>
@@ -158,7 +199,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
           }
         }} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} />
         :
-        <div className='my-auto'>Test Project</div>
+        <div className='my-auto'>{name}</div>
       }
     </div>
     <div onClick={() => history.push('/project/quote')} className='w-3/12 my-auto cursor-pointer'>Design Only</div>
@@ -174,7 +215,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         wrapperClassName='border-none cursor-pointer w-40 last:text-error mr-4' labelClassName='hidden'
         suffixIcon={<div>···</div>}
         listWrapperFloatDirection='left' disabled={true}
-        options={['Duplicate Project', 'Rename Project', 'Delete Project']} />
+        options={optionList} />
     </div>
   </div>
 }

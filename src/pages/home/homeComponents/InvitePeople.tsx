@@ -9,8 +9,10 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import apiRequest from '../../../Service/apiRequest'
 type InvitePeopleProps = {
   close: () => void;
+  projectName?: string;
+  projectID?:string;
 };
-const InvitePeople = ({ close }: InvitePeopleProps) => {
+const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
   const [peopleKeyWord, setpeopleKeyWord] = useState('');
   const [invitePeopleSearchList, setinvitePeopleSearchList] = useState([]);
   const dropdownListAction = (v :string) => {
@@ -38,7 +40,7 @@ const InvitePeople = ({ close }: InvitePeopleProps) => {
     <ClickOutsideAnElementHandler onClickedOutside={() => close()}>
       <div className="border border-black border-solid invite-people bg-cream">
         <div className='flex justify-between'>
-          <div className='text-2xl font-moret'>INVITE PEOPLE</div>
+          <div className='text-2xl font-moret'>INVITE PEOPLE {projectName && ` to ${projectName}`}</div>
           <ExitIcon onClick={() => close()} className='my-auto cursor-pointer' role='button' />
         </div>
         <div className='flex mt-4'>
