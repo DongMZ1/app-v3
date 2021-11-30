@@ -34,6 +34,7 @@ const Home = () => {
     }
     setshowStartNewProjectQuotoDesign(true);
   }
+
   return (<>
     {<Popup onClose={() => setshowStartNewProjectQuotoDesign(false)} show={showStartNewProjectQuotoDesign}><StartNewProjectQuotoDesign
       type={StartNewProjectQuoteDesignType}
@@ -44,7 +45,7 @@ const Home = () => {
     <div className="app-v3-home-page">
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
-        <ShareAlt className="my-auto ml-auto mr-4 cursor-pointer" />
+        <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto ml-auto mr-4 cursor-pointer" />
         <div
           onClick={() => setshowInvitePeople(true)}
           className="my-auto text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp"
