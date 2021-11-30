@@ -121,7 +121,7 @@ const EachProjectQuoteDesignRow = () => {
     }
   }
   return <div className='flex text-sm border border-black border-solid font-ssp'>
-    <div onClick={()=>history.push('/project/quote')} className='flex w-6/12 pl-4'>
+    <div onClick={()=>history.push('/project/quote')} className='flex w-6/12 pl-4 cursor-pointer'>
       {showRenameProject ?
         <input onKeyDown={e => {if(e.code === 'Enter'){
           setshowRenameProject(false);
