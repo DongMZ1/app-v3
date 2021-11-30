@@ -185,17 +185,21 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     }
   }
   let optionList = [''];
+  let linkURL = '';
   if (type === 'design-only') {
     optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
+    linkURL = `/design-only?id=${projectID}`
   }
   if (type === 'quote-only') {
     optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
+    linkURL = `/quote-only?id=${projectID}`
   }
   if (type === 'project') {
     optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
+    linkURL = `/project/quote`
   }
   return <div className='flex text-sm border border-black border-solid font-ssp'>
-    <div onClick={() => history.push('/project/quote')} className='flex w-3/12 pl-4 cursor-pointer'>
+    <div onClick={() => history.push(linkURL)} className='flex w-3/12 pl-4 cursor-pointer'>
       {showRenameProject ?
         <input onKeyDown={e => {
           if (e.code === 'Enter') {
@@ -206,11 +210,11 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         <div className='my-auto'>{name}</div>
       }
     </div>
-    <div onClick={() => history.push('/project/quote')} className='w-3/12 my-auto cursor-pointer'>Design Only</div>
-    <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/2021</div></Link>
-    <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
-    <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/1911</div></Link>
-    <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
+    <div onClick={() => history.push(linkURL)} className='w-3/12 my-auto cursor-pointer'>Design Only</div>
+    <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>11/11/2021</div></Link>
+    <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
+    <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>11/11/1911</div></Link>
+    <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
     <div className='flex justify-between width-10-percent'>
       <div className='my-auto'>0</div>
       <DropdownListInput
