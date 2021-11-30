@@ -42,6 +42,8 @@ const Home = () => {
       onClose={() => {
         setshowStartNewProjectQuotoDesign(false);
       }}
+      boxShadow={false}
+      verticalAlignment='start'
       show={showStartNewProjectQuotoDesign}><StartNewProjectQuotoDesign
         type={StartNewProjectQuoteDesignType}
         close={() => setshowStartNewProjectQuotoDesign(false)}

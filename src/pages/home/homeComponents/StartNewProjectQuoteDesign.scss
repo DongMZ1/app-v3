@@ -1,10 +1,8 @@
 .start-new-project {
+    width: 600px;
     &::-webkit-scrollbar {
         width: 0;  /* Remove scrollbar space */
         background: transparent;  /* Optional: just make scrollbar invisible */
-    }
-    .start-new-project-form {
-        width: 600px;
     }
     .fui-text-input{
        input {
