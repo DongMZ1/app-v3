@@ -9,7 +9,7 @@ import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Popup } from '@fulhaus/react.ui.popup'
-import { InfiniteScroll } from '@fulhaus/react.ui.infinite-scroll'
+import InfiniteScroll from 'react-infinite-scroll-component';
 import InvitePeople from "./homeComponents/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDesign"
@@ -61,7 +61,7 @@ const Home = () => {
           setSelectedProjectToInvite(undefined);
           setshowInvitePeople(false);
         }} />}
-    <div className="app-v3-home-page">
+    <div className="app-v3-home-page" id={'app-v3-home-page'}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto ml-auto mr-4 cursor-pointer" />
@@ -117,14 +117,16 @@ const Home = () => {
               <div className='width-10-percent'>Total Units</div>
             </div>
             <InfiniteScroll
+              loader={<h4>Loading...</h4>}
               className='w-full h-auto'
-              length={projectListNeedToRender.length}
-              fetchMore={() => {
+              dataLength={projectListNeedToRender.length}
+              next={() => {
                 setTimeout(() => {
                   setprojectListNeedToRender(state => state.concat(Array.from({ length: 20 })));
                 }, 1000)
               }}
               hasMore={true}
+              scrollableTarget='app-v3-home-page'
             >
               {projectListNeedToRender.map(each => <EachProjectQuoteDesignRow setSelectedProjectToInvite={setSelectedProjectToInvite} name='Tester 1' projectID='123456' showInvitePeople={() => setshowInvitePeople(true)} type='design-only' />)}
             </InfiniteScroll>
