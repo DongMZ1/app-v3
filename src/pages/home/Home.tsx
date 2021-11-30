@@ -52,7 +52,7 @@ const Home = () => {
           Invite people
         </div>
       </div>
-      <div className='mx-8percent'>
+      <div className='pb-12 mx-8percent'>
         <div className="mt-8 bg-second">
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
@@ -88,13 +88,30 @@ const Home = () => {
           :
           <>
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
-              <div className='w-6/12 pl-4'>Project name</div>
+              <div className='w-3/12 pl-4'>Project name</div>
+              <div className='w-3/12'>Type</div>
               <div className='width-10-percent'>Last updated</div>
               <div className='width-10-percent'>Last edited by</div>
               <div className='width-10-percent'>Created on</div>
               <div className='width-10-percent'>Created by</div>
               <div className='width-10-percent'>Total Units</div>
             </div>
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
+            <EachProjectQuoteDesignRow />
             <EachProjectQuoteDesignRow />
           </>
         }
@@ -106,7 +123,18 @@ const Home = () => {
 
 export default Home;
 
-const EachProjectQuoteDesignRow = () => {
+
+type EachProjecyQuoDesignRowProps = {
+  name?: string,
+  projectID?: string,
+  type?: 'design-only' | 'project' | 'quote-only',
+  lastUpdated?: string,
+  lastEditby?: string,
+  createdOn?: string,
+  createdBy?: string,
+  totalUnits?: number,
+}
+const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits }: EachProjecyQuoDesignRowProps) => {
   const history = useHistory();
   const [showRenameProject, setshowRenameProject] = useState(false);
   const handleDropDown = (v: string) => {
@@ -121,15 +149,18 @@ const EachProjectQuoteDesignRow = () => {
     }
   }
   return <div className='flex text-sm border border-black border-solid font-ssp'>
-    <div onClick={()=>history.push('/project/quote')} className='flex w-6/12 pl-4 cursor-pointer'>
+    <div onClick={() => history.push('/project/quote')} className='flex w-3/12 pl-4 cursor-pointer'>
       {showRenameProject ?
-        <input onKeyDown={e => {if(e.code === 'Enter'){
-          setshowRenameProject(false);
-        }}} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} />
+        <input onKeyDown={e => {
+          if (e.code === 'Enter') {
+            setshowRenameProject(false);
+          }
+        }} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} />
         :
         <div className='my-auto'>Test Project</div>
       }
     </div>
+    <div onClick={() => history.push('/project/quote')} className='w-3/12 my-auto cursor-pointer'>Design Only</div>
     <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/2021</div></Link>
     <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
     <Link to='/project/quote' className='flex width-10-percent'><div className='my-auto'>11/11/1911</div></Link>
