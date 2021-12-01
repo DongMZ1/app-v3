@@ -128,7 +128,7 @@ const Home = () => {
               hasMore={true}
               scrollableTarget='app-v3-home-page'
             >
-              {projectListNeedToRender.map(each => <EachProjectQuoteDesignRow setSelectedProjectToInvite={setSelectedProjectToInvite} name='Tester 1' projectID='123456' showInvitePeople={() => setshowInvitePeople(true)} type='design-only' />)}
+              {projectListNeedToRender.map((each, key) => <EachProjectQuoteDesignRow setSelectedProjectToInvite={setSelectedProjectToInvite} name={`Tester ${key}`} projectID='123456' showInvitePeople={() => setshowInvitePeople(true)} type='design-only' />)}
             </InfiniteScroll>
           </>
         }

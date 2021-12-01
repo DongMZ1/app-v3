@@ -35,6 +35,10 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
     if (type === 'quote') {
         FormIsValid = !!projectTitle;
     }
+
+    const capitalizeFirstLetter = (string: string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
     return (
         <div className='relative px-6 py-6 mt-10 bg-white border border-black border-solid start-new-project'>
             <GrFormClose onClick={() => close()} size={22} className='absolute top-0 right-0 mt-4 mr-4 cursor-pointer' />
@@ -45,7 +49,7 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
                     {type === 'design' && 'Create A New Design'}
                 </div>
             </div>
-            <TextInput className='mt-2' inputName='project title' variant='box' placeholder='Project Title' value={projectTitle} onChange={e => setprojectTitle((e.target as any).value)} />
+            <TextInput className='mt-2' inputName='project title' variant='box' placeholder={`${capitalizeFirstLetter(type)} Title`} value={projectTitle} onChange={e => setprojectTitle((e.target as any).value)} />
             {type === 'project' && <>
                 <div className='flex mt-4'>
                     <div className='w-1/2 mr-2'><DropdownListInput placeholder='Currency' onSelect={v => setcurrency(v)} options={['USD', 'CAD', 'EUR']} /></div>
