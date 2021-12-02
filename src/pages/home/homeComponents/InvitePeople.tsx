@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./InvitePeople.scss";
 import { ClickOutsideAnElementHandler } from "@fulhaus/react.ui.click-outside-an-element-handler";
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
@@ -18,6 +18,9 @@ const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
   const dropdownListAction = (v :string) => {
       console.log(v);
   }
+  useEffect(
+    ()=>{},[]
+  )
   const invite = async () => {
     const invitePeopleNameArray = peopleKeyWord.split(', ');
     const res = await apiRequest({
