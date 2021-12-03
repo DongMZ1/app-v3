@@ -96,10 +96,12 @@ const Home = () => {
           placeholder='Search for a project name'
           onChange={(e) => setsearchKeyWord((e.target as any).value)}
         />
+        {/*
         <div className='flex mt-4'>
           <Button variant='secondary' className="mr-4 font-ssp fulhaus-button-bg-cream">PipeDrive Projects</Button>
           <Button active>Add Projects</Button>
         </div>
+        */}
         {false ?
           <>
             <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>

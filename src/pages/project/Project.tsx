@@ -10,6 +10,7 @@ import { ReactComponent as ExitIcon } from "../../styles/images/home-page-exit.s
 
 import Quote from '../../Components/Quote/Quote';
 import Design from '../../Components/Design/Design';
+import NoteModal from '../../Components/NoteModal/NoteModal';
 import ProjectInformation from './ProjectComponents/ProjectInformation';
 import VersionHistory from './ProjectComponents/VersionHistory';
 
@@ -17,7 +18,9 @@ const Project = () => {
     const [showHistory, setshowHistory] = useState(false);
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showProjectStyleList, setshowProjectStyleList] = useState(false);
-    return (
+    const [showNote, setshowNote] = useState(true);
+    return (<>
+        <NoteModal show={showNote} onClose={()=>setshowProjectStyleList(false)} unitName={'Unit A'} />
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
@@ -59,6 +62,7 @@ const Project = () => {
                 <div className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
             </div>
         </div>
+        </>
     );
 };
 

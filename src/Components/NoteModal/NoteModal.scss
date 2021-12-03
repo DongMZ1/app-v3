@@ -1,0 +1,6 @@
+@use "@fulhaus/react.ui.colors/dist/scss" as color;
+.note-modal {
+    .fulhaus-bg-cream {
+        background-color: color.$cream !important;
+    }
+}
