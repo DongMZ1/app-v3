@@ -1,9 +1,11 @@
 import "./Home.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux'
+import apiRequest from '../../Service/apiRequest';
+import { Tappstate } from "../../redux/reducers";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
-import { Button } from "@fulhaus/react.ui.button";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Popup } from '@fulhaus/react.ui.popup'
@@ -19,8 +21,34 @@ const Home = () => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
   const [showInvitePeople, setshowInvitePeople] = useState(false);
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
-  const [projectListNeedToRender, setprojectListNeedToRender] = useState<any[]>(Array.from({ length: 20 }));
   const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string }>();
+  //index show number of rows on homepage displayed
+  const [showedInfoRowNumber, setshowedInfoRowNumber] = useState(20);
+  const [showLoadingMessage, setshowLoadingMessage] = useState(false);
+  const state = useSelector((state : Tappstate) => state);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (!state?.projects) {
+        const res = await apiRequest({
+          url: '/api/fhapp-service/projects',
+          method: 'GET',
+        })
+        if (res?.success) {
+          dispatch(
+            {
+              type: 'projects',
+              payload: res.data
+            }
+          )
+        }else{
+           console.log('fetch project failed, see Home.tsx at line 44');
+        }
+      }
+    }
+    fetchProject();
+  }, [])
 
   const chooseProjectQuoteDesignStart = (v: string) => {
     switch (v) {
@@ -36,7 +64,18 @@ const Home = () => {
     }
     setshowStartNewProjectQuotoDesign(true);
   }
-
+ 
+  const infiniteScroll = () =>{
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects){
+      if(showedInfoRowNumber < state.projects?.length){
+        setshowLoadingMessage(true);
+      setTimeout(() => {
+        setshowedInfoRowNumber(showedInfoRowNumber + 10);
+        setshowLoadingMessage(false);
+      }, 1000)
+    }
+  }
+  }
   return (<>
     {<Popup
       onClose={() => {
@@ -61,7 +100,7 @@ const Home = () => {
           setSelectedProjectToInvite(undefined);
           setshowInvitePeople(false);
         }} />}
-    <div className="app-v3-home-page" id={'app-v3-home-page'}>
+    <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={()=>infiniteScroll()}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto ml-auto mr-4 cursor-pointer" />
@@ -94,7 +133,7 @@ const Home = () => {
           type="search"
           value={searchkeyWord}
           placeholder='Search for a project name'
-          onChange={(e) => setsearchKeyWord((e.target as any).value)}
+          onChange={(e) => setsearchKeyWord(((e.target as any).value as string).toLowerCase())}
         />
         {/*
         <div className='flex mt-4'>
@@ -118,22 +157,20 @@ const Home = () => {
               <div className='width-10-percent'>Created by</div>
               <div className='width-10-percent'>Total Units</div>
             </div>
-            <InfiniteScroll
-              loader={<h4>Loading...</h4>}
-              className='w-full h-auto'
-              dataLength={projectListNeedToRender.length}
-              next={() => {
-                setTimeout(() => {
-                  setprojectListNeedToRender(state => state.concat(Array.from({ length: 20 })));
-                }, 1000)
-              }}
-              hasMore={true}
-              scrollableTarget='app-v3-home-page'
-            >
-              {projectListNeedToRender.map((each, key) => <EachProjectQuoteDesignRow setSelectedProjectToInvite={setSelectedProjectToInvite} name={`Tester ${key}`} projectID='123456' showInvitePeople={() => setshowInvitePeople(true)} type='project' />)}
-            </InfiniteScroll>
+              {state?.projects?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each : any, key:number) => <EachProjectQuoteDesignRow 
+              setSelectedProjectToInvite={setSelectedProjectToInvite}
+              name={each?.name}
+              type={each?.type}
+              lastUpdated={each?.updatedAt}
+              createdOn={each?.createdAt}
+              createdBy={each?.createdBy}
+              lastEditby={each?.lastEditedBy}
+              totalUnits={'unknown'}
+              projectID={each?.id}
+              showInvitePeople={() => setshowInvitePeople(true)} />).slice(0, showedInfoRowNumber)}
           </>
         }
+        {showLoadingMessage && <div className='flex mt-2'><div className='mx-auto font-ssp'>Loading ...</div></div>}
       </div>
     </div>
   </>

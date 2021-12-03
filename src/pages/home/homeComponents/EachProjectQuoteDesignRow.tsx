@@ -6,12 +6,12 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 type EachProjectQuoteDesignRowProps = {
     name: string,
     projectID: string,
-    type?: 'design-only' | 'project' | 'quote-only',
-    lastUpdated?: string,
-    lastEditby?: string,
-    createdOn?: string,
-    createdBy?: string,
-    totalUnits?: number,
+    type: 'design-only' | 'project' | 'quote-only',
+    lastUpdated: string,
+    lastEditby: string,
+    createdOn: string,
+    createdBy: string,
+    totalUnits?: number | string,
     showInvitePeople?: () => void,
     setSelectedProjectToInvite?: (object: { name: string, id: string }) => void
 }
@@ -83,12 +83,12 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
                 type === "quote-only" && "Quote Only"
             }
         </div>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>11/11/2021</div></Link>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>11/11/1911</div></Link>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>Mingzhou Dong</div></Link>
+        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{lastUpdated}</div></Link>
+        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{lastEditby}</div></Link>
+        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{createdOn}</div></Link>
+        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{createdBy}</div></Link>
         <div className='flex justify-between width-10-percent'>
-            <div className='my-auto'>0</div>
+            <div className='my-auto'>{totalUnits}</div>
             <DropdownListInput
                 listWrapperClassName='last-child-red'
                 onSelect={v => handleDropDown(v)}

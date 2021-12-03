@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Project.scss";
 import { Link, useHistory } from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
+import apiRequest from '../../Service/apiRequest';
 import { ReactComponent as RightArrowWhiteIcon } from "../../styles/images/right-arrow-white.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as SaveIcon } from "../../styles/images/save.svg";
 import { ReactComponent as InformationIcon } from "../../styles/images/information.svg";
 import { ReactComponent as HistoryIcon } from "../../styles/images/history.svg";
-import { ReactComponent as ExitIcon } from "../../styles/images/home-page-exit.svg";
 
 import Quote from '../../Components/Quote/Quote';
 import Design from '../../Components/Design/Design';
@@ -20,7 +21,7 @@ const Project = () => {
     const [showProjectStyleList, setshowProjectStyleList] = useState(false);
     const [showNote, setshowNote] = useState(true);
     return (<>
-        <NoteModal show={showNote} onClose={()=>setshowProjectStyleList(false)} unitName={'Unit A'} />
+        <NoteModal show={showNote} close={()=>setshowNote(false)} save={()=>{}} unitName={'Unit A'} />
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
