@@ -1,3 +1,4 @@
+import {APP_API_URL} from '../Constant/url.constant'
 interface IApiRequest {
   url: string;
   method: "GET" | "POST" | "PATCH" | "DELETE";
@@ -12,7 +13,7 @@ const apiRequest = async ({
   body,
   isFileUpload = false,
 }: IApiRequest) => {
-  let apiURL = process.env.REACT_APP_API_URL + url;
+  let apiURL = APP_API_URL + url;
 
   let params: any = {};
   if (method === "GET")

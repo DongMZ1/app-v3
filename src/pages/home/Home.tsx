@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import apiRequest from '../../Service/apiRequest';
 import { Tappstate } from "../../redux/reducers";
+import { APP_ACCOUNTS_URL } from "../../Constant/url.constant";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
+import { TiArrowSortedUp } from 'react-icons/ti'
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Popup } from '@fulhaus/react.ui.popup'
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 import EachProjectQuoteDesignRow from './homeComponents/EachProjectQuoteDesignRow'
 import InvitePeople from "./homeComponents/InvitePeople";
@@ -25,7 +26,7 @@ const Home = () => {
   //index show number of rows on homepage displayed
   const [showedInfoRowNumber, setshowedInfoRowNumber] = useState(20);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
-  const state = useSelector((state : Tappstate) => state);
+  const state = useSelector((state: Tappstate) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,8 +43,10 @@ const Home = () => {
               payload: res.data
             }
           )
-        }else{
-           console.log('fetch project failed, see Home.tsx at line 44');
+        } else if(res?.message === 'User not authorized') {
+          window.location.assign(`${APP_ACCOUNTS_URL}/login`);
+        } else {
+          console.log('fetch project failed, please check Home.tsx at line 48')
         }
       }
     }
@@ -64,17 +67,26 @@ const Home = () => {
     }
     setshowStartNewProjectQuotoDesign(true);
   }
- 
-  const infiniteScroll = () =>{
-    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects){
-      if(showedInfoRowNumber < state.projects?.length){
+
+  const infiniteScroll = () => {
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
+      if (showedInfoRowNumber < state.projects?.length) {
         setshowLoadingMessage(true);
-      setTimeout(() => {
-        setshowedInfoRowNumber(showedInfoRowNumber + 10);
-        setshowLoadingMessage(false);
-      }, 1000)
+        setTimeout(() => {
+          setshowedInfoRowNumber(showedInfoRowNumber + 10);
+          setshowLoadingMessage(false);
+        }, 1000)
+      }
     }
   }
+
+  const sortByDate = (arr: any[] | null, sorted: boolean) => {
+    if (sorted) {
+      return arr?.sort(function (a: any, b: any) {
+        return (new Date((b.updatedAt as string)) as any) - (new Date(a.updatedAt) as any);
+      });
+    }
+    return arr;
   }
   return (<>
     {<Popup
@@ -100,7 +112,7 @@ const Home = () => {
           setSelectedProjectToInvite(undefined);
           setshowInvitePeople(false);
         }} />}
-    <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={()=>infiniteScroll()}>
+    <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={() => infiniteScroll()}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto ml-auto mr-4 cursor-pointer" />
@@ -141,23 +153,18 @@ const Home = () => {
           <Button active>Add Projects</Button>
         </div>
         */}
-        {false ?
-          <>
-            <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
-            <div className='flex'><div className='mx-auto text-3xl moret'>No App Projects exist yet</div></div>
-          </>
-          :
+        {state?.projects ?
           <>
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
               <div className='w-3/12 pl-4'>Project name</div>
               <div className='w-3/12'>Type</div>
-              <div className='width-10-percent'>Last updated</div>
+              <div className='flex width-10-percent'>Last updated <TiArrowSortedUp className='cursor-pointer' /></div>
               <div className='width-10-percent'>Last edited by</div>
               <div className='width-10-percent'>Created on</div>
               <div className='width-10-percent'>Created by</div>
               <div className='width-10-percent'>Total Units</div>
             </div>
-              {state?.projects?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each : any, key:number) => <EachProjectQuoteDesignRow 
+            {sortByDate(state?.projects, true)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each: any, key: number) => <EachProjectQuoteDesignRow
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               name={each?.name}
               type={each?.type}
@@ -168,6 +175,10 @@ const Home = () => {
               totalUnits={'unknown'}
               projectID={each?.id}
               showInvitePeople={() => setshowInvitePeople(true)} />).slice(0, showedInfoRowNumber)}
+          </> :
+          <>
+            <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
+            <div className='flex'><div className='mx-auto text-3xl moret'>No App Projects exist yet</div></div>
           </>
         }
         {showLoadingMessage && <div className='flex mt-2'><div className='mx-auto font-ssp'>Loading ...</div></div>}
