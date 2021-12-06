@@ -69,6 +69,7 @@ const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
       </div>
     </ClickOutsideAnElementHandler>
   );
+  
 };
 
 export default InvitePeople;
