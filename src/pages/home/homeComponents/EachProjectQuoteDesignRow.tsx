@@ -32,7 +32,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     }
     if (type === 'project') {
         optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
-        linkURL = `/project/quote`
+        linkURL = `/project/quote?id=${projectID}`
     }
 
     const handleDropDown = (v: string) => {
