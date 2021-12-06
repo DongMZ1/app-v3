@@ -105,6 +105,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     </div>
     <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${type}`} subText={`Are you sure you want to permanently delete ${name} ?`} onCancel={()=>setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} submitButtonClassName='justify-center' cancelButtonLabel={'Cancel'} onSubmit={()=>{}} />
     </>
+    
 }
 
 export default EachProjectQuoteDesignRow;
