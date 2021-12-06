@@ -64,7 +64,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
                 break;
         }
     }
-    
+
     return <> <div className='flex text-sm border border-black border-solid font-ssp'>
         <div onClick={() => history.push(linkURL)} className='flex w-3/12 pl-4 cursor-pointer'>
             {showRenameProject ?
@@ -103,9 +103,9 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
                 options={optionList} />
         </div>
     </div>
-    <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${type}`} subText={`Are you sure you want to permanently delete ${name} ?`} onCancel={()=>setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} submitButtonClassName='justify-center' cancelButtonLabel={'Cancel'} onSubmit={()=>{}} />
+        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${type}`} subText={`Are you sure you want to permanently delete ${name} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => { }} />
     </>
-    
+
 }
 
 export default EachProjectQuoteDesignRow;
