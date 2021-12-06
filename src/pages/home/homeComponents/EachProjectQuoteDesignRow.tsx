@@ -77,7 +77,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
                 <div className='my-auto'>{name}</div>
             }
         </div>
-        <div onClick={() => history.push(linkURL)} className='w-3/12 my-auto cursor-pointer'>
+        <div onClick={() => history.push(linkURL)} className='my-auto cursor-pointer width-10-percent'>
             {
                 type === "design" && "Design Only"
             }
@@ -88,11 +88,11 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
                 type === "quote" && "Quote Only"
             }
         </div>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{lastUpdated}</div></Link>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{lastEditby}</div></Link>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{createdOn}</div></Link>
-        <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{createdBy}</div></Link>
-        <div className='flex justify-between width-10-percent'>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{lastUpdated}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{lastEditby}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdOn}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdBy}</div></Link>
+        <div className='flex justify-between width-13-percent'>
             <div className='my-auto'>{totalUnits}</div>
             <DropdownListInput
                 listWrapperClassName='last-child-red'
