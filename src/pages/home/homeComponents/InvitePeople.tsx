@@ -48,7 +48,7 @@ const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
         </div>
         <div className='flex mt-4'>
           <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
-          <div className='w-1/12'><Button onClick={()=>invite()} className='justify-center w-full'>Invite</Button></div>
+          <div className='w-1/12'><Button disabled={peopleKeyWord===""} onClick={()=>invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         <div className='flex justify-between pr-8 my-2'>
           <div className='text-sm font-ssp'>Ryan Smith(you)</div>
