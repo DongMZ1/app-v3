@@ -2,11 +2,12 @@
 import React, { useState } from 'react'
 import { useHistory, Link } from 'react-router-dom'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
+import { ActionModal } from "@fulhaus/react.ui.action-modal";
 
 type EachProjectQuoteDesignRowProps = {
     name: string,
     projectID: string,
-    type: 'design-only' | 'project' | 'quote-only',
+    type: 'design' | 'project' | 'quote',
     lastUpdated: string,
     lastEditby: string,
     createdOn: string,
@@ -18,6 +19,22 @@ type EachProjectQuoteDesignRowProps = {
 const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits, showInvitePeople, setSelectedProjectToInvite }: EachProjectQuoteDesignRowProps) => {
     const history = useHistory();
     const [showRenameProject, setshowRenameProject] = useState(false);
+    const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
+    let optionList = [''];
+    let linkURL = '';
+    if (type === 'design') {
+        optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
+        linkURL = `/design-only?id=${projectID}`
+    }
+    if (type === 'quote') {
+        optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
+        linkURL = `/quote-only?id=${projectID}`
+    }
+    if (type === 'project') {
+        optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
+        linkURL = `/project/quote`
+    }
+
     const handleDropDown = (v: string) => {
         switch (v) {
             case 'Duplicate Project':
@@ -43,24 +60,12 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
             case 'Delete Project':
             case 'Delete Quote':
             case 'Delete Design':
+                setshowConfirmDeleteModal(true);
                 break;
         }
     }
-    let optionList = [''];
-    let linkURL = '';
-    if (type === 'design-only') {
-        optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
-        linkURL = `/design-only?id=${projectID}`
-    }
-    if (type === 'quote-only') {
-        optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
-        linkURL = `/quote-only?id=${projectID}`
-    }
-    if (type === 'project') {
-        optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
-        linkURL = `/project/quote`
-    }
-    return <div className='flex text-sm border border-black border-solid font-ssp'>
+    
+    return <> <div className='flex text-sm border border-black border-solid font-ssp'>
         <div onClick={() => history.push(linkURL)} className='flex w-3/12 pl-4 cursor-pointer'>
             {showRenameProject ?
                 <input onKeyDown={e => {
@@ -74,13 +79,13 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         </div>
         <div onClick={() => history.push(linkURL)} className='w-3/12 my-auto cursor-pointer'>
             {
-                type === "design-only" && "Design Only"
+                type === "design" && "Design Only"
             }
             {
                 type === 'project' && "Project"
             }
             {
-                type === "quote-only" && "Quote Only"
+                type === "quote" && "Quote Only"
             }
         </div>
         <Link to={linkURL} className='flex width-10-percent'><div className='my-auto'>{lastUpdated}</div></Link>
@@ -98,6 +103,8 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
                 options={optionList} />
         </div>
     </div>
+    <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${name}`} subText={`Are you sure you want to permanently delete this ${type}`} onCancel={()=>setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} submitButtonClassName='justify-center' cancelButtonLabel={'Cancel'} onSubmit={()=>{}} />
+    </>
 }
 
 export default EachProjectQuoteDesignRow;

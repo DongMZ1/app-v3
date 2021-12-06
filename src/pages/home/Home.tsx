@@ -24,8 +24,9 @@ const Home = () => {
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
   const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string }>();
   //index show number of rows on homepage displayed
-  const [showedInfoRowNumber, setshowedInfoRowNumber] = useState(20);
+  const [rowCount, setrowCount] = useState(20);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
+  const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
   const state = useSelector((state: Tappstate) => state);
   const dispatch = useDispatch();
 
@@ -70,10 +71,10 @@ const Home = () => {
 
   const infiniteScroll = () => {
     if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
-      if (showedInfoRowNumber < state.projects?.length) {
+      if (rowCount < state.projects?.length) {
         setshowLoadingMessage(true);
         setTimeout(() => {
-          setshowedInfoRowNumber(showedInfoRowNumber + 10);
+          setrowCount(rowCount + 10);
           setshowLoadingMessage(false);
         }, 1000)
       }
@@ -158,13 +159,13 @@ const Home = () => {
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
               <div className='w-3/12 pl-4'>Project name</div>
               <div className='w-3/12'>Type</div>
-              <div className='flex width-10-percent'>Last updated <TiArrowSortedUp className='cursor-pointer' /></div>
+              <div className='flex width-10-percent'>Last updated <TiArrowSortedUp onClick={()=>setorderByLastUpdated(true)} className='cursor-pointer' /></div>
               <div className='width-10-percent'>Last edited by</div>
               <div className='width-10-percent'>Created on</div>
               <div className='width-10-percent'>Created by</div>
               <div className='width-10-percent'>Total Units</div>
             </div>
-            {sortByDate(state?.projects, true)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each: any, key: number) => <EachProjectQuoteDesignRow
+            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each: any, key: number) => <EachProjectQuoteDesignRow
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               name={each?.name}
               type={each?.type}
@@ -174,7 +175,7 @@ const Home = () => {
               lastEditby={each?.lastEditedBy}
               totalUnits={'unknown'}
               projectID={each?.id}
-              showInvitePeople={() => setshowInvitePeople(true)} />).slice(0, showedInfoRowNumber)}
+              showInvitePeople={() => setshowInvitePeople(true)} />).slice(0, rowCount)}
           </> :
           <>
             <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
