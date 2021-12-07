@@ -65,8 +65,8 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         }
     }
 
-    return <> <div className='flex text-sm border border-black border-solid font-ssp'>
-        <div onClick={() => history.push(linkURL)} className='flex w-3/12 pl-4 cursor-pointer'>
+    return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
+        <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
                 <input onKeyDown={e => {
                     if (e.code === 'Enter') {
@@ -92,12 +92,12 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{lastEditby}</div></Link>
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdOn}</div></Link>
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdBy}</div></Link>
-        <div className='flex justify-between width-13-percent'>
+        <div className='flex width-8-percent'>
             <div className='my-auto'>{totalUnits}</div>
             <DropdownListInput
                 listWrapperClassName='last-child-red'
                 onSelect={v => handleDropDown(v)}
-                wrapperClassName='border-none cursor-pointer w-40 last:text-error mr-4' labelClassName='hidden'
+                wrapperClassName='border-none cursor-pointer my-auto w-40 last:text-error mr-4' labelClassName='hidden'
                 suffixIcon={<div>···</div>}
                 listWrapperFloatDirection='left' disabled={true}
                 options={optionList} />

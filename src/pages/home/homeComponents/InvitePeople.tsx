@@ -10,16 +10,13 @@ import apiRequest from '../../../Service/apiRequest'
 type InvitePeopleProps = {
   close: () => void;
   projectName?: string;
-  projectID?:string;
+  projectID?: string;
 };
-const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
+const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
   const [peopleKeyWord, setpeopleKeyWord] = useState('');
   const [invitePeopleSearchList, setinvitePeopleSearchList] = useState([]);
-  const dropdownListAction = (v :string) => {
-      console.log(v);
-  }
   useEffect(
-    ()=>{},[]
+    () => { }, []
   )
   const invite = async () => {
     const invitePeopleNameArray = peopleKeyWord.split(', ');
@@ -34,11 +31,11 @@ const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
       setinvitePeopleSearchList(res);
       alert(`invite ${peopleKeyWord} successfully`)
       setpeopleKeyWord('');
-    }else{
+    } else {
       console.log('search invite people failed @ InvitePeople.tsx line 31');
       alert(res.message);
     }
-  } 
+  }
   return (
     <ClickOutsideAnElementHandler onClickedOutside={() => close()}>
       <div className="border border-black border-solid invite-people bg-cream">
@@ -48,27 +45,40 @@ const InvitePeople = ({ close, projectName, projectID}: InvitePeopleProps) => {
         </div>
         <div className='flex mt-4'>
           <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
-          <div className='w-1/12'><Button disabled={peopleKeyWord===""} onClick={()=>invite()} className='justify-center w-full'>Invite</Button></div>
+          <div className='w-1/12'><Button disabled={peopleKeyWord === ""} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         <div className='flex justify-between pr-8 my-2'>
           <div className='text-sm font-ssp'>Ryan Smith(you)</div>
           <div className='text-sm font-ssp'>ryan.smith@gmail.com</div>
           <div className='px-3 text-sm font-ssp'>Owner</div>
         </div>
-        <div className='flex justify-between pr-8 my-2'>
-          <div className='flex text-sm font-ssp'><div className='my-auto'>Ryan Terry(you)</div></div>
-          <div className='flex text-sm font-ssp'><div className='my-auto'>ryan.terry@gmail.com</div></div>
-          <div className='flex text-sm font-ssp'><div className='my-auto'>User</div>
-            <DropdownListInput
-              listWrapperClassName='last-child-red'
-              onSelect={v => dropdownListAction(v)}
-              wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-              options={['Owner', 'User', 'Remove User']} />
-          </div>
-        </div>
+        <InvitePeopleUserRow name='Ryan Terry(you)' email='d915094594@qq.com' role='Admin' />
       </div>
     </ClickOutsideAnElementHandler>
   );
 };
 
 export default InvitePeople;
+
+
+type InvitePeopleUserRowProps = {
+       name: string;
+       email: string;
+       role: string;
+}
+const InvitePeopleUserRow = ({name, email, role}:InvitePeopleUserRowProps) => {
+  const dropdownListAction = (v: string) => {
+    console.log(v);
+  }
+  return <div className='flex justify-between pr-8 my-2'>
+    <div className='flex text-sm font-ssp'><div className='my-auto'>{name}</div></div>
+    <div className='flex text-sm font-ssp'><div className='my-auto'>{email}</div></div>
+    <div className='flex text-sm font-ssp'><div className='my-auto'>{role}</div>
+      <DropdownListInput
+        listWrapperClassName='last-child-red'
+        onSelect={v => dropdownListAction(v)}
+        wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
+        options={['Owner', 'User', 'Remove User']} />
+    </div>
+  </div>
+}

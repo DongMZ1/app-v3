@@ -157,15 +157,15 @@ const Home = () => {
         {state?.projects ?
           <>
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
-              <div className='w-3/12 pl-4'>Project name</div>
+              <div className='pl-4 width-30-percent'>Project name</div>
               <div className='width-10-percent'>Type</div>
               <div className='flex width-13-percent'>Last updated <TiArrowSortedUp onClick={()=>setorderByLastUpdated(true)} className='cursor-pointer' /></div>
               <div className='width-13-percent'>Last edited by</div>
               <div className='width-13-percent'>Created on</div>
               <div className='width-13-percent'>Created by</div>
-              <div className='width-13-percent'>Total Units</div>
+              <div className='width-8-percent'>Total Units</div>
             </div>
-            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each: any, key: number) => <EachProjectQuoteDesignRow
+            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).slice(0, rowCount).map((each: any, key: number) => <EachProjectQuoteDesignRow
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               name={each?.name}
               type={each?.type}
@@ -175,7 +175,7 @@ const Home = () => {
               lastEditby={each?.lastEditedBy}
               totalUnits={each?.totalUnits ? each.totalUnits : 0}
               projectID={each?.id}
-              showInvitePeople={() => setshowInvitePeople(true)} />).slice(0, rowCount)}
+              showInvitePeople={() => setshowInvitePeople(true)} />)}
           </> :
           <>
             <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
