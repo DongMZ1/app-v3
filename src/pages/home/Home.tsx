@@ -7,6 +7,7 @@ import { APP_ACCOUNTS_URL } from "../../Constant/url.constant";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
+import { ReactComponent as LogoutIcon} from '../../styles/images/logout.svg';
 import { TiArrowSortedUp } from 'react-icons/ti'
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
@@ -44,15 +45,25 @@ const Home = () => {
               payload: res.data
             }
           )
-        } else if(res?.message === 'User not authorized') {
-          window.location.assign(`${APP_ACCOUNTS_URL}/login`);
         } else {
           console.log('fetch project failed, please check Home.tsx at line 48')
         }
       }
     }
     fetchProject();
-  }, [])
+  }, []);
+
+  const logout = async () =>{
+       const res = await apiRequest(
+         {
+           url:'/account/user/logout',
+           method:'POST'
+         }
+       )
+       if(!res?.success){
+         console.log(res?.message)
+       }
+     }
 
   const chooseProjectQuoteDesignStart = (v: string) => {
     switch (v) {
@@ -123,6 +134,7 @@ const Home = () => {
         >
           Invite people
         </div>
+        <LogoutIcon onClick={()=>logout()} className='my-auto ml-6 cursor-pointer' />
       </div>
       <div className='pb-12 mx-8percent'>
         <div className="mt-8 bg-second">

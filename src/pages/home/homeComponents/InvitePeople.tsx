@@ -14,9 +14,23 @@ type InvitePeopleProps = {
 };
 const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
   const [peopleKeyWord, setpeopleKeyWord] = useState('');
-  const [invitePeopleSearchList, setinvitePeopleSearchList] = useState([]);
+  const [peopleList, setpeopleList] = useState<any[]>([]);
   useEffect(
-    () => { }, []
+    () => {
+      const fetchOrganizationUser = async () =>{
+         const res = await apiRequest({
+           url:'/api/fhapp-service/app-users',
+           method:'GET'
+         })
+         if(res?.success){
+
+         }
+         if(!res?.success){
+
+         }
+      }
+      fetchOrganizationUser();
+     }, []
   )
   const invite = async () => {
     const invitePeopleNameArray = peopleKeyWord.split(', ');
@@ -28,7 +42,6 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
       }
     })
     if (res?.success) {
-      setinvitePeopleSearchList(res);
       alert(`invite ${peopleKeyWord} successfully`)
       setpeopleKeyWord('');
     } else {

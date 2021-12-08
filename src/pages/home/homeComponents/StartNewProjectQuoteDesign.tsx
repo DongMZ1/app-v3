@@ -39,6 +39,10 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
     const capitalizeFirstLetter = (string: string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
       }
+
+    const submitForm = () => {
+        
+    }
     return (
         <div className='relative px-6 py-6 mt-10 bg-white border border-black border-solid start-new-project'>
             <GrFormClose onClick={() => close()} size={22} className='absolute top-0 right-0 mt-4 mr-4 cursor-pointer' />
@@ -78,7 +82,7 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
                         <TextInput className='mt-4' inputName='postal code' variant='box' placeholder='Postal Code' value={postalCode} onChange={e => setpostalCode((e.target as any).value)} />
                     </div>
                 </div></>}
-            <div className='flex mt-4'><Button disabled={!FormIsValid} className='justify-center w-full'>Create project</Button></div>
+            <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={()=>submitForm()} className='justify-center w-full'>Create project</Button></div>
         </div>);
 }
 
