@@ -1,33 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { APP_ACCOUNTS_URL } from './Constant/url.constant'
+import { useDispatch, useSelector } from "react-redux";
+import { Tappstate } from "./redux/reducers";
+import {checkUserLogined, getUserRole} from './Service/APIs'
 import apiRequest from "./Service/apiRequest";
 import { Home, Project } from "./pages";
 import "./styles/index.scss";
+import { userInfo } from "os";
+import { stat } from "fs";
 const App = () => {
   const dispatch = useDispatch();
+  const state = useSelector((state: Tappstate) => state)
+  //get role first
   useEffect(
     () => {
-      const checkUserLogined = async () => {
-        const res = await apiRequest({
-          url: '/account/user',
-          method: 'GET'
-        })
-        if (!res?.success) {
-          window.location.assign(`${APP_ACCOUNTS_URL}/login`)
-        } else {
-          dispatch(
-            {
-              type: "userInfo",
-              payload: res.data
-            }
-          )
-        }
-      }
-      checkUserLogined();
+        dispatch(checkUserLogined());
+        dispatch(getUserRole());
     }, []
   );
+  useEffect(
+    () => {
+      //if userInfo updated then check if this external user has a organization, if not then create one, have to wait for 5 second to let other data get fetched first
+      setTimeout(
+        () => {
+          createExternalUserOrganization();
+        }
+        , 5000)
+    }, [state.userInfo]
+  );
+
+  //check first time user login, does he have a organiztion, if so that skip, else create a organization
+  const createExternalUserOrganization = async () => {
+    let isOwner:boolean = false;
+    state?.userRole?.organizations.forEach((each: any) => {if(each?.role.includes('owner')){
+      isOwner = true;
+    }});
+    if (state?.userInfo?.type?.includes('external') && (!isOwner)) {
+      const res = await apiRequest({
+        url: '/api/fhapp-service/organization',
+        method: 'POST'
+      })
+      dispatch(getUserRole());
+    }
+  }
+
   return (
     <>
       <Switch>

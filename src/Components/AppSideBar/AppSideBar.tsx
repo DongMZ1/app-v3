@@ -13,7 +13,7 @@ const AppSideBar = () => {
             <div className='w-20 ml-4 text-sm-important dropdown-list-input-box-display-none'>
                 <DropdownListInput prefixIcon={<div className='flex'><div className='m-auto'>Group</div></div>} wrapperClassName='cursor-pointer' listWrapperClassName='width-52-important' options={['Custom Unit', 'Studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} />
             </div>
-            <div className='my-auto ml-4'>
+            <div className='my-auto ml-4 cursor-pointer' onClick={()=>setshowEntendSideBar(false)}>
                 <AiOutlineLeft size={22} />
             </div>
         </div>

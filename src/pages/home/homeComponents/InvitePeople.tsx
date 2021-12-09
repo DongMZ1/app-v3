@@ -78,7 +78,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
           <div className='w-1/12'><Button disabled={peopleKeyWord === ""} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         {peopleList.map(each =>
-          <InvitePeopleUserRow name={`${each.lastName} ${each.firstName}`} email={each.email} id={each._id} role='Admin' />
+          <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} id={each._id} role='Admin' />
         )}
       </div>
     </ClickOutsideAnElementHandler>
@@ -93,8 +93,9 @@ type InvitePeopleUserRowProps = {
   email: string;
   role: string;
   id: string;
+  projectID?: string;
 }
-const InvitePeopleUserRow = ({ name, email, role, id }: InvitePeopleUserRowProps) => {
+const InvitePeopleUserRow = ({ name, email, role, projectID, id }: InvitePeopleUserRowProps) => {
   const state = useSelector((state: Tappstate) => state);
   const dropdownListAction = (v: string) => {
     console.log(v);
@@ -103,7 +104,7 @@ const InvitePeopleUserRow = ({ name, email, role, id }: InvitePeopleUserRowProps
   return <div className='flex h-8 pr-8 my-2'>
     <div className='flex w-1/2 text-sm font-ssp'><div className='my-auto'>{name} {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ? <span className='font-semibold'>(You)</span> : ''}</div></div>
     <div className='flex w-4/12 text-sm font-ssp'><div className='my-auto'>{email}</div></div>
-    {state.userInfo.type.includes('internal')?<div className='my-auto ml-auto text-sm font-ssp'>Internal User</div> : <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
+    {(state.userInfo.type.includes('internal') && !projectID)?<div className='my-auto ml-auto text-sm font-ssp'>Internal User</div> : <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
       <div className='hide-dropdown-list'>
         <DropdownListInput
           listWrapperClassName='last-child-red'
