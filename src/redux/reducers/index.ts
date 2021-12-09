@@ -3,9 +3,11 @@ type TReduxReducer = Reducer;
 
 export type Tappstate = {
    projects: null | any[]
+   userInfo: any;
 }
 const initialState = {
-   projects: null
+   projects: null,
+   userInfo: null,
 }
 const ReduxReducer: TReduxReducer = (state: Tappstate = initialState, action: any) => {
 	return {

@@ -141,7 +141,7 @@ const Home = () => {
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
             {/*<Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>*/}
-            <div className='my-auto ml-auto'>
+            <div className='my-auto ml-auto hide-dropdown-list'>
               <DropdownListInput
                 onSelect={v => chooseProjectQuoteDesignStart(v)}
                 wrapperClassName='border-none cursor-pointer' labelClassName='hidden'

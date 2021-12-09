@@ -94,13 +94,15 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdBy}</div></Link>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{totalUnits}</div>
-            <DropdownListInput
-                listWrapperClassName='last-child-red'
-                onSelect={v => handleDropDown(v)}
-                wrapperClassName='border-none cursor-pointer my-auto w-40 last:text-error mr-4' labelClassName='hidden'
-                suffixIcon={<div>···</div>}
-                listWrapperFloatDirection='left' disabled={true}
-                options={optionList} />
+            <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
+                <DropdownListInput
+                    listWrapperClassName='last-child-red'
+                    onSelect={v => handleDropDown(v)}
+                    wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
+                    suffixIcon={<div>···</div>}
+                    listWrapperFloatDirection='left' disabled={true}
+                    options={optionList} />
+            </div>
         </div>
     </div>
         <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${type}`} subText={`Are you sure you want to permanently delete ${name} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => { }} />

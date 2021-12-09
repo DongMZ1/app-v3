@@ -52,15 +52,17 @@ const Project = () => {
                         if (e.code === 'Enter') {
                             setshowRenameProject(false);
                         }
-                    }} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} /> :
+                    }} className='w-40 px-2 my-auto mr-4 text-black' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} /> :
                         <div className='my-auto mr-4 text-lg'>PROJECT NAME</div>}
-                    <DropdownListInput
-                        listWrapperClassName='last-child-red'
-                        onSelect={v => projectMenuOnSelect(v)}
-                        wrapperClassName='border-none cursor-pointer my-auto last:text-error' labelClassName='hidden'
-                        suffixIcon={<div className='text-white'>···</div>}
-                        listWrapperFloatDirection='right' disabled={true}
-                        options={['Rename Project', 'Delete Project']} />
+                    <div className='hide-dropdown-list'>
+                        <DropdownListInput
+                            listWrapperClassName='last-child-red'
+                            onSelect={v => projectMenuOnSelect(v)}
+                            wrapperClassName='border-none cursor-pointer my-auto last:text-error' labelClassName='hidden'
+                            suffixIcon={<div className='text-white'>···</div>}
+                            listWrapperFloatDirection='right' disabled={true}
+                            options={['Rename Project', 'Delete Project']} />
+                    </div>
                 </div>
                 {(window.location.href.includes('/project/quote') || window.location.href.includes('/project/design')) &&
                     <div className='flex ml-auto'>

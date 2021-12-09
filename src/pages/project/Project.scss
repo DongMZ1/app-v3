@@ -2,23 +2,25 @@
 .project {
   height: 100vh;
   width: 100vw;
-  .dropdown-list-input-wrapper {
-    background-color: transparent !important;
-    border: none !important;
+  .main-content-wrapper {
+    height: calc(100% - 7rem);
   }
   .last-child-red > *:last-child {
     color: color.$red !important;
   }
-  .dropdown-list-input-options-wrapper {
-    width: max-content !important;
-  }
-  .dropdown-list-input-box-wrapper {
-    padding: 0 !important;
-  }
-  .dropdown-list-input-wrapper {
+  .hide-dropdown-list {
+    .dropdown-list-input-wrapper {
+      background-color: transparent !important;
+      border: none !important;
+    }
+    .dropdown-list-input-options-wrapper {
       width: max-content !important;
-  }
-  .main-content-wrapper {
-    height: calc(100% - 7rem);
+    }
+    .dropdown-list-input-box-wrapper {
+      padding: 0 !important;
+    }
+    .dropdown-list-input-wrapper {
+      width: max-content !important;
+    }
   }
 }
