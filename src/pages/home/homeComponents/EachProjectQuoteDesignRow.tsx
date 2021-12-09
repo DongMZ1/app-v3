@@ -20,6 +20,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     const history = useHistory();
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
+    const [renameProjectName, setrenameProjectName] = useState(name)
     let optionList = [''];
     let linkURL = '';
     if (type === 'design') {
@@ -68,7 +69,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
         <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
-                <input onKeyDown={e => {
+                <input value={renameProjectName} onChange={e => setrenameProjectName(e.target.value)} onKeyDown={e => {
                     if (e.code === 'Enter') {
                         setshowRenameProject(false);
                     }

@@ -1,10 +1,6 @@
 @use "@fulhaus/react.ui.colors/dist/scss" as color;
 .invite-people {
   padding: 1rem 2rem;
-  z-index: 10;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   position: fixed;
   width: 70vw;
   height: 60vh;

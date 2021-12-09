@@ -67,7 +67,6 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
     }
   }
   return (
-    <ClickOutsideAnElementHandler onClickedOutside={() => close()}>
       <div className="border border-black border-solid invite-people bg-cream">
         <div className='flex justify-between'>
           <div className='text-2xl font-moret'>INVITE PEOPLE {projectName && ` to ${projectName}`}</div>
@@ -81,7 +80,6 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
           <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} id={each._id} role='Admin' />
         )}
       </div>
-    </ClickOutsideAnElementHandler>
   );
 };
 

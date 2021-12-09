@@ -6,8 +6,6 @@ import {checkUserLogined, getUserRole} from './Service/APIs'
 import apiRequest from "./Service/apiRequest";
 import { Home, Project } from "./pages";
 import "./styles/index.scss";
-import { userInfo } from "os";
-import { stat } from "fs";
 const App = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: Tappstate) => state)
@@ -34,6 +32,7 @@ const App = () => {
     let isOwner:boolean = false;
     state?.userRole?.organizations.forEach((each: any) => {if(each?.role.includes('owner')){
       isOwner = true;
+      return;
     }});
     if (state?.userInfo?.type?.includes('external') && (!isOwner)) {
       const res = await apiRequest({
