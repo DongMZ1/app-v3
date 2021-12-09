@@ -7,6 +7,7 @@ import { APP_ACCOUNTS_URL } from "../../Constant/url.constant";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
+import { ReactComponent as LogoutIcon } from '../../styles/images/logout.svg';
 import { TiArrowSortedUp } from 'react-icons/ti'
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
@@ -44,15 +45,25 @@ const Home = () => {
               payload: res.data
             }
           )
-        } else if(res?.message === 'User not authorized') {
-          window.location.assign(`${APP_ACCOUNTS_URL}/login`);
         } else {
           console.log('fetch project failed, please check Home.tsx at line 48')
         }
       }
     }
     fetchProject();
-  }, [])
+  }, []);
+
+  const logout = async () => {
+    const res = await apiRequest(
+      {
+        url: '/account/user/logout',
+        method: 'POST'
+      }
+    )
+    if (!res?.success) {
+      console.log(res?.message)
+    }
+  }
 
   const chooseProjectQuoteDesignStart = (v: string) => {
     switch (v) {
@@ -105,14 +116,17 @@ const Home = () => {
       <RemoveThisSeason
         close={() => setshowConfirmRemoveThisSeason(false)}
       />}
-    {showInvitePeople &&
+    <Popup show={showInvitePeople} boxShadow={false} onClose={() => {
+      setSelectedProjectToInvite(undefined);
+      setshowInvitePeople(false);
+    }}>
       <InvitePeople
         projectName={SelectedProjectToInvite?.name}
         projectID={SelectedProjectToInvite?.id}
         close={() => {
           setSelectedProjectToInvite(undefined);
           setshowInvitePeople(false);
-        }} />}
+        }} /></Popup>
     <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={() => infiniteScroll()}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
@@ -123,13 +137,14 @@ const Home = () => {
         >
           Invite people
         </div>
+        <LogoutIcon onClick={() => logout()} className='my-auto ml-6 cursor-pointer' />
       </div>
       <div className='pb-12 mx-8percent'>
         <div className="mt-8 bg-second">
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
             {/*<Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>*/}
-            <div className='my-auto ml-auto'>
+            <div className='my-auto ml-auto hide-dropdown-list'>
               <DropdownListInput
                 onSelect={v => chooseProjectQuoteDesignStart(v)}
                 wrapperClassName='border-none cursor-pointer' labelClassName='hidden'
@@ -157,15 +172,15 @@ const Home = () => {
         {state?.projects ?
           <>
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
-              <div className='w-3/12 pl-4'>Project name</div>
+              <div className='pl-4 width-30-percent'>Project name</div>
               <div className='width-10-percent'>Type</div>
-              <div className='flex width-13-percent'>Last updated <TiArrowSortedUp onClick={()=>setorderByLastUpdated(true)} className='cursor-pointer' /></div>
+              <div className='flex width-13-percent'>Last updated <TiArrowSortedUp onClick={() => setorderByLastUpdated(true)} className='cursor-pointer' /></div>
               <div className='width-13-percent'>Last edited by</div>
               <div className='width-13-percent'>Created on</div>
               <div className='width-13-percent'>Created by</div>
-              <div className='width-13-percent'>Total Units</div>
+              <div className='width-8-percent'>Total Units</div>
             </div>
-            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).map((each: any, key: number) => <EachProjectQuoteDesignRow
+            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).slice(0, rowCount).map((each: any, key: number) => <EachProjectQuoteDesignRow
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               name={each?.name}
               type={each?.type}
@@ -175,7 +190,7 @@ const Home = () => {
               lastEditby={each?.lastEditedBy}
               totalUnits={each?.totalUnits ? each.totalUnits : 0}
               projectID={each?.id}
-              showInvitePeople={() => setshowInvitePeople(true)} />).slice(0, rowCount)}
+              showInvitePeople={() => setshowInvitePeople(true)} />)}
           </> :
           <>
             <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>
@@ -186,7 +201,7 @@ const Home = () => {
       </div>
     </div>
   </>
-  
+
   );
 };
 

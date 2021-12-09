@@ -26,18 +26,26 @@
   .width-10-percent {
     width: 10%;
   }
-  .dropdown-list-input-wrapper {
-    background-color: transparent !important;
-    border: none !important;
+  .width-8-percent {
+    width: 8%;
+  }
+  .width-30-percent {
+    width: 30%;
   }
   .last-child-red > *:last-child {
     color: color.$red !important;
   }
-  .dropdown-list-input-options-wrapper {
-    width: max-content !important;
-  }
-  .dropdown-list-input-box-wrapper {
-    padding: 0 !important;
+  .hide-dropdown-list {
+    .dropdown-list-input-wrapper {
+      background-color: transparent !important;
+      border: none !important;
+    }
+    .dropdown-list-input-options-wrapper {
+      width: max-content !important;
+    }
+    .dropdown-list-input-box-wrapper {
+      padding: 0 !important;
+    }
   }
   .fui-infinite-scroll {
     display: block !important;

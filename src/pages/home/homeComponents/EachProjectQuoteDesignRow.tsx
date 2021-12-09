@@ -20,6 +20,7 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     const history = useHistory();
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
+    const [renameProjectName, setrenameProjectName] = useState(name)
     let optionList = [''];
     let linkURL = '';
     if (type === 'design') {
@@ -65,10 +66,10 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         }
     }
 
-    return <> <div className='flex text-sm border border-black border-solid font-ssp'>
-        <div onClick={() => history.push(linkURL)} className='flex w-3/12 pl-4 cursor-pointer'>
+    return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
+        <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
-                <input onKeyDown={e => {
+                <input value={renameProjectName} onChange={e => setrenameProjectName(e.target.value)} onKeyDown={e => {
                     if (e.code === 'Enter') {
                         setshowRenameProject(false);
                     }
@@ -92,15 +93,17 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{lastEditby}</div></Link>
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdOn}</div></Link>
         <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdBy}</div></Link>
-        <div className='flex justify-between width-13-percent'>
+        <div className='flex width-8-percent'>
             <div className='my-auto'>{totalUnits}</div>
-            <DropdownListInput
-                listWrapperClassName='last-child-red'
-                onSelect={v => handleDropDown(v)}
-                wrapperClassName='border-none cursor-pointer w-40 last:text-error mr-4' labelClassName='hidden'
-                suffixIcon={<div>···</div>}
-                listWrapperFloatDirection='left' disabled={true}
-                options={optionList} />
+            <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
+                <DropdownListInput
+                    listWrapperClassName='last-child-red'
+                    onSelect={v => handleDropDown(v)}
+                    wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
+                    suffixIcon={<div>···</div>}
+                    listWrapperFloatDirection='left' disabled={true}
+                    options={optionList} />
+            </div>
         </div>
     </div>
         <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${type}`} subText={`Are you sure you want to permanently delete ${name} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => { }} />
