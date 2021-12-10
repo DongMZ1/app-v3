@@ -2,8 +2,8 @@ import "./Home.scss";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import apiRequest from '../../Service/apiRequest';
+import { fetchProject } from "../../Service/APIs";
 import { Tappstate } from "../../redux/reducers";
-import { APP_ACCOUNTS_URL } from "../../Constant/url.constant";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as HomePageEmptyCover } from "../../styles/images/home-page-empty-cover.svg";
@@ -32,25 +32,9 @@ const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchProject = async () => {
-      if (!state?.projects) {
-        const res = await apiRequest({
-          url: '/api/fhapp-service/projects',
-          method: 'GET',
-        })
-        if (res?.success) {
-          dispatch(
-            {
-              type: 'projects',
-              payload: res.data
-            }
-          )
-        } else {
-          console.log('fetch project failed, please check Home.tsx at line 48')
-        }
-      }
+    if(!state?.projects){
+      dispatch(fetchProject())
     }
-    fetchProject();
   }, []);
 
   const logout = async () => {

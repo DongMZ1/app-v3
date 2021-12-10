@@ -4,6 +4,7 @@ import { GrFormClose } from 'react-icons/gr'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Button } from '@fulhaus/react.ui.button'
+import apiRequest from '../../../Service/apiRequest'
 
 type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
@@ -38,10 +39,23 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
 
     const capitalizeFirstLetter = (string: string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
-      }
+    }
 
-    const submitForm = () => {
-        
+    const submitForm = async () => {
+        switch (type) {
+            case 'project':
+                const res = apiRequest(
+                    {
+                        url: 'api/fhapp-service/project/:organizationID',
+                        method: 'POST',
+                        body: {
+                           name: projectTitle,
+                           email: clientEmail,
+                           phoneNumber: phone,
+                        }
+                    }
+                )
+        }
     }
     return (
         <div className='relative px-6 py-6 mt-10 bg-white border border-black border-solid start-new-project'>
@@ -82,7 +96,7 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
                         <TextInput className='mt-4' inputName='postal code' variant='box' placeholder='Postal Code' value={postalCode} onChange={e => setpostalCode((e.target as any).value)} />
                     </div>
                 </div></>}
-            <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={()=>submitForm()} className='justify-center w-full'>Create project</Button></div>
+            <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={() => submitForm()} className='justify-center w-full'>Create project</Button></div>
         </div>);
 }
 

@@ -2,14 +2,14 @@ import { Reducer } from 'redux'
 type TReduxReducer = Reducer;
 
 export type Tappstate = {
-   projects: null | any[]
+   projects: undefined | any[]
    userInfo: any;
-   userRole: {organizations: any[], projects: any[]} | null;
+   userRole: {organizations: any[], projects: any[]} | undefined;
 }
 const initialState = {
-   projects: null,
-   userInfo: null,
-   userRole: null,
+   projects: undefined,
+   userInfo: undefined,
+   userRole: undefined,
 }
 const ReduxReducer: TReduxReducer = (state: Tappstate = initialState, action: any) => {
 	return {
