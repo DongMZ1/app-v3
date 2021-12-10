@@ -18,13 +18,10 @@ const App = () => {
   );
   useEffect(
     () => {
-      //if userInfo updated then check if this external user has a organization, if not then create one, have to wait for 5 second to let other data get fetched first
-      setTimeout(
-        () => {
-          createExternalUserOrganization();
-        }
-        , 5000)
-    }, [state.userInfo]
+      //if userInfo updated then check if this external user has a organization, if not then create one, have to wait until userInfo updated to call this function
+      setTimeout(() =>
+      createExternalUserOrganization(), 5000)
+    }, [state.userRole]
   );
 
   //check first time user login, does he have a organiztion, if so that skip, else create a organization
@@ -34,12 +31,17 @@ const App = () => {
       isOwner = true;
       return;
     }});
-    if (state?.userInfo?.type?.includes('external') && (!isOwner)) {
+    //if his userRole data is fetched and not a external user and not a owner for any organization
+    if (state?.userInfo?.type?.includes('external') && (!isOwner) && state.userRole) {
       const res = await apiRequest({
         url: '/api/fhapp-service/organization',
         method: 'POST'
       })
+      if(res?.success){
       dispatch(getUserRole());
+      }else{
+        console.log('create organization failed')
+      }
     }
   }
 
