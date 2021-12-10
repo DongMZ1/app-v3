@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Switch, Route, Redirect, withRouter } from "react-router-dom";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useEffect } from "react";
+import { Switch, Route, withRouter } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Tappstate } from "./redux/reducers";
-import {checkUserLogined, getUserRole} from './Service/APIs'
+import { checkUserLogined, getUserRole } from './Service/APIs'
 import apiRequest from "./Service/apiRequest";
 import { Home, Project } from "./pages";
+import MessageModal from "./Components/MessageModal/MessageModal";
 import "./styles/index.scss";
 const App = () => {
   const dispatch = useDispatch();
@@ -12,8 +13,8 @@ const App = () => {
   //get role first
   useEffect(
     () => {
-        dispatch(checkUserLogined());
-        dispatch(getUserRole());
+      dispatch(checkUserLogined());
+      dispatch(getUserRole());
     }, []
   );
   useEffect(
@@ -25,23 +26,34 @@ const App = () => {
 
   //check first time user login, does he have a organiztion, if so that skip, else create a organization
   const createExternalUserOrganization = async () => {
-    let isOwner:boolean = false;
-    userRole?.organizations.forEach((each: any) => {if(each?.role.includes('owner')){
-      isOwner = true;
-      return;
-    }});
+    let isOwner: boolean = false;
+    userRole?.organizations.forEach((each: any) => {
+      if (each?.role.includes('owner')) {
+        isOwner = true;
+        return;
+      }
+    });
     if (userRole && (!isOwner)) {
       const res = await apiRequest({
         url: '/api/fhapp-service/organization',
         method: 'POST'
       })
-      if(res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"){
-        alert("An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization");
+      if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
+        dispatch({
+          type: 'modalMessage',
+          payload: "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
+        })
+        dispatch(
+          {
+            type: 'showModal',
+            payload: true
+          }
+        )
         return;
       }
-      if(res?.success){
-      dispatch(getUserRole());
-      }else{
+      if (res?.success) {
+        dispatch(getUserRole());
+      } else {
         console.log(res?.message);
       }
     }
@@ -49,6 +61,7 @@ const App = () => {
 
   return (
     <>
+      <MessageModal />
       <Switch>
         <Route exact path={`/`} component={Home} />
         <Route exact path={`/project/quote`} component={Project} />

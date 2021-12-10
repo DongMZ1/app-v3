@@ -1,14 +1,14 @@
 import apiRequest from '../apiRequest'
-const fetchProject = () => async (dispatch: any) => {
+const fetchProject = (organizationID: string) => async (dispatch: any) => {
       const res = await apiRequest({
-        url: '/api/fhapp-service/projects',
+        url: `/api/fhapp-service/projects/${organizationID}`,
         method: 'GET',
       })
       if (res?.success) {
         dispatch(
           {
             type: 'projects',
-            payload: res.data
+            payload: res.projects
           }
         )
       } else {

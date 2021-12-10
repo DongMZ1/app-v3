@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./InvitePeople.scss";
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from "../../../redux/reducers";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { Button } from "@fulhaus/react.ui.button";
@@ -17,12 +17,13 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
   const [peopleList, setpeopleList] = useState<any[]>([]);
   const userRole = useSelector((state: Tappstate) => state).userRole;
   const userInfo = useSelector((state: Tappstate) => state).userInfo;
+  const dispatch = useDispatch();
+  const OrganizationID = useSelector((state: Tappstate) => state.currentOrgID);
   //external user organization ID
-  const ownerOrganizationID = userRole?.organizations.filter(each => each.role.includes("owner"))[0]?.organizationID;
   useEffect(
     () => {
-      if (!projectName && userInfo?.type.includes('external')) {
-        externalUserFetchOrganizationUser();
+      if (!projectName) {
+        FetchOrganizationUser();
       }
     }, []
   )
@@ -49,22 +50,21 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
         method: 'POST',
         body: {
           emails: invitePeopleNameArray,
-          organizationID: ownerOrganizationID
+          organizationID: OrganizationID
         }
       });
       if (res?.success) {
         alert(`invite ${peopleKeyWord} successfully`)
         setpeopleKeyWord('');
       } else {
-        console.log('search invite people failed @ InvitePeople.tsx line 31');
         alert(res.message);
       }
     }
   }
 
-  const externalUserFetchOrganizationUser = async () => {
+  const FetchOrganizationUser = async () => {
     const res = await apiRequest({
-      url: `/api/fhapp-service/organization/${ownerOrganizationID}/users`,
+      url: `/api/fhapp-service/organization/${OrganizationID}/users`,
       method: 'GET'
     })
     if (res?.success) {
@@ -110,14 +110,21 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, id }: InvitePeopleU
   return <div className='flex h-8 pr-8 my-2'>
     <div className='flex w-1/2 text-sm font-ssp'><div className='my-auto'>{name} {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ? <span className='font-semibold'>(You)</span> : ''}</div></div>
     <div className='flex w-4/12 text-sm font-ssp'><div className='my-auto'>{email}</div></div>
-    {(state.userInfo.type.includes('internal') && !projectID) ? <div className='my-auto ml-auto text-sm font-ssp'>Internal User</div> : <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
-      <div className='hide-dropdown-list'>
-        <DropdownListInput
-          listWrapperClassName='last-child-red'
-          onSelect={v => dropdownListAction(v)}
-          wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-          options={['Owner', 'User', 'Remove User']} />
-      </div>
-    </div>}
+    {(state.userInfo.type.includes('internal') && !projectID) ?
+      <div className='my-auto ml-auto text-sm font-ssp'>Internal User</div>
+      :
+      <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
+        <div className='hide-dropdown-list'>
+          {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
+            ''
+            :
+            <DropdownListInput
+              listWrapperClassName='last-child-red'
+              onSelect={v => dropdownListAction(v)}
+              wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
+              options={['Owner', 'User', 'Remove User']} />
+          }
+        </div>
+      </div>}
   </div>
 }

@@ -17,6 +17,7 @@ import EachProjectQuoteDesignRow from './homeComponents/EachProjectQuoteDesignRo
 import InvitePeople from "./homeComponents/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDesign"
+import OrganizationSelection from './homeComponents/OrganizationSelection'
 const Home = () => {
   const [StartNewProjectQuoteDesignType, setStartNewProjectQuoteDesignType] = useState<'design' | 'quote' | 'project'>('project')
   const [showStartNewProjectQuotoDesign, setshowStartNewProjectQuotoDesign] = useState(false);
@@ -30,12 +31,6 @@ const Home = () => {
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
   const state = useSelector((state: Tappstate) => state);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if(!state?.projects){
-      dispatch(fetchProject())
-    }
-  }, []);
 
   const logout = async () => {
     const res = await apiRequest(
@@ -114,7 +109,8 @@ const Home = () => {
     <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={() => infiniteScroll()}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
-        <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto ml-auto mr-4 cursor-pointer" />
+        <OrganizationSelection />
+        <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
         <div
           onClick={() => setshowInvitePeople(true)}
           className="my-auto text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp"
@@ -164,16 +160,16 @@ const Home = () => {
               <div className='width-13-percent'>Created by</div>
               <div className='width-8-percent'>Total Units</div>
             </div>
-            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.name as string).toLowerCase().includes(searchkeyWord)).slice(0, rowCount).map((each: any, key: number) => <EachProjectQuoteDesignRow
+            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.title as string).toLowerCase().includes(searchkeyWord)).slice(0, rowCount).map((each: any, key: number) => <EachProjectQuoteDesignRow
               setSelectedProjectToInvite={setSelectedProjectToInvite}
-              name={each?.name}
-              type={each?.type}
-              lastUpdated={each?.updatedAt}
+              name={each?.title}
+              type={each?.type ? each.type : 'project'}
+              lastUpdated={each?.updatedAt? each.updatedAt : 'Unknown'}
               createdOn={each?.createdAt}
               createdBy={each?.createdBy}
               lastEditby={each?.lastEditedBy}
               totalUnits={each?.totalUnits ? each.totalUnits : 0}
-              projectID={each?.id}
+              projectID={each?._id}
               showInvitePeople={() => setshowInvitePeople(true)} />)}
           </> :
           <>
