@@ -1,4 +1,4 @@
-import apiRequest from '../apiRequest'
+import apiRequest from '../../Service/apiRequest'
 import {APP_ACCOUNTS_URL } from '../../Constant/url.constant'
 const checkUserLogined = () => async (dispatch: any) => {
     const res = await apiRequest({

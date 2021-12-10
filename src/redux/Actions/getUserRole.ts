@@ -1,4 +1,4 @@
-import apiRequest from '../apiRequest'
+import apiRequest from '../../Service/apiRequest'
 const getUserRole = () => async (dispatch: any) => {
     const res = await apiRequest(
       {

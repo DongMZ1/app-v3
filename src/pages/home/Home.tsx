@@ -2,7 +2,7 @@ import "./Home.scss";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import apiRequest from '../../Service/apiRequest';
-import { fetchProject } from "../../Service/APIs";
+import { fetchProject } from "../../redux/Actions";
 import { Tappstate } from "../../redux/reducers";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";

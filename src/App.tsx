@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Switch, Route, withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Tappstate } from "./redux/reducers";
-import { checkUserLogined, getUserRole } from './Service/APIs'
+import { checkUserLogined, getUserRole, showMessageAction } from './redux/Actions'
 import apiRequest from "./Service/apiRequest";
 import { Home, Project } from "./pages";
 import MessageModal from "./Components/MessageModal/MessageModal";
@@ -39,15 +39,11 @@ const App = () => {
         method: 'POST'
       })
       if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
-        dispatch({
-          type: 'modalMessage',
-          payload: "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
-        })
         dispatch(
-          {
-            type: 'showModal',
-            payload: true
-          }
+          showMessageAction(
+            true,
+            "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
+          )
         )
         return;
       }

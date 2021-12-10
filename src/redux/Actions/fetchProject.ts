@@ -1,4 +1,4 @@
-import apiRequest from '../apiRequest'
+import apiRequest from '../../Service/apiRequest'
 const fetchProject = (organizationID: string) => async (dispatch: any) => {
       const res = await apiRequest({
         url: `/api/fhapp-service/projects/${organizationID}`,
