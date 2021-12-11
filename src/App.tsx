@@ -33,13 +33,14 @@ const App = () => {
         return;
       }
     });
+    let hasFulhausOrganization = userRole?.organizations.some(each => each.organization.name === 'Fulhaus');
     if (userRole && (!isOwner)) {
       const res = await apiRequest({
         url: '/api/fhapp-service/organization',
         method: 'POST'
       })
-      //also need to check if this person is already inside the organization
-      if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
+      //also need to check if this person is already a internal user and currently have no fulhaus organization
+      if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization" && (!hasFulhausOrganization)) {
         dispatch(
           showMessageAction(
             true,
