@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./InvitePeople.scss";
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
 import { useSelector, useDispatch } from 'react-redux';
+import { showMessageAction } from "../../../redux/Actions";
 import { Tappstate } from "../../../redux/reducers";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { Button } from "@fulhaus/react.ui.button";
@@ -54,10 +55,10 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
         }
       });
       if (res?.success) {
-        alert(`invite ${peopleKeyWord} successfully`)
+        dispatch(showMessageAction(true, `invite ${peopleKeyWord} successfully`))
         setpeopleKeyWord('');
       } else {
-        alert(res.message);
+        dispatch(showMessageAction(true, res?.message))
       }
     }
   }

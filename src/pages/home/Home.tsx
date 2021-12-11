@@ -95,7 +95,7 @@ const Home = () => {
       <RemoveThisSeason
         close={() => setshowConfirmRemoveThisSeason(false)}
       />}
-    <Popup show={showInvitePeople} boxShadow={false} onClose={() => {
+    <Popup show={showInvitePeople} allowCloseOnClickOutside={false} boxShadow={false} onClose={() => {
       setSelectedProjectToInvite(undefined);
       setshowInvitePeople(false);
     }}>
