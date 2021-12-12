@@ -21,7 +21,7 @@ const OrganizationSelection = () =>{
         dispatch({type:'currentOrgID', payload: organizationID});
     }
      return <div className="w-48 my-auto ml-auto mr-4">
-     <DropdownListInput placeholder='Select A Organization' initialValue={organizations? organizations[0].organization.name : undefined} onSelect={v => oncurrentOrgIDChange(v)} options={options? options : []} />
+     <DropdownListInput placeholder='Select A Organization' initialValue={(organizations && organizations?.length > 0) ? organizations[0].organization.name : undefined} onSelect={v => oncurrentOrgIDChange(v)} options={options? options : []} />
      </div>
 }
 

@@ -61,7 +61,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
         dispatch(showMessageAction(true, res?.message))
       }
     }
-    if(projectID){
+    if (projectID) {
       const res = await apiRequest({
         url: "/api/fhapp-service/organization/invite/users",
         method: 'POST',
@@ -128,21 +128,25 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, id }: InvitePeopleU
   return <div className='flex h-8 pr-8 my-2'>
     <div className='flex w-1/2 text-sm font-ssp'><div className='my-auto'>{name} {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ? <span className='font-semibold'>(You)</span> : ''}</div></div>
     <div className='flex w-4/12 text-sm font-ssp'><div className='my-auto'>{email}</div></div>
-    {(state.userInfo.type.includes('internal') && !projectID) ?
+    {(state.userInfo.type.includes('internal') && !projectID) &&
       <div className='my-auto ml-auto text-sm font-ssp'>Internal User</div>
-      :
-      <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
-        <div className='hide-dropdown-list'>
-          {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
-            ''
-            :
-            <DropdownListInput
-              listWrapperClassName='last-child-red'
-              onSelect={v => dropdownListAction(v)}
-              wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-              options={['Owner', 'User', 'Remove User']} />
-          }
+    }
+    {(state.userInfo.type.includes('external')) &&
+      <>
+        <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
+          <div className='hide-dropdown-list'>
+            {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
+              ''
+              :
+              <DropdownListInput
+                listWrapperClassName='last-child-red'
+                onSelect={v => dropdownListAction(v)}
+                wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
+                options={['Owner', 'User', 'Remove User']} />
+            }
+          </div>
         </div>
-      </div>}
+      </>
+    }
   </div>
 }
