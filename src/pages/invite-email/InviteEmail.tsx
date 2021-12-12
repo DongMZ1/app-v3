@@ -1,6 +1,6 @@
 const InviteEmail = () =>{
     return <div>
-
+         
     </div>
 }
 

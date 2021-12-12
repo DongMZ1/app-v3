@@ -45,7 +45,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
   const invite = async () => {
     const invitePeopleNameArray = peopleKeyWord.split(', ');
     //if this person is external user, then invite to this personal organization(organization's role is owner)
-    if (!projectName) {
+    if (!projectID) {
       const res = await apiRequest({
         url: "/api/fhapp-service/organization/invite/users",
         method: 'POST',
@@ -56,6 +56,23 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
       });
       if (res?.success) {
         dispatch(showMessageAction(true, `invite ${peopleKeyWord} successfully`))
+        setpeopleKeyWord('');
+      } else {
+        dispatch(showMessageAction(true, res?.message))
+      }
+    }
+    if(projectID){
+      const res = await apiRequest({
+        url: "/api/fhapp-service/organization/invite/users",
+        method: 'POST',
+        body: {
+          emails: invitePeopleNameArray,
+          organizationID: OrganizationID,
+          projectID: projectID
+        }
+      });
+      if (res?.success) {
+        dispatch(showMessageAction(true, `invite ${peopleKeyWord} to ${projectName} successfully`))
         setpeopleKeyWord('');
       } else {
         dispatch(showMessageAction(true, res?.message))
