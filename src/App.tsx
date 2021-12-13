@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Tappstate } from "./redux/reducers";
 import { checkUserLogined, getUserRole, showMessageAction } from './redux/Actions'
 import apiRequest from "./Service/apiRequest";
-import { Home, Project } from "./pages";
+import { Home, Project, VerifyEmail } from "./pages";
 import MessageModal from "./Components/MessageModal/MessageModal";
 import "./styles/index.scss";
 const App = () => {
@@ -19,7 +19,6 @@ const App = () => {
   );
   useEffect(
     () => {
-      //if userInfo updated then check if this external user has a organization, if not then create one, have to wait until userInfo updated to call this function
       createExternalUserOrganization()
     }, [userRole]
   );
@@ -34,19 +33,19 @@ const App = () => {
       }
     });
     let hasFulhausOrganization = userRole?.organizations.some(each => each.organization.name === 'Fulhaus');
-    if (userRole && (!isOwner)) {
+    //first check if userRole is fetched, if has fulhaus organization, then this person must have already login as a internal user, as external user cannot be invited to fulhaus organizaton, therefore we do not need to create a organization
+    if (userRole && (!isOwner) &&(!hasFulhausOrganization)) {
       const res = await apiRequest({
         url: '/api/fhapp-service/organization',
         method: 'POST'
       })
-      //also need to check if this person is already a internal user and currently have no fulhaus organization
-      if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization" && (!hasFulhausOrganization)) {
-        dispatch(
-          showMessageAction(
-            true,
-            "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
+      if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
+          dispatch(
+            showMessageAction(
+              true,
+              "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
+            )
           )
-        )
         return;
       }
       if (res?.success) {
@@ -66,6 +65,7 @@ const App = () => {
         <Route exact path={`/project/design`} component={Project} />
         <Route exact path={`/quote-only`} component={Project} />
         <Route exact path={`/design-only`} component={Project} />
+        <Route exact path={`/verify-email`} component={VerifyEmail} />
       </Switch>
     </>
   )

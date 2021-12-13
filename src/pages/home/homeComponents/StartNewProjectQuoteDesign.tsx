@@ -3,8 +3,11 @@ import './StartNewProjectQuoteDesign.scss'
 import { GrFormClose } from 'react-icons/gr'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '@fulhaus/react.ui.button'
 import apiRequest from '../../../Service/apiRequest'
+import { Tappstate } from '../../../redux/reducers'
+import {fetchProject, showMessageAction} from '../../../redux/Actions'
 
 type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
@@ -25,10 +28,14 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
     const [province, setprovince] = useState('');
     const [city, setcity] = useState('');
     const [postalCode, setpostalCode] = useState('');
-
+    const [country, setcountry] = useState('');
+    
+    const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
+    const dispatch = useDispatch();
+    
     let FormIsValid = false;
     if (type === 'project') {
-        FormIsValid = !!(projectTitle && budget && clientName && clientEmail && streetName && postalCode && province && city && currency);
+        FormIsValid = !!(projectTitle && budget && clientName && clientEmail && streetName && postalCode && province && city && currency && country);
     }
     if (type === 'design') {
         FormIsValid = !!projectTitle;
@@ -44,21 +51,43 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
     const submitForm = async () => {
         switch (type) {
             case 'project':
-                const res = apiRequest(
+                const res = await apiRequest(
                     {
-                        url: 'api/fhapp-service/project/:organizationID',
+                        url: `/api/fhapp-service/project/${organizationID}`,
                         method: 'POST',
                         body: {
-                           name: projectTitle,
-                           email: clientEmail,
-                           phoneNumber: phone,
+                            title: projectTitle,
+                            currency: currency,
+                            budget: parseInt(budget),
+                            clientInformation: {
+                                name: clientName,
+                                email: clientEmail,
+                                phoneNumber: phone,
+                                organization: organisation
+                            },
+                            projectAddress: {
+                                street: streetName,
+                                apt: unit,
+                                city: city,
+                                state: province,
+                                postalCode: postalCode,
+                                country: country
+                            }
                         }
                     }
                 )
+                if(res?.success){
+                    //fetch projects as projects is updated
+                    dispatch(fetchProject(organizationID? organizationID:''));
+                    close();
+                }
+                if(!res?.success){
+                    dispatch(showMessageAction(true, res.message));
+                }
         }
     }
     return (
-        <div className='relative px-6 py-6 mt-10 bg-white border border-black border-solid start-new-project'>
+        <div className='relative px-6 py-4 mt-1 bg-white border border-black border-solid start-new-project'>
             <GrFormClose onClick={() => close()} size={22} className='absolute top-0 right-0 mt-4 mr-4 cursor-pointer' />
             <div className='flex'>
                 <div className='mx-auto text-4xl font-moret'>
@@ -71,7 +100,7 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
             {type === 'project' && <>
                 <div className='flex mt-4'>
                     <div className='w-1/2 mr-2'><DropdownListInput placeholder='Currency' onSelect={v => setcurrency(v)} options={['USD', 'CAD', 'EUR']} /></div>
-                    <div className='w-1/2 ml-2'><TextInput variant='box' placeholder='Budget' inputName='budget' value={budget} onChange={e => setbudget((e.target as any).value)} /></div>
+                    <div className='w-1/2 ml-2'><TextInput variant='box' type='number' placeholder='Budget' inputName='budget' value={budget} onChange={e => setbudget((e.target as any).value)} /></div>
                 </div>
                 <div className='mt-3 text-xl font-semibold font-ssp'>Client Information</div>
                 <TextInput className='mt-4' inputName='client name' variant='box' placeholder='Client Name' value={clientName} onChange={e => setclientName((e.target as any).value)} />
@@ -95,7 +124,13 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
                     <div className='w-1/2 ml-2'>
                         <TextInput className='mt-4' inputName='postal code' variant='box' placeholder='Postal Code' value={postalCode} onChange={e => setpostalCode((e.target as any).value)} />
                     </div>
-                </div></>}
+                </div>
+                <div className='flex'>
+                    <div className='w-1/2 pr-2'>
+                        <TextInput className='mt-4' inputName='country' variant='box' placeholder='Country' value={country} onChange={e => setcountry((e.target as any).value)} />
+                    </div>
+                </div>
+            </>}
             <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={() => submitForm()} className='justify-center w-full'>Create project</Button></div>
         </div>);
 }

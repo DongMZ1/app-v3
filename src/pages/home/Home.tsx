@@ -86,6 +86,7 @@ const Home = () => {
       }}
       boxShadow={false}
       verticalAlignment='start'
+      allowCloseOnClickOutside={false}
       show={showStartNewProjectQuotoDesign}><StartNewProjectQuotoDesign
         type={StartNewProjectQuoteDesignType}
         close={() => setshowStartNewProjectQuotoDesign(false)}
@@ -149,7 +150,7 @@ const Home = () => {
           <Button active>Add Projects</Button>
         </div>
         */}
-        {state?.projects ?
+        {(state?.projects && state?.projects.length > 0) ?
           <>
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
               <div className='pl-4 width-30-percent'>Project name</div>

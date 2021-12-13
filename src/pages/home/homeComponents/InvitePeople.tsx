@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./InvitePeople.scss";
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
+import {ImCross} from 'react-icons/im'
 import { useSelector, useDispatch } from 'react-redux';
 import { showMessageAction } from "../../../redux/Actions";
 import { Tappstate } from "../../../redux/reducers";
@@ -25,17 +26,6 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
     () => {
       if (!projectName) {
         FetchOrganizationUser();
-      }
-    }, []
-  )
-
-  useEffect(
-    () => {
-      const fetchSpecificProjectUser = async () => {
-        const res = await apiRequest({
-          url: `/api/fhapp-service/organization/project/${projectID}/users`,
-          method: 'GET'
-        });
       }
       if (projectName) {
         fetchSpecificProjectUser();
@@ -89,14 +79,28 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
       setpeopleList(res?.userProfiles?.data);
     }
     if (!res?.success) {
-      console.log('fetch external user organization users failed')
+      console.log('fetch organization users failed')
+    }
+  }
+
+  const fetchSpecificProjectUser = async () => {
+    const res = await apiRequest({
+      url: `/api/fhapp-service/organization/${OrganizationID}/project/${projectID}/users`,
+      method: 'GET'
+    });
+    if (res?.success) {
+      setpeopleList(res?.userProfiles?.data);
+    }
+    if (!res?.success) {
+      console.log('fetch organization users for specific project failed')
     }
   }
   return (
+    <div>
+      <div className="flex pb-4"><ImCross color="white" onClick={() => close()} className='ml-auto mr-4 cursor-pointer' role='button' /></div>
     <div className="border border-black border-solid invite-people bg-cream">
       <div className='flex justify-between'>
         <div className='text-2xl font-moret'>INVITE PEOPLE {projectName && ` to ${projectName}`}</div>
-        <ExitIcon onClick={() => close()} className='my-auto cursor-pointer' role='button' />
       </div>
       <div className='flex mt-4'>
         <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
@@ -105,6 +109,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
       {peopleList.map(each =>
         <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} id={each._id} role='Admin' />
       )}
+    </div>
     </div>
   );
 };
