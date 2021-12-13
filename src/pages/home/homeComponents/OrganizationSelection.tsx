@@ -10,15 +10,21 @@ const OrganizationSelection = () =>{
     useEffect(() => {
         if(organizations){
         const firstOrganizationID = organizations[0]?.organization?._id;
+        const firstOrganizationRole = organizations[0]?.role[0];
         dispatch(fetchProject(firstOrganizationID));
         dispatch({type:'currentOrgID', payload: firstOrganizationID});
+        dispatch(
+            {type:'currentOrgRole', payload: firstOrganizationRole}
+        )
         }
     }, [organizations])
     
     const oncurrentOrgIDChange = (v: string) => {
         const organizationID = organizations?.filter(each => each.organization.name === v)[0]?.organization?._id;
+        const organizationRole = organizations?.filter(each => each.organization.name === v)[0]?.role[0];
         dispatch(fetchProject(organizationID));
         dispatch({type:'currentOrgID', payload: organizationID});
+        dispatch({type:'currentOrgRole', payload: organizationRole})
     }
      return <div className="w-48 my-auto ml-auto mr-4">
      <DropdownListInput placeholder='Select A Organization' initialValue={(organizations && organizations?.length > 0) ? organizations[0].organization.name : undefined} onSelect={v => oncurrentOrgIDChange(v)} options={options? options : []} />

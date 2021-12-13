@@ -31,7 +31,6 @@ const Home = () => {
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
   const state = useSelector((state: Tappstate) => state);
   const dispatch = useDispatch();
-
   const logout = async () => {
     const res = await apiRequest(
       {
@@ -125,14 +124,16 @@ const Home = () => {
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
             {/*<Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>*/}
-            <div className='my-auto ml-auto hide-dropdown-list'>
-              <DropdownListInput
-                onSelect={v => chooseProjectQuoteDesignStart(v)}
-                wrapperClassName='border-none cursor-pointer' labelClassName='hidden'
-                suffixIcon={<div className='flex px-2 py-2 text-sm font-semibold text-white bg-black font-ssp'><div className='my-auto'>Start a new project</div></div>}
-                listWrapperFloatDirection='left' disabled={true}
-                options={['Project', 'Quote Only', 'Design Only']} />
-            </div>
+            {state.currentOrgRole !== ('viewer' || 'editor') &&
+              <div className='my-auto ml-auto hide-dropdown-list'>
+                <DropdownListInput
+                  onSelect={v => chooseProjectQuoteDesignStart(v)}
+                  wrapperClassName='border-none cursor-pointer' labelClassName='hidden'
+                  suffixIcon={<div className='flex px-2 py-2 text-sm font-semibold text-white bg-black font-ssp'><div className='my-auto'>Start a new project</div></div>}
+                  listWrapperFloatDirection='left' disabled={true}
+                  options={['Project', 'Quote Only', 'Design Only']} />
+              </div>
+            }
           </div>
         </div>
         <TextInput
@@ -165,7 +166,7 @@ const Home = () => {
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               name={each?.title}
               type={each?.type ? each.type : 'project'}
-              lastUpdated={each?.updatedAt? each.updatedAt : 'Unknown'}
+              lastUpdated={each?.updatedAt ? each.updatedAt : 'Unknown'}
               createdOn={each?.createdAt}
               createdBy={each?.createdBy}
               lastEditby={each?.lastEditedBy}

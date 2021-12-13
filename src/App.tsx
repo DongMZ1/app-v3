@@ -13,7 +13,7 @@ const App = () => {
   //get role first
   useEffect(
     () => {
-      dispatch(checkUserLogined());
+      dispatch(checkUserLogined(window.location.href));
       dispatch(getUserRole());
     }, []
   );
@@ -65,7 +65,7 @@ const App = () => {
         <Route exact path={`/project/design`} component={Project} />
         <Route exact path={`/quote-only`} component={Project} />
         <Route exact path={`/design-only`} component={Project} />
-        <Route exact path={`/verify-email`} component={VerifyEmail} />
+        <Route exact path={`/verify-invite`} component={VerifyEmail} />
       </Switch>
     </>
   )
