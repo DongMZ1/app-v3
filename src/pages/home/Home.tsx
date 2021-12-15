@@ -1,8 +1,7 @@
 import "./Home.scss";
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState } from "react";
+import { useSelector } from 'react-redux'
 import apiRequest from '../../Service/apiRequest';
-import { fetchProject } from "../../redux/Actions";
 import { Tappstate } from "../../redux/reducers";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
@@ -24,7 +23,7 @@ const Home = () => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
   const [showInvitePeople, setshowInvitePeople] = useState(false);
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
-  const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string, userRole: string | undefined}>();
+  const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string, userRole: string | undefined }>();
   //index show number of rows on homepage displayed
   const [rowCount, setrowCount] = useState(20);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
@@ -38,13 +37,13 @@ const Home = () => {
     phone?: string,
     organisation?: string,
     streetName?: string,
-    province?:string,
+    province?: string,
     city?: string,
-    postalCode?:string,
-    country?:string,
+    postalCode?: string,
+    country?: string,
+    unit?: string,
   }>()
   const state = useSelector((state: Tappstate) => state);
-  const dispatch = useDispatch();
   const logout = async () => {
     const res = await apiRequest(
       {
@@ -96,13 +95,18 @@ const Home = () => {
     {<Popup
       onClose={() => {
         setshowStartNewProjectQuotoDesign(false);
+        setProjectQuoteDesignInfoNeedDuplicate(undefined);
       }}
       boxShadow={false}
       verticalAlignment='start'
       allowCloseOnClickOutside={false}
-      show={showStartNewProjectQuotoDesign}><StartNewProjectQuotoDesign
+      show={showStartNewProjectQuotoDesign}>
+      <StartNewProjectQuotoDesign
         type={StartNewProjectQuoteDesignType}
-        close={() => setshowStartNewProjectQuotoDesign(false)}
+        close={() => {
+          setshowStartNewProjectQuotoDesign(false)
+          setProjectQuoteDesignInfoNeedDuplicate(undefined);
+        }}
       />
     </Popup>}
     {showConfirmRemoveThisSeason &&
@@ -125,13 +129,13 @@ const Home = () => {
         <FulhausIcon />
         <OrganizationSelection />
         {state.currentOrgRole !== ('viewer' || 'editor') && state.currentOrgRole && <>
-        <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
-        <div
-          onClick={() => setshowInvitePeople(true)}
-          className="my-auto text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp"
-        >
-          Invite people
-        </div>
+          <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
+          <div
+            onClick={() => setshowInvitePeople(true)}
+            className="my-auto text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp"
+          >
+            Invite people
+          </div>
         </>}
         <LogoutIcon onClick={() => logout()} className='my-auto ml-6 cursor-pointer' />
       </div>
@@ -179,17 +183,11 @@ const Home = () => {
               <div className='width-8-percent'>Total Units</div>
             </div>
             {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.title as string).toLowerCase().includes(searchkeyWord)).slice(0, rowCount).map((each: any, key: number) => <EachProjectQuoteDesignRow
+              thisProject={each}
               setSelectedProjectToInvite={setSelectedProjectToInvite}
-              name={each?.title}
-              type={each?.type ? each.type : 'project'}
-              lastUpdated={each?.updatedAt ? each.updatedAt : 'Unknown'}
-              createdOn={each?.createdAt}
-              createdBy={each?.createdBy}
-              lastEditby={each?.lastEditedBy}
-              totalUnits={each?.totalUnits ? each.totalUnits : 0}
-              projectID={each?._id}
               setStartNewProjectQuoteDesignType={setStartNewProjectQuoteDesignType}
               setshowStartNewProjectQuotoDesign={setshowStartNewProjectQuotoDesign}
+              setProjectQuoteDesignInfoNeedDuplicate={setProjectQuoteDesignInfoNeedDuplicate}
               showInvitePeople={() => setshowInvitePeople(true)} />)}
           </> :
           <>
