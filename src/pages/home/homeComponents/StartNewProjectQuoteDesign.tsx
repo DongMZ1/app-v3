@@ -29,21 +29,21 @@ type StartNewProjectProps = {
     }
 }
 const StartNewProject = ({ type, close, ProjectQuoteDesignInfoNeedDuplicate }: StartNewProjectProps) => {
-    const [projectTitle, setprojectTitle] = useState('');
-    const [currency, setcurrency] = useState('');
-    const [budget, setbudget] = useState('');
+    const [projectTitle, setprojectTitle] = useState(ProjectQuoteDesignInfoNeedDuplicate?.projectTitle ? ProjectQuoteDesignInfoNeedDuplicate?.projectTitle : '');
+    const [currency, setcurrency] = useState(ProjectQuoteDesignInfoNeedDuplicate?.currency? ProjectQuoteDesignInfoNeedDuplicate.currency :'');
+    const [budget, setbudget] = useState(ProjectQuoteDesignInfoNeedDuplicate?.budget? ProjectQuoteDesignInfoNeedDuplicate.budget: '');
 
-    const [clientName, setclientName] = useState('');
-    const [clientEmail, setclientEmail] = useState('');
-    const [phone, setphone] = useState('');
-    const [organisation, setorganisation] = useState('');
+    const [clientName, setclientName] = useState(ProjectQuoteDesignInfoNeedDuplicate?.clientName? ProjectQuoteDesignInfoNeedDuplicate.clientName:'');
+    const [clientEmail, setclientEmail] = useState(ProjectQuoteDesignInfoNeedDuplicate?.clientName? ProjectQuoteDesignInfoNeedDuplicate?.clientEmail : '');
+    const [phone, setphone] = useState(ProjectQuoteDesignInfoNeedDuplicate?.phone? ProjectQuoteDesignInfoNeedDuplicate.phone:'');
+    const [organisation, setorganisation] = useState(ProjectQuoteDesignInfoNeedDuplicate?.organisation? ProjectQuoteDesignInfoNeedDuplicate.organisation : '');
 
-    const [streetName, setstreetName] = useState('');
-    const [unit, setunit] = useState('');
-    const [province, setprovince] = useState('');
-    const [city, setcity] = useState('');
-    const [postalCode, setpostalCode] = useState('');
-    const [country, setcountry] = useState('');
+    const [streetName, setstreetName] = useState(ProjectQuoteDesignInfoNeedDuplicate?.streetName? ProjectQuoteDesignInfoNeedDuplicate.streetName : '');
+    const [unit, setunit] = useState(ProjectQuoteDesignInfoNeedDuplicate?.unit? ProjectQuoteDesignInfoNeedDuplicate.unit : '');
+    const [province, setprovince] = useState(ProjectQuoteDesignInfoNeedDuplicate?.province? ProjectQuoteDesignInfoNeedDuplicate.province : '');
+    const [city, setcity] = useState(ProjectQuoteDesignInfoNeedDuplicate?.city? ProjectQuoteDesignInfoNeedDuplicate.city : '');
+    const [postalCode, setpostalCode] = useState(ProjectQuoteDesignInfoNeedDuplicate?.postalCode? ProjectQuoteDesignInfoNeedDuplicate.postalCode : '');
+    const [country, setcountry] = useState(ProjectQuoteDesignInfoNeedDuplicate?.country? ProjectQuoteDesignInfoNeedDuplicate.country : '');
 
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
@@ -114,12 +114,14 @@ const StartNewProject = ({ type, close, ProjectQuoteDesignInfoNeedDuplicate }: S
             <TextInput className='mt-2' inputName='project title' variant='box' placeholder={`${capitalizeFirstLetter(type)} Title`} value={projectTitle} onChange={e => setprojectTitle((e.target as any).value)} />
             {type === 'project' && <>
                 <div className='flex mt-4'>
-                    <div className='w-1/2 mr-2'><DropdownListInput placeholder='Currency' onSelect={v => setcurrency(v)} options={['USD', 'CAD', 'EUR']} /></div>
+                    <div className='w-1/2 mr-2'><DropdownListInput initialValue={
+                        currency? currency:undefined
+                    } placeholder='Currency' onSelect={v => setcurrency(v)} options={['USD', 'CAD', 'EUR']} /></div>
                     <div className='w-1/2 ml-2'><TextInput variant='box' type='number' placeholder='Budget' inputName='budget' value={budget} onChange={e => setbudget((e.target as any).value)} /></div>
                 </div>
                 <div className='mt-3 text-xl font-semibold font-ssp'>Client Information</div>
                 <TextInput className='mt-4' inputName='client name' variant='box' placeholder='Client Name' value={clientName} onChange={e => setclientName((e.target as any).value)} />
-                <TextInput className='mt-4' inputName='client email' variant='box' placeholder='Client Email' value={clientEmail} onChange={e => setclientEmail((e.target as any).value)} />
+                <TextInput className='mt-4' inputName='client email' variant='box' placeholder='Client Email' value={clientEmail? clientEmail: ''} onChange={e => setclientEmail((e.target as any).value)} />
                 <TextInput className='mt-4' inputName='phone' variant='box' placeholder='Phone (optional)' value={phone} onChange={e => setphone((e.target as any).value)} />
                 <TextInput className='mt-4' inputName='organisation' variant='box' placeholder='organisation (optional)' value={organisation} onChange={e => setorganisation((e.target as any).value)} />
                 <div className='mt-3 text-xl font-semibold font-ssp'>Project Address</div>
