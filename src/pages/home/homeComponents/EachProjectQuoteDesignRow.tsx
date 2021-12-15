@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useGetProjectRole } from '../../../Hooks/useGetProjectRole'
-import {deleteSpecificProject, showMessageAction} from '../../../redux/Actions'
+import {deleteSpecificProject, renameSpecificProjectAction, showMessageAction} from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
 import apiRequest from '../../../Service/apiRequest';
 import produce from 'immer';
@@ -24,7 +24,7 @@ type EachProjectQuoteDesignRowProps = {
 const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits, showInvitePeople, setSelectedProjectToInvite }: EachProjectQuoteDesignRowProps) => {
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
-    const [renameProjectName, setrenameProjectName] = useState(name);
+    const [renameProjectTitle, setrenameProjectTitle] = useState(name);
     const history = useHistory();
     const projectRole = useGetProjectRole(projectID);
     const dispatch = useDispatch();
@@ -92,43 +92,16 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
     }
 
     const renameThisProject = async () => {
+        dispatch(renameSpecificProjectAction(
+            renameProjectTitle, currentOrgID, projectID, projects
+        ))
         setshowRenameProject(false);
-        const res = await apiRequest(
-            {
-            url: `/api/fhapp-service/project/${currentOrgID}/${projectID}`,
-            method:'PATCH',
-            body: {
-                title: renameProjectName
-            }
-            }
-        )
-        if(res.success){
-           const newProjects = produce(projects, draftState =>{ 
-           draftState?.map(each => {
-               if(each._id === projectID){
-                  each.title = renameProjectName;
-               }
-               return each
-           })
-           }
-           )
-           dispatch({
-               type : "projects",
-               payload: newProjects
-           })
-        }
-        if(!res.success){
-            dispatch(showMessageAction(
-                true,
-                res?.message
-            ))
-        }
     }
 
     return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
         <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
-                <input value={renameProjectName} onChange={e => setrenameProjectName(e.target.value)} onKeyDown={e => {
+                <input value={renameProjectTitle} onChange={e => setrenameProjectTitle(e.target.value)} onKeyDown={e => {
                     if (e.code === 'Enter') {
                         renameThisProject();
                     }
