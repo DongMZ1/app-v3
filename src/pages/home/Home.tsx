@@ -29,6 +29,20 @@ const Home = () => {
   const [rowCount, setrowCount] = useState(20);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
+  const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<{
+    projectTitle?: string,
+    currency?: string,
+    budget?: string,
+    clientName?: string,
+    clientEmail?: string,
+    phone?: string,
+    organisation?: string,
+    streetName?: string,
+    province?:string,
+    city?: string,
+    postalCode?:string,
+    country?:string,
+  }>()
   const state = useSelector((state: Tappstate) => state);
   const dispatch = useDispatch();
   const logout = async () => {
@@ -174,6 +188,8 @@ const Home = () => {
               lastEditby={each?.lastEditedBy}
               totalUnits={each?.totalUnits ? each.totalUnits : 0}
               projectID={each?._id}
+              setStartNewProjectQuoteDesignType={setStartNewProjectQuoteDesignType}
+              setshowStartNewProjectQuotoDesign={setshowStartNewProjectQuotoDesign}
               showInvitePeople={() => setshowInvitePeople(true)} />)}
           </> :
           <>

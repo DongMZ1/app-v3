@@ -18,8 +18,10 @@ type EachProjectQuoteDesignRowProps = {
     totalUnits?: number | string,
     showInvitePeople?: () => void,
     setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
+    setStartNewProjectQuoteDesignType: React.Dispatch<React.SetStateAction<"design" | "project" | "quote">>
+    setshowStartNewProjectQuotoDesign: React.Dispatch<React.SetStateAction<boolean>>
 }
-const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits, showInvitePeople, setSelectedProjectToInvite }: EachProjectQuoteDesignRowProps) => {
+const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits, showInvitePeople, setSelectedProjectToInvite, setStartNewProjectQuoteDesignType, setshowStartNewProjectQuotoDesign}: EachProjectQuoteDesignRowProps) => {
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
     const [renameProjectTitle, setrenameProjectTitle] = useState(name);
@@ -63,6 +65,8 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
             case 'Duplicate Project':
             case 'Duplicate Quote':
             case 'Duplicate Design':
+                setStartNewProjectQuoteDesignType(type);
+                setshowStartNewProjectQuotoDesign(true);
                 break;
             case 'Rename Project':
             case 'Rename Quote':
