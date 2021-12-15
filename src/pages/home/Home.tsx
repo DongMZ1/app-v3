@@ -103,6 +103,7 @@ const Home = () => {
       show={showStartNewProjectQuotoDesign}>
       <StartNewProjectQuotoDesign
         type={StartNewProjectQuoteDesignType}
+        ProjectQuoteDesignInfoNeedDuplicate={ProjectQuoteDesignInfoNeedDuplicate}
         close={() => {
           setshowStartNewProjectQuotoDesign(false)
           setProjectQuoteDesignInfoNeedDuplicate(undefined);

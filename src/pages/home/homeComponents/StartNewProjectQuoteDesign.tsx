@@ -7,13 +7,28 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '@fulhaus/react.ui.button'
 import apiRequest from '../../../Service/apiRequest'
 import { Tappstate } from '../../../redux/reducers'
-import {fetchProject, showMessageAction} from '../../../redux/Actions'
+import { fetchProject, showMessageAction } from '../../../redux/Actions'
 
 type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
     close: () => void
+    ProjectQuoteDesignInfoNeedDuplicate?: {
+        projectTitle?: string,
+        currency?: string,
+        budget?: string,
+        clientName?: string,
+        clientEmail?: string,
+        phone?: string,
+        organisation?: string,
+        streetName?: string,
+        province?: string,
+        city?: string,
+        postalCode?: string,
+        country?: string,
+        unit?: string,
+    }
 }
-const StartNewProject = ({ type, close }: StartNewProjectProps) => {
+const StartNewProject = ({ type, close, ProjectQuoteDesignInfoNeedDuplicate }: StartNewProjectProps) => {
     const [projectTitle, setprojectTitle] = useState('');
     const [currency, setcurrency] = useState('');
     const [budget, setbudget] = useState('');
@@ -29,10 +44,10 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
     const [city, setcity] = useState('');
     const [postalCode, setpostalCode] = useState('');
     const [country, setcountry] = useState('');
-    
+
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
-    
+
     let FormIsValid = false;
     if (type === 'project') {
         FormIsValid = !!(projectTitle && budget && clientName && clientEmail && streetName && postalCode && province && city && currency && country);
@@ -76,12 +91,12 @@ const StartNewProject = ({ type, close }: StartNewProjectProps) => {
                         }
                     }
                 )
-                if(res?.success){
+                if (res?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID? organizationID:''));
+                    dispatch(fetchProject(organizationID ? organizationID : ''));
                     close();
                 }
-                if(!res?.success){
+                if (!res?.success) {
                     dispatch(showMessageAction(true, res.message));
                 }
         }
