@@ -25,7 +25,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
   useEffect(
     () => {
       if (!projectName) {
-        FetchOrganizationUser();
+        fetchOrganizationUser();
       }
       if (projectName) {
         fetchSpecificProjectUser();
@@ -70,7 +70,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
     }
   }
 
-  const FetchOrganizationUser = async () => {
+  const fetchOrganizationUser = async () => {
     const res = await apiRequest({
       url: `/api/fhapp-service/organization/${OrganizationID}/users`,
       method: 'GET'

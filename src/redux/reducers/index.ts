@@ -9,6 +9,7 @@ export type Tappstate = {
    modalMessage: string;
    showModal: boolean;
    currentOrgRole: string | undefined;
+   allOrganizations: any[] | undefined;
 }
 const initialState = {
    projects: undefined,
@@ -16,6 +17,7 @@ const initialState = {
    userRole: undefined,
    currentOrgID: undefined,
    currentOrgRole: undefined,
+   allOrganizations: undefined,
    modalMessage: '',
    showModal: false,
 }

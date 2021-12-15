@@ -24,7 +24,7 @@ const Home = () => {
   const [searchkeyWord, setsearchKeyWord] = useState("");
   const [showInvitePeople, setshowInvitePeople] = useState(false);
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
-  const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string }>();
+  const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string, userRole: string | undefined}>();
   //index show number of rows on homepage displayed
   const [rowCount, setrowCount] = useState(20);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
@@ -110,6 +110,7 @@ const Home = () => {
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <OrganizationSelection />
+        {state.currentOrgRole !== ('viewer' || 'editor') && state.currentOrgRole && <>
         <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
         <div
           onClick={() => setshowInvitePeople(true)}
@@ -117,6 +118,7 @@ const Home = () => {
         >
           Invite people
         </div>
+        </>}
         <LogoutIcon onClick={() => logout()} className='my-auto ml-6 cursor-pointer' />
       </div>
       <div className='pb-12 mx-8percent'>
@@ -124,7 +126,7 @@ const Home = () => {
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
             {/*<Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>*/}
-            {state.currentOrgRole !== ('viewer' || 'editor') &&
+            {state.currentOrgRole !== ('viewer' || 'editor') && state.currentOrgRole &&
               <div className='my-auto ml-auto hide-dropdown-list'>
                 <DropdownListInput
                   onSelect={v => chooseProjectQuoteDesignStart(v)}
