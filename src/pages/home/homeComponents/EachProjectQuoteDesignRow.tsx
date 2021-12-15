@@ -5,10 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useGetProjectRole } from '../../../Hooks/useGetProjectRole'
-import {deleteSpecificProject, renameSpecificProjectAction, showMessageAction} from '../../../redux/Actions'
+import {deleteSpecificProject, renameSpecificProjectAction} from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
-import apiRequest from '../../../Service/apiRequest';
-import produce from 'immer';
 type EachProjectQuoteDesignRowProps = {
     name: string,
     projectID: string,
