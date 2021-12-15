@@ -5,8 +5,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useGetProjectRole } from '../../../Hooks/useGetProjectRole'
-import {deleteSpecificProject} from '../../../redux/Actions'
+import {deleteSpecificProject, showMessageAction} from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
+import apiRequest from '../../../Service/apiRequest';
+import produce from 'immer';
 type EachProjectQuoteDesignRowProps = {
     name: string,
     projectID: string,
@@ -89,8 +91,38 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         }
     }
 
-    const renameThisProject = () => {
+    const renameThisProject = async () => {
         setshowRenameProject(false);
+        const res = await apiRequest(
+            {
+            url: `/api/fhapp-service/project/${currentOrgID}/${projectID}`,
+            method:'PATCH',
+            body: {
+                title: renameProjectName
+            }
+            }
+        )
+        if(res.success){
+           const newProjects = produce(projects, draftState =>{ 
+           draftState?.map(each => {
+               if(each._id === projectID){
+                  each.title = renameProjectName;
+               }
+               return each
+           })
+           }
+           )
+           dispatch({
+               type : "projects",
+               payload: newProjects
+           })
+        }
+        if(!res.success){
+            dispatch(showMessageAction(
+                true,
+                res?.message
+            ))
+        }
     }
 
     return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
