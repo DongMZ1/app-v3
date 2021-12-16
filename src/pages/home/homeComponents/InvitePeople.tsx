@@ -9,6 +9,7 @@ import { TextInput } from "@fulhaus/react.ui.text-input";
 import { Button } from "@fulhaus/react.ui.button";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import apiRequest from '../../../Service/apiRequest'
+import { useGetProjectRole } from "../../../Hooks/useGetProjectRole";
 type InvitePeopleProps = {
   close: () => void;
   projectName?: string;
@@ -126,6 +127,7 @@ type InvitePeopleUserRowProps = {
 }
 const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID }: InvitePeopleUserRowProps) => {
   const state = useSelector((state: Tappstate) => state);
+  const myRole = useGetProjectRole(projectID? projectID : '')
   const dropdownListAction = (v: string) => {
     console.log(v);
   }
@@ -133,7 +135,7 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID }: Invit
   return <div className='flex h-8 pr-8 my-2'>
     <div className='flex w-1/2 text-sm font-ssp'><div className='my-auto'>{name} {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ? <span className='font-semibold'>(You)</span> : ''}</div></div>
     <div className='flex w-4/12 text-sm font-ssp'><div className='my-auto'>{email}</div></div>
-    <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{role}</div>
+    <div className='flex w-2/12 text-sm font-ssp'><div className='my-auto ml-auto'>{`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ? myRole : role}</div>
       <div className='hide-dropdown-list'>
         {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
           ''

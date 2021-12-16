@@ -106,7 +106,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                     postalCode: thisProject.projectAddress?.postalCode,
                     country: thisProject.projectAddress?.country
                 });
-                setStartNewProjectQuoteDesignType(thisProject.type);
+                setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type: 'project');
                 setshowStartNewProjectQuotoDesign(true);
                 break;
             case 'Rename Project':
@@ -183,7 +183,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             }
         </div>
     </div>
-        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
+        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type? thisProject.type : 'Project'}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
             if (currentOrgID) {
                 dispatch(deleteSpecificProject(currentOrgID, thisProject._id, projects));
                 setshowConfirmDeleteModal(false);
