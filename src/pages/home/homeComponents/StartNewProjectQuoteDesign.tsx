@@ -17,21 +17,37 @@ type StartNewProjectProps = {
 const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProps) => {
     const [projectTitle, setprojectTitle] = useState(duplicateProjInfo?.title ? `${duplicateProjInfo.title} (Duplicated)` : '');
     //for create project
-    const [currency, setcurrency] = useState(duplicateProjInfo?.currency? duplicateProjInfo.currency :'');
-    const [budget, setbudget] = useState(duplicateProjInfo?.budget? duplicateProjInfo.budget: '');
+    const [currency, setcurrency] = useState(duplicateProjInfo?.currency ? duplicateProjInfo.currency : '');
+    const [budget, setbudget] = useState(duplicateProjInfo?.budget ? duplicateProjInfo.budget : '');
 
-    const [clientName, setclientName] = useState(duplicateProjInfo?.clientName? duplicateProjInfo.clientName:'');
-    const [clientEmail, setclientEmail] = useState(duplicateProjInfo?.clientName? duplicateProjInfo.clientEmail : '');
-    const [phone, setphone] = useState(duplicateProjInfo?.phone? duplicateProjInfo.phone:'');
-    const [organisation, setorganisation] = useState(duplicateProjInfo?.organisation? duplicateProjInfo.organisation : '');
+    const [clientName, setclientName] = useState(duplicateProjInfo?.clientName ? duplicateProjInfo.clientName : '');
+    const [clientEmail, setclientEmail] = useState(duplicateProjInfo?.clientName ? duplicateProjInfo.clientEmail : '');
+    const [phone, setphone] = useState(duplicateProjInfo?.phone ? duplicateProjInfo.phone : '');
+    const [organisation, setorganisation] = useState(duplicateProjInfo?.organisation ? duplicateProjInfo.organisation : '');
 
-    const [streetName, setstreetName] = useState(duplicateProjInfo?.projectAddress?.street? duplicateProjInfo.projectAddress?.street : '');
-    const [unit, setunit] = useState(duplicateProjInfo?.projectAddress?.apt? duplicateProjInfo.projectAddress.apt : '');
-    const [province, setprovince] = useState(duplicateProjInfo?.projectAddress?.province? duplicateProjInfo?.projectAddress.province : '');
-    const [city, setcity] = useState(duplicateProjInfo?.projectAddress?.city? duplicateProjInfo.projectAddress?.city : '');
-    const [postalCode, setpostalCode] = useState(duplicateProjInfo?.projectAddress?.postalCode? duplicateProjInfo.projectAddress?.postalCode : '');
-    const [country, setcountry] = useState(duplicateProjInfo?.projectAddress?.country? duplicateProjInfo?.projectAddress?.country : '');
+    const [streetName, setstreetName] = useState(duplicateProjInfo?.projectAddress?.street ? duplicateProjInfo.projectAddress?.street : '');
+    const [unit, setunit] = useState(duplicateProjInfo?.projectAddress?.apt ? duplicateProjInfo.projectAddress.apt : '');
+    const [province, setprovince] = useState(duplicateProjInfo?.projectAddress?.province ? duplicateProjInfo?.projectAddress.province : '');
+    const [city, setcity] = useState(duplicateProjInfo?.projectAddress?.city ? duplicateProjInfo.projectAddress?.city : '');
+    const [postalCode, setpostalCode] = useState(duplicateProjInfo?.projectAddress?.postalCode ? duplicateProjInfo.projectAddress?.postalCode : '');
+    const [country, setcountry] = useState(duplicateProjInfo?.projectAddress?.country ? duplicateProjInfo?.projectAddress?.country : '');
     //for create quote
+
+    const [quoteProjectID, setquoteProjectID] = useState('');
+    const [quoteCurrency, setquoteCurrency] = useState('');
+    const [quoteTotalAmount, setquoteTotalAmount] = useState('');
+    const [quoteDiscount, setquoteDiscount] = useState('');
+    const [quoteShipping, setquoteShipping] = useState('');
+    const [quoteInstallation, setquoteInstallation] = useState('');
+    const [quoteSecurityDeposit, setquoteSecurityDeposit] = useState('');
+    const [quoteTax, setquoteTax] = useState('');
+    const [quoteApproved, setquoteApproved] = useState(false);
+    const [quotePaymentOption, setquotePaymentOption] = useState<"rental" | "installment" | "upfront">();
+    const [quoteDeliveryDate, setquoteDeliveryDate] = useState<Date>();
+    const [quoteType, setquoteType] = useState<"b2b" | "d2c">();
+    
+    //for design
+    const [quoteID, setquoteID] = useState('');
 
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
@@ -54,7 +70,7 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
     const submitForm = async () => {
         switch (type) {
             case 'project':
-                const res = await apiRequest(
+                const projectRes = await apiRequest(
                     {
                         url: `/api/fhapp-service/project/${organizationID}`,
                         method: 'POST',
@@ -79,14 +95,36 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                         }
                     }
                 )
-                if (res?.success) {
+                if (projectRes?.success) {
+                    //fetch projects as projects is updated
+                    dispatch(fetchProject(organizationID ? organizationID : '')); 
+                    close();
+                }
+                if (!projectRes?.success) {
+                    dispatch(showMessageAction(true, projectRes.message));
+                }
+                break;
+            case 'design':
+                const designRes = await apiRequest(
+                    {
+                        url:'/api/fhapp-service/design',
+                        method:'POST',
+                        body:{
+                            title: projectTitle,
+                            organization: organizationID,
+                            quote: quoteID? quoteID : undefined
+                        }
+                    }
+                )
+                if (designRes?.success) {
                     //fetch projects as projects is updated
                     dispatch(fetchProject(organizationID ? organizationID : ''));
                     close();
                 }
-                if (!res?.success) {
-                    dispatch(showMessageAction(true, res.message));
+                if (!designRes?.success) {
+                    dispatch(showMessageAction(true, designRes.message));
                 }
+                break;
         }
     }
     return (
@@ -103,13 +141,13 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
             {type === 'project' && <>
                 <div className='flex mt-4'>
                     <div className='w-1/2 mr-2'><DropdownListInput initialValue={
-                        currency? currency:undefined
+                        currency ? currency : undefined
                     } placeholder='Currency' onSelect={v => setcurrency(v)} options={['USD', 'CAD', 'EUR']} /></div>
                     <div className='w-1/2 ml-2'><TextInput variant='box' type='number' placeholder='Budget' inputName='budget' value={budget} onChange={e => setbudget((e.target as any).value)} /></div>
                 </div>
                 <div className='mt-3 text-xl font-semibold font-ssp'>Client Information</div>
                 <TextInput className='mt-4' inputName='client name' variant='box' placeholder='Client Name' value={clientName} onChange={e => setclientName((e.target as any).value)} />
-                <TextInput className='mt-4' inputName='client email' variant='box' placeholder='Client Email' value={clientEmail? clientEmail: ''} onChange={e => setclientEmail((e.target as any).value)} />
+                <TextInput className='mt-4' inputName='client email' variant='box' placeholder='Client Email' value={clientEmail ? clientEmail : ''} onChange={e => setclientEmail((e.target as any).value)} />
                 <TextInput className='mt-4' inputName='phone' variant='box' placeholder='Phone (optional)' value={phone} onChange={e => setphone((e.target as any).value)} />
                 <TextInput className='mt-4' inputName='organisation' variant='box' placeholder='organisation (optional)' value={organisation} onChange={e => setorganisation((e.target as any).value)} />
                 <div className='mt-3 text-xl font-semibold font-ssp'>Project Address</div>
@@ -136,7 +174,18 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                     </div>
                 </div>
             </>}
-            <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={() => submitForm()} className='justify-center w-full'>Create project</Button></div>
+            {
+                type === 'quote' && <>
+                
+                </>
+            }
+            {
+                type === 'design' &&
+                <div className='flex mt-4'>
+                    <div className='w-1/2'><TextInput variant='box' type='text' placeholder='Quote ID (Optional)' inputName='quoteID' value={quoteID} onChange={e => setquoteID((e.target as any).value)} /></div>
+                </div>
+            }
+            <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={() => submitForm()} className='justify-center w-full'><>Create {capitalizeFirstLetter(type)}</></Button></div>
         </div>);
 }
 
