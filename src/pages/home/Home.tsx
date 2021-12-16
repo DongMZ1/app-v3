@@ -85,7 +85,7 @@ const Home = () => {
 
   const sortByDate = (arr: any[] | null, sorted: boolean) => {
     if (sorted) {
-      return arr?.sort(function (a: any, b: any) {
+      return arr?.slice().sort(function (a: any, b: any) {
         return (new Date((b.updatedAt as string)) as any) - (new Date(a.updatedAt) as any);
       });
     }
@@ -183,7 +183,7 @@ const Home = () => {
               <div className='width-13-percent'>Created by</div>
               <div className='width-8-percent'>Total Units</div>
             </div>
-            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.title as string).toLowerCase().includes(searchkeyWord)).slice(0, rowCount).map((each: any, key: number) => <EachProjectQuoteDesignRow
+            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.title as string).toLowerCase().includes(searchkeyWord))?.slice(0, rowCount)?.map((each: any, key: number) => <EachProjectQuoteDesignRow
               thisProject={each}
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               setStartNewProjectQuoteDesignType={setStartNewProjectQuoteDesignType}
