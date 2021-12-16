@@ -28,21 +28,8 @@ const Home = () => {
   const [rowCount, setrowCount] = useState(20);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
-  const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<{
-    projectTitle?: string,
-    currency?: string,
-    budget?: string,
-    clientName?: string,
-    clientEmail?: string,
-    phone?: string,
-    organisation?: string,
-    streetName?: string,
-    province?: string,
-    city?: string,
-    postalCode?: string,
-    country?: string,
-    unit?: string,
-  }>()
+  //copy the all of that specific project/quote/design info
+  const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<any>()
   const state = useSelector((state: Tappstate) => state);
   const logout = async () => {
     const res = await apiRequest(
@@ -103,7 +90,7 @@ const Home = () => {
       show={showStartNewProjectQuotoDesign}>
       <StartNewProjectQuotoDesign
         type={StartNewProjectQuoteDesignType}
-        ProjectQuoteDesignInfoNeedDuplicate={ProjectQuoteDesignInfoNeedDuplicate}
+        duplicateProjInfo={ProjectQuoteDesignInfoNeedDuplicate}
         close={() => {
           setshowStartNewProjectQuotoDesign(false)
           setProjectQuoteDesignInfoNeedDuplicate(undefined);

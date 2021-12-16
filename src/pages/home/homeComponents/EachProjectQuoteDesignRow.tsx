@@ -32,21 +32,7 @@ type EachProjectQuoteDesignRowProps = {
     setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
     setStartNewProjectQuoteDesignType: React.Dispatch<React.SetStateAction<"design" | "project" | "quote">>
     setshowStartNewProjectQuotoDesign: React.Dispatch<React.SetStateAction<boolean>>
-    setProjectQuoteDesignInfoNeedDuplicate: React.Dispatch<React.SetStateAction<{
-        projectTitle?: string,
-        currency?: string,
-        budget?: string,
-        clientName?: string,
-        clientEmail?: string,
-        phone?: string,
-        organisation?: string,
-        streetName?: string,
-        province?: string,
-        city?: string,
-        postalCode?: string,
-        country?: string,
-        unit?: string,
-    } | undefined>>
+    setProjectQuoteDesignInfoNeedDuplicate: React.Dispatch<React.SetStateAction<any>>
 }
 const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedProjectToInvite, setStartNewProjectQuoteDesignType, setshowStartNewProjectQuotoDesign, setProjectQuoteDesignInfoNeedDuplicate }: EachProjectQuoteDesignRowProps) => {
     const [showRenameProject, setshowRenameProject] = useState(false);
@@ -96,16 +82,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             case 'Duplicate Project':
             case 'Duplicate Quote':
             case 'Duplicate Design':
-                setProjectQuoteDesignInfoNeedDuplicate({
-                    projectTitle: `${thisProject.title} (Duplicated)`,
-                    currency: thisProject.currency,
-                    budget: thisProject.budget,
-                    streetName: thisProject.projectAddress?.street,
-                    unit: thisProject.projectAddress?.apt,
-                    city: thisProject.projectAddress?.city,
-                    postalCode: thisProject.projectAddress?.postalCode,
-                    country: thisProject.projectAddress?.country
-                });
+                setProjectQuoteDesignInfoNeedDuplicate(thisProject);
                 setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type: 'project');
                 setshowStartNewProjectQuotoDesign(true);
                 break;

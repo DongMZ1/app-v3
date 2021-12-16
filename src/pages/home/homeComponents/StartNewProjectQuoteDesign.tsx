@@ -12,38 +12,26 @@ import { fetchProject, showMessageAction } from '../../../redux/Actions'
 type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
     close: () => void
-    ProjectQuoteDesignInfoNeedDuplicate?: {
-        projectTitle?: string,
-        currency?: string,
-        budget?: string,
-        clientName?: string,
-        clientEmail?: string,
-        phone?: string,
-        organisation?: string,
-        streetName?: string,
-        province?: string,
-        city?: string,
-        postalCode?: string,
-        country?: string,
-        unit?: string,
-    }
+    duplicateProjInfo?: any
 }
-const StartNewProject = ({ type, close, ProjectQuoteDesignInfoNeedDuplicate }: StartNewProjectProps) => {
-    const [projectTitle, setprojectTitle] = useState(ProjectQuoteDesignInfoNeedDuplicate?.projectTitle ? ProjectQuoteDesignInfoNeedDuplicate?.projectTitle : '');
-    const [currency, setcurrency] = useState(ProjectQuoteDesignInfoNeedDuplicate?.currency? ProjectQuoteDesignInfoNeedDuplicate.currency :'');
-    const [budget, setbudget] = useState(ProjectQuoteDesignInfoNeedDuplicate?.budget? ProjectQuoteDesignInfoNeedDuplicate.budget: '');
+const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProps) => {
+    const [projectTitle, setprojectTitle] = useState(duplicateProjInfo?.title ? `${duplicateProjInfo.title} (Duplicated)` : '');
+    //for create project
+    const [currency, setcurrency] = useState(duplicateProjInfo?.currency? duplicateProjInfo.currency :'');
+    const [budget, setbudget] = useState(duplicateProjInfo?.budget? duplicateProjInfo.budget: '');
 
-    const [clientName, setclientName] = useState(ProjectQuoteDesignInfoNeedDuplicate?.clientName? ProjectQuoteDesignInfoNeedDuplicate.clientName:'');
-    const [clientEmail, setclientEmail] = useState(ProjectQuoteDesignInfoNeedDuplicate?.clientName? ProjectQuoteDesignInfoNeedDuplicate?.clientEmail : '');
-    const [phone, setphone] = useState(ProjectQuoteDesignInfoNeedDuplicate?.phone? ProjectQuoteDesignInfoNeedDuplicate.phone:'');
-    const [organisation, setorganisation] = useState(ProjectQuoteDesignInfoNeedDuplicate?.organisation? ProjectQuoteDesignInfoNeedDuplicate.organisation : '');
+    const [clientName, setclientName] = useState(duplicateProjInfo?.clientName? duplicateProjInfo.clientName:'');
+    const [clientEmail, setclientEmail] = useState(duplicateProjInfo?.clientName? duplicateProjInfo.clientEmail : '');
+    const [phone, setphone] = useState(duplicateProjInfo?.phone? duplicateProjInfo.phone:'');
+    const [organisation, setorganisation] = useState(duplicateProjInfo?.organisation? duplicateProjInfo.organisation : '');
 
-    const [streetName, setstreetName] = useState(ProjectQuoteDesignInfoNeedDuplicate?.streetName? ProjectQuoteDesignInfoNeedDuplicate.streetName : '');
-    const [unit, setunit] = useState(ProjectQuoteDesignInfoNeedDuplicate?.unit? ProjectQuoteDesignInfoNeedDuplicate.unit : '');
-    const [province, setprovince] = useState(ProjectQuoteDesignInfoNeedDuplicate?.province? ProjectQuoteDesignInfoNeedDuplicate.province : '');
-    const [city, setcity] = useState(ProjectQuoteDesignInfoNeedDuplicate?.city? ProjectQuoteDesignInfoNeedDuplicate.city : '');
-    const [postalCode, setpostalCode] = useState(ProjectQuoteDesignInfoNeedDuplicate?.postalCode? ProjectQuoteDesignInfoNeedDuplicate.postalCode : '');
-    const [country, setcountry] = useState(ProjectQuoteDesignInfoNeedDuplicate?.country? ProjectQuoteDesignInfoNeedDuplicate.country : '');
+    const [streetName, setstreetName] = useState(duplicateProjInfo?.projectAddress?.street? duplicateProjInfo.projectAddress?.street : '');
+    const [unit, setunit] = useState(duplicateProjInfo?.projectAddress?.apt? duplicateProjInfo.projectAddress.apt : '');
+    const [province, setprovince] = useState(duplicateProjInfo?.projectAddress?.province? duplicateProjInfo?.projectAddress.province : '');
+    const [city, setcity] = useState(duplicateProjInfo?.projectAddress?.city? duplicateProjInfo.projectAddress?.city : '');
+    const [postalCode, setpostalCode] = useState(duplicateProjInfo?.projectAddress?.postalCode? duplicateProjInfo.projectAddress?.postalCode : '');
+    const [country, setcountry] = useState(duplicateProjInfo?.projectAddress?.country? duplicateProjInfo?.projectAddress?.country : '');
+    //for create quote
 
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
