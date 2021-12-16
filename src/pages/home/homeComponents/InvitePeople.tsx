@@ -108,7 +108,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
           <div className='w-1/12'><Button disabled={peopleKeyWord === ""} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         {peopleList?.map(each =>
-          <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role='Admin' />
+          <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role='viewer' />
         )}
       </div>
     </div>
@@ -128,6 +128,13 @@ type InvitePeopleUserRowProps = {
 const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID }: InvitePeopleUserRowProps) => {
   const state = useSelector((state: Tappstate) => state);
   const myRole = useGetProjectRole(projectID? projectID : '')
+  let optionList = [''];
+  if(myRole === 'admin'){
+    optionList = ['editor','viewer', 'remove user']
+  }
+  if(myRole === 'owner'){
+    optionList = ['admin', 'editor', 'viewer', 'remove user']
+  }
   const dropdownListAction = (v: string) => {
     console.log(v);
   }
@@ -144,7 +151,7 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID }: Invit
             listWrapperClassName='last-child-red'
             onSelect={v => dropdownListAction(v)}
             wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-            options={['Owner', 'User', 'Remove User']} />
+            options={optionList} />
         }
       </div>
     </div>
