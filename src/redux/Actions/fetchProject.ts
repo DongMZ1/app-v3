@@ -19,7 +19,7 @@ const fetchProject = (organizationID: string, options?:{title?: string}) => asyn
 
       const designRes = await apiRequest(
         {
-          url:`/api/fhapp-service/designs/${organizationID}?designOnly=yes${options?.title? `&title=${options.title}`:''}`,
+          url:`/api/fhapp-service/designs/${organizationID}?page=0&limit=20&designOnly=yes${options?.title? `&title=${options.title}`:''}`,
           method:'GET'
         }
       )

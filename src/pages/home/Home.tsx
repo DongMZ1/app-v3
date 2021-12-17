@@ -1,7 +1,8 @@
 import "./Home.scss";
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import debounce from 'lodash.debounce'
 import { useSelector, useDispatch } from 'react-redux'
+import useIsFirstRender from "../../Hooks/useIsFirstRender";
 import apiRequest from '../../Service/apiRequest';
 import { Tappstate } from "../../redux/reducers";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
@@ -18,7 +19,7 @@ import InvitePeople from "./homeComponents/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDesign"
 import OrganizationSelection from './homeComponents/OrganizationSelection'
-import { fetchMoreProject } from "../../redux/Actions";
+import { fetchMoreProject, fetchProject } from "../../redux/Actions";
 const Home = () => {
   const [StartNewProjectQuoteDesignType, setStartNewProjectQuoteDesignType] = useState<'design' | 'quote' | 'project'>('project')
   const [showStartNewProjectQuotoDesign, setshowStartNewProjectQuotoDesign] = useState(false);
@@ -34,10 +35,46 @@ const Home = () => {
   //copy the all of that specific project/quote/design info
   const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<any>()
   const state = useSelector((state: Tappstate) => state);
+  const isFirstRendering = useIsFirstRender();
   const dispatch = useDispatch();
 
   const currentOrgName = state?.allOrganizations?.filter(each => each._id === state.currentOrgID) ? state?.allOrganizations?.filter(each => each._id === state.currentOrgID)[0]?.name : '';
 
+  useEffect(
+    () => {
+      if (!isFirstRendering) {
+        //firstly if not first rendering, clear currently pageCount
+        searchbyKeyword();
+      }
+    }, [searchkeyWord]
+  )
+
+  const searchbyKeywordCallback = () => {
+    if (state.currentOrgID) {
+      dispatch(fetchProject(state.currentOrgID, {
+        title: searchkeyWord
+      }))
+      setpageCount(0);
+    }
+  }
+
+  const searchbyKeyword = debounce(searchbyKeywordCallback, 1000);
+
+  const infiniteScrollCallback = () => {
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
+      //dispatch fetch more
+      if (state.currentOrgID) {
+        dispatch(fetchMoreProject(state.currentOrgID, state.projects, {
+          title: searchkeyWord,
+          page: pageCount
+        }))
+      }
+      console.log(pageCount);
+      setpageCount(state => state + 1);
+    }
+  };
+  //add a debounced function function to avoid throttle
+  const infiniteScroll = debounce(infiniteScrollCallback, 1000);
   const logout = async () => {
     const res = await apiRequest(
       {
@@ -64,19 +101,6 @@ const Home = () => {
     }
     setshowStartNewProjectQuotoDesign(true);
   }
-  const infiniteScrollCallback = () => {
-    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
-        //dispatch fetch more
-        if (state.currentOrgID) {
-          dispatch(fetchMoreProject(state.currentOrgID, state.projects, {
-            page: pageCount
-          }))
-        }
-        console.log(pageCount);
-        setpageCount(state => state + 1);
-    }
-  };
-  const infiniteScroll = debounce(infiniteScrollCallback, 1000);
 
   const sortByDate = (arr: any[] | null, sorted: boolean) => {
     if (sorted) {
@@ -199,7 +223,7 @@ const Home = () => {
             <div className='flex'><div className='mx-auto text-3xl moret'>No App Projects exist yet</div></div>
           </>
         }
-        {showLoadingMessage && <div className='flex mt-2'><div className='mx-auto font-ssp'>Loading ...</div></div>}
+        {/*showLoadingMessage && <div className='flex mt-2'><div className='mx-auto font-ssp'>Loading ...</div></div>*/}
       </div>
     </div>
   </>
