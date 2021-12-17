@@ -63,7 +63,7 @@ const Home = () => {
   }
 
   const infiniteScrollCallback = () => {
-    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight && state.projects) {
       //dispatch fetch more
       if (state.currentOrgID) {
         dispatch(fetchMoreProject(state.currentOrgID, state.projects, {
