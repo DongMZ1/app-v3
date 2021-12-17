@@ -16,6 +16,21 @@ const fetchMoreProject = (organizationID: string, projects: any, options?:{title
         console.log('fetch more project failed, please check fetchMoreProject.tsx')
       }
 
+      const QuoteRes = await apiRequest(
+        {
+          url:`/api/fhapp-service/quotes/${organizationID}?page=${options?.page}&limit=20&quoteOnly=yes${options?.title? `&title=${options.title}`:''}`,
+          method:'GET'
+        }
+      )
+      if(QuoteRes.success){
+        const designList = produce(QuoteRes.projects, (draft: any) => {
+          draft.forEach((each: any) => each.type = 'quote')
+        })
+        projects = projects.concat(designList)
+      }else{
+        console.log('fetch quote failed, please check fetchProject.tsx')
+      }
+
       const designRes = await apiRequest(
         {
           url:`/api/fhapp-service/designs/${organizationID}?page=${options?.page}&limit=20&designOnly=yes${options?.title? `&title=${options.title}`:''}`,

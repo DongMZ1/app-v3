@@ -71,7 +71,6 @@ const Home = () => {
           page: pageCount
         }))
       }
-      console.log(pageCount);
       setpageCount(state => state + 1);
     }
   };

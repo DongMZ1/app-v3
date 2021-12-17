@@ -31,23 +31,6 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
     const [city, setcity] = useState(duplicateProjInfo?.projectAddress?.city ? duplicateProjInfo.projectAddress?.city : '');
     const [postalCode, setpostalCode] = useState(duplicateProjInfo?.projectAddress?.postalCode ? duplicateProjInfo.projectAddress?.postalCode : '');
     const [country, setcountry] = useState(duplicateProjInfo?.projectAddress?.country ? duplicateProjInfo?.projectAddress?.country : '');
-    //for create quote
-
-    const [quoteProjectID, setquoteProjectID] = useState('');
-    const [quoteCurrency, setquoteCurrency] = useState('');
-    const [quoteTotalAmount, setquoteTotalAmount] = useState('');
-    const [quoteDiscount, setquoteDiscount] = useState('');
-    const [quoteShipping, setquoteShipping] = useState('');
-    const [quoteInstallation, setquoteInstallation] = useState('');
-    const [quoteSecurityDeposit, setquoteSecurityDeposit] = useState('');
-    const [quoteTax, setquoteTax] = useState('');
-    const [quoteApproved, setquoteApproved] = useState(false);
-    const [quotePaymentOption, setquotePaymentOption] = useState<"rental" | "installment" | "upfront">();
-    const [quoteDeliveryDate, setquoteDeliveryDate] = useState<Date>();
-    const [quoteType, setquoteType] = useState<"b2b" | "d2c">();
-    
-    //for design
-    const [quoteID, setquoteID] = useState('');
 
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
@@ -104,6 +87,26 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                     dispatch(showMessageAction(true, projectRes.message));
                 }
                 break;
+            case 'quote':
+                const quoteRes = await apiRequest(
+                    {
+                        url:'/api/fhapp-service/quote',
+                        method:'POST',
+                        body:{
+                            title: projectTitle,
+                            organization: organizationID,
+                        }
+                    }
+                )
+                if (quoteRes?.success) {
+                    //fetch projects as projects is updated
+                    dispatch(fetchProject(organizationID ? organizationID : ''));
+                    close();
+                }
+                if (!quoteRes?.success) {
+                    dispatch(showMessageAction(true, quoteRes.message));
+                }
+                break;
             case 'design':
                 const designRes = await apiRequest(
                     {
@@ -112,7 +115,6 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                         body:{
                             title: projectTitle,
                             organization: organizationID,
-                            quote: quoteID? quoteID : undefined
                         }
                     }
                 )
@@ -174,17 +176,6 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                     </div>
                 </div>
             </>}
-            {
-                type === 'quote' && <>
-                
-                </>
-            }
-            {
-                type === 'design' &&
-                <div className='flex mt-4'>
-                    <div className='w-1/2'><TextInput variant='box' type='text' placeholder='Quote ID (Optional)' inputName='quoteID' value={quoteID} onChange={e => setquoteID((e.target as any).value)} /></div>
-                </div>
-            }
             <div className='flex mt-4'><Button disabled={!FormIsValid} onClick={() => submitForm()} className='justify-center w-full'><>Create {capitalizeFirstLetter(type)}</></Button></div>
         </div>);
 }

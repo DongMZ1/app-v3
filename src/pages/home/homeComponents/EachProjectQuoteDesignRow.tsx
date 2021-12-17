@@ -45,10 +45,6 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     const projects = useSelector((state: Tappstate) => state.projects);
     let optionList = [''];
     let linkURL = '';
-    //if the type is not declared, then the default type is project
-    //if (!thisProject.type) {
-    //    thisProject.type = 'project'
-   // }
     if (thisProject.type === 'design') {
         if (projectRole === 'admin') {
             optionList = ['Duplicate Design', 'Rename Design', 'Share Design'];
@@ -67,7 +63,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         }
         linkURL = `/quote-only?id=${thisProject._id}`
     }
-    if (thisProject.type === 'project' || !thisProject.type) {
+    if (thisProject.type === 'project') {
         if (projectRole === 'admin') {
             optionList = ['Duplicate Project', 'Rename Project', 'Share Project'];
         }
@@ -135,7 +131,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 thisProject.type === "design" && "Design Only"
             }
             {
-                (thisProject.type === 'project' || !thisProject.type) && "Project"
+                (thisProject.type === 'project') && "Project"
             }
             {
                 thisProject.type === "quote" && "Quote Only"
