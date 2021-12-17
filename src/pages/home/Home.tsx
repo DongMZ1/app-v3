@@ -28,9 +28,14 @@ const Home = () => {
   const [pageCount, setpageCount] = useState(1);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
+
   //copy the all of that specific project/quote/design info
   const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<any>()
   const state = useSelector((state: Tappstate) => state);
+
+  const currentOrgName = state?.allOrganizations?.filter(each => each._id === state.currentOrgID)? state?.allOrganizations?.filter(each => each._id === state.currentOrgID)[0]?.name : '';
+  console.log(currentOrgName);
+
   const logout = async () => {
     const res = await apiRequest(
       {
@@ -142,10 +147,11 @@ const Home = () => {
               <div className='my-auto ml-auto hide-dropdown-list'>
                 <DropdownListInput
                   onSelect={v => chooseProjectQuoteDesignStart(v)}
+                  listWrapperClassName="width-8-rem"
                   wrapperClassName='border-none cursor-pointer' labelClassName='hidden'
                   suffixIcon={<div className='flex px-2 py-2 text-sm font-semibold text-white bg-black font-ssp'><div className='my-auto'>Start a new project</div></div>}
                   listWrapperFloatDirection='left' disabled={true}
-                  options={['Project', 'Quote Only', 'Design Only']} />
+                  options={currentOrgName === 'Fulhaus' ? ['Project', 'Quote Only', 'Design Only'] : ['Project']} />
               </div>
             }
           </div>

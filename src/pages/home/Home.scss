@@ -4,6 +4,9 @@
   height: 100vh;
   overflow-y: auto;
   background-color: #f7efe7;
+  .width-8-rem {
+    width: 8rem !important;
+  }
   a {
     font-family: "Source Sans Pro";
   }
@@ -41,7 +44,7 @@
       border: none !important;
     }
     .dropdown-list-input-options-wrapper {
-      width: max-content !important;
+     // width: max-content !important;
     }
     .dropdown-list-input-box-wrapper {
       padding: 0 !important;
