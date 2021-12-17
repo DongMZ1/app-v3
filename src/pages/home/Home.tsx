@@ -39,6 +39,7 @@ const Home = () => {
   const state = useSelector((state: Tappstate) => state);
   const isFirstRendering = useIsFirstRender();
   const dispatch = useDispatch();
+  //debouncedSearchkeyword will only update every 1s if seachkeyword changed
   const debouncedSearchKeyWord = useDebounce(searchkeyWord, 1000);
 
   const currentOrgName = state?.allOrganizations?.filter(each => each._id === state.currentOrgID) ? state?.allOrganizations?.filter(each => each._id === state.currentOrgID)[0]?.name : '';
