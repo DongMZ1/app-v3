@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import debounce from 'lodash.debounce'
 import { useSelector, useDispatch } from 'react-redux'
 import useIsFirstRender from "../../Hooks/useIsFirstRender";
+import useDebounce from "../../Hooks/useDebounce";
 import apiRequest from '../../Service/apiRequest';
 import { Tappstate } from "../../redux/reducers";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
@@ -34,9 +35,11 @@ const Home = () => {
 
   //copy the all of that specific project/quote/design info
   const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<any>()
+
   const state = useSelector((state: Tappstate) => state);
   const isFirstRendering = useIsFirstRender();
   const dispatch = useDispatch();
+  const debouncedSearchKeyWord = useDebounce(searchkeyWord, 1000);
 
   const currentOrgName = state?.allOrganizations?.filter(each => each._id === state.currentOrgID) ? state?.allOrganizations?.filter(each => each._id === state.currentOrgID)[0]?.name : '';
 
@@ -46,10 +49,10 @@ const Home = () => {
         //firstly if not first rendering, clear currently pageCount
         searchbyKeyword();
       }
-    }, [searchkeyWord]
+    }, [debouncedSearchKeyWord]
   )
 
-  const searchbyKeywordCallback = () => {
+  const searchbyKeyword = () => {
     if (state.currentOrgID) {
       dispatch(fetchProject(state.currentOrgID, {
         title: searchkeyWord
@@ -57,8 +60,6 @@ const Home = () => {
       setpageCount(0);
     }
   }
-
-  const searchbyKeyword = debounce(searchbyKeywordCallback, 1000);
 
   const infiniteScrollCallback = () => {
     if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
