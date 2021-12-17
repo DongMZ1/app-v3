@@ -1,5 +1,5 @@
 import "./Home.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from 'react-redux'
 import apiRequest from '../../Service/apiRequest';
 import { Tappstate } from "../../redux/reducers";
@@ -25,7 +25,7 @@ const Home = () => {
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
   const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string, userRole: string | undefined }>();
   //index show number of rows on homepage displayed
-  const [rowCount, setrowCount] = useState(20);
+  const [pageCount, setpageCount] = useState(1);
   const [showLoadingMessage, setshowLoadingMessage] = useState(false);
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
   //copy the all of that specific project/quote/design info
@@ -60,15 +60,14 @@ const Home = () => {
 
   const infiniteScroll = () => {
     if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
-      if (rowCount < state.projects?.length) {
         setshowLoadingMessage(true);
         setTimeout(() => {
-          setrowCount(rowCount + 10);
+          //dispatch fetch more
+          setpageCount(pageCount + 1);
           setshowLoadingMessage(false);
         }, 1000)
       }
     }
-  }
 
   const sortByDate = (arr: any[] | null, sorted: boolean) => {
     if (sorted) {
@@ -77,6 +76,13 @@ const Home = () => {
       });
     }
     return arr;
+  }
+
+  const clearHomePageScrollState = () => {
+    //reset the page count index
+     setpageCount(1);
+    //set search keyword to none
+    setsearchKeyWord('');
   }
   return (<>
     {<Popup
@@ -115,7 +121,7 @@ const Home = () => {
     <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={() => infiniteScroll()}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
-        <OrganizationSelection />
+        <OrganizationSelection clearHomePageScrollState={clearHomePageScrollState} />
         {state.currentOrgRole !== ('viewer' || 'editor') && state.currentOrgRole && <>
           <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
           <div
@@ -170,7 +176,7 @@ const Home = () => {
               <div className='width-13-percent'>Created by</div>
               <div className='width-8-percent'>Total Units</div>
             </div>
-            {sortByDate(state?.projects, orderByLastUpdated)?.filter(each => (each?.title as string).toLowerCase().includes(searchkeyWord))?.slice(0, rowCount)?.map((each: any, key: number) => <EachProjectQuoteDesignRow
+            {sortByDate(state?.projects, orderByLastUpdated)?.map((each: any, key: number) => <EachProjectQuoteDesignRow
               thisProject={each}
               setSelectedProjectToInvite={setSelectedProjectToInvite}
               setStartNewProjectQuoteDesignType={setStartNewProjectQuoteDesignType}

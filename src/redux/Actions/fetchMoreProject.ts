@@ -1,10 +1,9 @@
 import apiRequest from '../../Service/apiRequest'
 
-//fetch ininital projects, first page of project, designs and quotes only
-const fetchProject = (organizationID: string, options?:{title?: string}) => async (dispatch: any) => {
-  let projects : any[] = [];
+//fetch more projects, first page of project, designs and quotes only
+const fetchMoreProject = (organizationID: string, projects: any, options?:{title?: string, page: number}) => async (dispatch: any) => {
       const projectRes = await apiRequest({
-        url: `/api/fhapp-service/projects/${organizationID}?page=0&limit=20${options?.title? `&title=${options.title}`:''}`,
+        url: `/api/fhapp-service/projects/${organizationID}?page=0&limit=20&${options?.title? `title=${options.title}`:''}`,
         method: 'GET',
       })
       if (projectRes?.success) {
@@ -15,7 +14,7 @@ const fetchProject = (organizationID: string, options?:{title?: string}) => asyn
 
       const designRes = await apiRequest(
         {
-          url:`/api/fhapp-service/designs/${organizationID}?designOnly=yes${options?.title? `&title=${options.title}`:''}`,
+          url:`/api/fhapp-service/designs/${organizationID}?designOnly=yes&${options?.title? `title=${options.title}`:''}`,
           method:'GET'
         }
       )
@@ -28,4 +27,4 @@ const fetchProject = (organizationID: string, options?:{title?: string}) => asyn
       )
   }
 
-export default fetchProject;
+export default fetchMoreProject;

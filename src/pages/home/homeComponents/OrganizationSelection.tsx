@@ -3,13 +3,17 @@ import { DropdownListInput } from "@fulhaus/react.ui.dropdown-list-input"
 import { useSelector, useDispatch } from "react-redux"
 import { Tappstate } from "../../../redux/reducers"
 import {fetchProject} from '../../../redux/Actions'
-const OrganizationSelection = () =>{
+type OrganizationSelectionProps = {
+    clearHomePageScrollState: ()=>void
+}
+const OrganizationSelection = ({clearHomePageScrollState}:OrganizationSelectionProps) =>{
     const options:any = useSelector((state: Tappstate) => state.allOrganizations)?.map(each => each.name);
     const userRoleOrganizations = useSelector((state: Tappstate) => state?.userRole)?.organizations;
     const allOrganizations = useSelector((state: Tappstate) => state?.allOrganizations);
     const dispatch = useDispatch();
     useEffect(() => {
         if(allOrganizations){
+        clearHomePageScrollState();
         const firstOrganizationID = allOrganizations? allOrganizations[0]?._id : undefined;
         const firstOrganizationRole = userRoleOrganizations?.filter(each => each.organization?._id === firstOrganizationID)[0]?.role[0] ?userRoleOrganizations?.filter(each => each.organization?._id === firstOrganizationID)[0]?.role[0] : undefined;
         dispatch(fetchProject(firstOrganizationID));
@@ -21,6 +25,7 @@ const OrganizationSelection = () =>{
     }, [allOrganizations])
     
     const oncurrentOrgIDChange = (v: string) => {
+        clearHomePageScrollState();
         const organizationID = allOrganizations?.filter(each => each.name === v)[0]?._id;
         const organizationRole = userRoleOrganizations?.filter(each => each.organization.name === v)[0]?.role[0] ? userRoleOrganizations?.filter(each => each.organization.name === v)[0]?.role[0] : undefined;
         dispatch(fetchProject(organizationID));
