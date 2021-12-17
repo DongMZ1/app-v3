@@ -1,6 +1,7 @@
 import "./Home.scss";
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect} from "react";
+import debounce from 'lodash.debounce'
+import { useSelector, useDispatch } from 'react-redux'
 import apiRequest from '../../Service/apiRequest';
 import { Tappstate } from "../../redux/reducers";
 import { ReactComponent as FulhausIcon } from "../../styles/images/fulhaus.svg";
@@ -17,6 +18,7 @@ import InvitePeople from "./homeComponents/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDesign"
 import OrganizationSelection from './homeComponents/OrganizationSelection'
+import { fetchMoreProject } from "../../redux/Actions";
 const Home = () => {
   const [StartNewProjectQuoteDesignType, setStartNewProjectQuoteDesignType] = useState<'design' | 'quote' | 'project'>('project')
   const [showStartNewProjectQuotoDesign, setshowStartNewProjectQuotoDesign] = useState(false);
@@ -32,9 +34,9 @@ const Home = () => {
   //copy the all of that specific project/quote/design info
   const [ProjectQuoteDesignInfoNeedDuplicate, setProjectQuoteDesignInfoNeedDuplicate] = useState<any>()
   const state = useSelector((state: Tappstate) => state);
+  const dispatch = useDispatch();
 
-  const currentOrgName = state?.allOrganizations?.filter(each => each._id === state.currentOrgID)? state?.allOrganizations?.filter(each => each._id === state.currentOrgID)[0]?.name : '';
-  console.log(currentOrgName);
+  const currentOrgName = state?.allOrganizations?.filter(each => each._id === state.currentOrgID) ? state?.allOrganizations?.filter(each => each._id === state.currentOrgID)[0]?.name : '';
 
   const logout = async () => {
     const res = await apiRequest(
@@ -62,17 +64,19 @@ const Home = () => {
     }
     setshowStartNewProjectQuotoDesign(true);
   }
-
-  const infiniteScroll = () => {
+  const infiniteScrollCallback = () => {
     if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && state.projects) {
-        setshowLoadingMessage(true);
-        setTimeout(() => {
-          //dispatch fetch more
-          setpageCount(pageCount + 1);
-          setshowLoadingMessage(false);
-        }, 1000)
-      }
+        //dispatch fetch more
+        if (state.currentOrgID) {
+          dispatch(fetchMoreProject(state.currentOrgID, state.projects, {
+            page: pageCount
+          }))
+        }
+        console.log(pageCount);
+        setpageCount(state => state + 1);
     }
+  };
+  const infiniteScroll = debounce(infiniteScrollCallback, 1000);
 
   const sortByDate = (arr: any[] | null, sorted: boolean) => {
     if (sorted) {
@@ -85,7 +89,7 @@ const Home = () => {
 
   const clearHomePageScrollState = () => {
     //reset the page count index
-     setpageCount(1);
+    setpageCount(1);
     //set search keyword to none
     setsearchKeyWord('');
   }

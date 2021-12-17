@@ -1,5 +1,5 @@
 import apiRequest from '../../Service/apiRequest'
-
+import produce from 'immer';
 //fetch ininital projects, first page of project, designs and quotes only
 const fetchProject = (organizationID: string, options?:{title?: string}) => async (dispatch: any) => {
   let projects : any[] = [];
@@ -8,7 +8,11 @@ const fetchProject = (organizationID: string, options?:{title?: string}) => asyn
         method: 'GET',
       })
       if (projectRes?.success) {
-        projects = projects.concat(projectRes.projects)
+        //add type = 'project' property for project
+        const projectList = produce(projectRes.projects, (draft: any) => {
+          draft.forEach((each: any) => each.type = 'project')
+        })
+        projects = projects.concat(projectList)
       } else {
         console.log('fetch project failed, please check fetchProject.tsx')
       }
@@ -19,6 +23,14 @@ const fetchProject = (organizationID: string, options?:{title?: string}) => asyn
           method:'GET'
         }
       )
+      if(designRes.success){
+        const designList = produce(designRes.projects, (draft: any) => {
+          draft.forEach((each: any) => each.type = 'design')
+        })
+        projects = projects.concat(designList)
+      }else{
+        console.log('fetch design failed, please check fetchProject.tsx')
+      }
 
       dispatch(
         {

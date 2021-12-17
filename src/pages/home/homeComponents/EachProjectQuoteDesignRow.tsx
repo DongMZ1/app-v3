@@ -150,7 +150,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             {projectRole !== ('viewer' || 'editor') && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
-                        listWrapperClassName={projectRole === 'admin' ? '' : 'last-child-red'}
+                        listWrapperClassName={projectRole === 'admin w-max-content' ? '' : 'last-child-red w-max-content'}
                         onSelect={v => handleDropDown(v)}
                         wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
                         suffixIcon={<div>···</div>}

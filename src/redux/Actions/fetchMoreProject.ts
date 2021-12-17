@@ -1,23 +1,20 @@
 import apiRequest from '../../Service/apiRequest'
-
+import produce from 'immer';
 //fetch more projects, first page of project, designs and quotes only
 const fetchMoreProject = (organizationID: string, projects: any, options?:{title?: string, page: number}) => async (dispatch: any) => {
       const projectRes = await apiRequest({
-        url: `/api/fhapp-service/projects/${organizationID}?page=0&limit=20&${options?.title? `title=${options.title}`:''}`,
+        url: `/api/fhapp-service/projects/${organizationID}?page=${options?.page}&limit=20&${options?.title? `title=${options.title}`:''}`,
         method: 'GET',
       })
       if (projectRes?.success) {
-        projects = projects.concat(projectRes.projects)
+        //add type = 'project' property for project
+        const projectList = produce(projectRes.projects, (draft: any) => {
+            draft.forEach((each: any) => each.type = 'project')
+          })
+        projects = projects.concat(projectList)
       } else {
         console.log('fetch project failed, please check fetchProject.tsx')
       }
-
-      const designRes = await apiRequest(
-        {
-          url:`/api/fhapp-service/designs/${organizationID}?designOnly=yes&${options?.title? `title=${options.title}`:''}`,
-          method:'GET'
-        }
-      )
 
       dispatch(
         {
