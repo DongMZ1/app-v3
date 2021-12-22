@@ -23,23 +23,23 @@ const SelectAll = () => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofGroup');
-                    }} className='flex w-40 py-1 cursor-pointer'><div className='my-auto'>Of a group</div><AiOutlineRight className='my-auto ml-auto' /></div>
+                    }} className='flex w-40 py-2 cursor-pointer'><div className='my-auto'>Of a group</div><AiOutlineRight className='my-auto ml-auto' /></div>
                     <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofUnit');
-                    }} className='flex w-40 py-1 cursor-pointer'><div className='my-auto'>Of a Unit</div><AiOutlineRight className='my-auto ml-auto' /></div>
+                    }} className='flex w-40 py-2 cursor-pointer'><div className='my-auto'>Of a Unit</div><AiOutlineRight className='my-auto ml-auto' /></div>
                     <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofRoomType');
-                    }} className='flex w-40 py-1 text-sm cursor-pointer'><div className='my-auto'>Of a Room Type</div><AiOutlineRight className='my-auto ml-auto' /></div>
+                    }} className='flex w-40 py-2 text-sm cursor-pointer'><div className='my-auto'>Of a Room Type</div><AiOutlineRight className='my-auto ml-auto' /></div>
                 </ClickOutsideAnElementHandler>
             }
             {/**----------------Second select specific page ------------------------------------------------------------ */}
             {
                 showselectPage && selectPageType === 'ofGroup' && <>
-                    <div className='flex my-1'><BsArrowLeft onClick={() => {
+                    <div className='flex my-2'><BsArrowLeft onClick={() => {
                         setshowselectPage(false);
                         setshowGroupUnitRoomMenu(true);
                         setselectPageType(undefined)
@@ -91,7 +91,7 @@ const SelectAll = () => {
             }
             {
                 showselectPage && selectPageType === 'ofUnit' && <>
-                    <div className='flex my-1'><BsArrowLeft onClick={() => {
+                    <div className='flex my-2'><BsArrowLeft onClick={() => {
                         setshowselectPage(false);
                         setshowGroupUnitRoomMenu(true);
                         setselectPageType(undefined)
@@ -164,7 +164,7 @@ const SelectAll = () => {
             }
             {
                 showselectPage && selectPageType === 'ofRoomType' && <>
-                    <div className='flex my-1'><BsArrowLeft onClick={() => {
+                    <div className='flex my-2'><BsArrowLeft onClick={() => {
                         setshowselectPage(false);
                         setshowGroupUnitRoomMenu(true);
                         setselectPageType(undefined)
@@ -180,6 +180,27 @@ const SelectAll = () => {
                             setroomTypeCheckList(state => [...state, 'Dining Room'])
                         } else {
                             setroomTypeCheckList(state => state.filter(each => each !== 'Dining Room'))
+                        }
+                    }} />
+                    <Checkbox className='my-2' label='BedRoom' checked={roomTypeCheckList.includes('BedRoom')} onChange={(v) => {
+                        if (v) {
+                            setroomTypeCheckList(state => [...state, 'BedRoom'])
+                        } else {
+                            setroomTypeCheckList(state => state.filter(each => each !== 'BedRoom'))
+                        }
+                    }} />
+                    <Checkbox className='my-2' label='Living Room' checked={roomTypeCheckList.includes('Living Room')} onChange={(v) => {
+                        if (v) {
+                            setroomTypeCheckList(state => [...state, 'Living Room'])
+                        } else {
+                            setroomTypeCheckList(state => state.filter(each => each !== 'Living Room'))
+                        }
+                    }} />
+                    <Checkbox className='my-2' label='Living Room' checked={roomTypeCheckList.includes('BathRoom')} onChange={(v) => {
+                        if (v) {
+                            setroomTypeCheckList(state => [...state, 'BathRoom'])
+                        } else {
+                            setroomTypeCheckList(state => state.filter(each => each !== 'BathRoom'))
                         }
                     }} />
                     <div className='flex my-2'>

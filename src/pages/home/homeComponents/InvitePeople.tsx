@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./InvitePeople.scss";
-import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
+import produce from 'immer'
 import { ImCross } from 'react-icons/im'
 import { useSelector, useDispatch } from 'react-redux';
 import { showMessageAction } from "../../../redux/Actions";
@@ -108,7 +108,10 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
           <div className='w-1/12'><Button disabled={peopleKeyWord === ""} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         {peopleList?.map(each =>
-          <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role[0]} />
+          <InvitePeopleUserRow
+            peopleList={peopleList}
+            setpeopleList={setpeopleList}
+            projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role[0]} />
         )}
       </div>
     </div>
@@ -124,19 +127,106 @@ type InvitePeopleUserRowProps = {
   role: string;
   eachUserID: string;
   projectID?: string;
+  peopleList: any;
+  setpeopleList: React.Dispatch<React.SetStateAction<any>>;
 }
-const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID }: InvitePeopleUserRowProps) => {
+const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleList, setpeopleList }: InvitePeopleUserRowProps) => {
   const state = useSelector((state: Tappstate) => state);
-  const myRole = useGetProjectRole(projectID? projectID : '')
+  const myRole = useGetProjectRole(projectID ? projectID : '')
+  const dispatch = useDispatch();
   let optionList = [''];
-  if(myRole === 'admin'){
-    optionList = ['editor','viewer', 'remove user']
+  if (myRole === 'admin') {
+    optionList = ['editor', 'viewer', 'remove user']
   }
-  if(myRole === 'owner'){
+  if (myRole === 'owner') {
     optionList = ['admin', 'editor', 'viewer', 'remove user']
   }
-  const dropdownListAction = (v: string) => {
-    console.log(v);
+  const dropdownListAction = async (v: string) => {
+    switch (v) {
+      case 'admin':
+      case 'editor':
+      case 'viewer':
+        // organization level
+        if (!projectID) {
+          const res = await apiRequest(
+            {
+              url: `/api/fhapp-service/organization/modify-organization-role/${state.currentOrgID}/${eachUserID}`,
+              method: 'PATCH',
+              body: {
+                newRole: v
+              }
+            }
+          )
+          if (res?.success) {
+            const newPeopleList = produce(peopleList, (draftState: any) => {
+              if (draftState.filter((each: any) => each._id === eachUserID).length > 0) {
+                draftState.filter((each: any) => each._id === eachUserID)[0].role[0] = v;
+              }
+            })
+            setpeopleList(newPeopleList);
+          } else {
+            dispatch(showMessageAction(true, res?.message));
+          }
+        }
+        //project level
+        if (projectID) {
+          const res = await apiRequest(
+            {
+              url: `/api/fhapp-service/organization/modify-project-role/${state.currentOrgID}/${projectID}/${eachUserID}`,
+              method: 'PATCH',
+              body: {
+                newRole: v
+              }
+            }
+          )
+          if (res?.success) {
+            const newPeopleList = produce(peopleList, (draftState: any) => {
+              if (draftState.filter((each: any) => each._id === eachUserID).length > 0) {
+                draftState.filter((each: any) => each._id === eachUserID)[0].role[0] = v;
+              }
+            })
+            setpeopleList(newPeopleList);
+          } else {
+            dispatch(showMessageAction(true, res?.message));
+          }
+        }
+        break;
+      case 'remove user':
+        //remove user from organization level
+        if(!projectID){
+          const res = await apiRequest(
+            {
+              url:`/api/fhapp-service/organization/remove-from-organization/${state.currentOrgRole}/${eachUserID}`,
+              method:'DELETE'
+            }
+          )
+          if (res?.success) {
+            const newPeopleList = produce(peopleList, (draftState: any) => 
+              draftState.filter((each: any) => each._id !== eachUserID)
+            )
+            setpeopleList(newPeopleList);
+          } else {
+            dispatch(showMessageAction(true, res?.message));
+          }
+        }
+        if(projectID){
+          const res = await apiRequest(
+            {
+              url:`/api/fhapp-service/organization/remove-from-project/${state.currentOrgID}/${projectID}/${eachUserID}`,
+              method:'DELETE'
+            }
+          )
+          if (res?.success) {
+            const newPeopleList = produce(peopleList, (draftState: any) => 
+              draftState.filter((each: any) => each._id !== eachUserID)
+            )
+            setpeopleList(newPeopleList);
+          } else {
+            dispatch(showMessageAction(true, res?.message));
+          }
+        }
+        break;
+    }
   }
 
   return <div className='flex h-8 pr-8 my-2'>
