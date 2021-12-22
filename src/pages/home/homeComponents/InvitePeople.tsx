@@ -196,7 +196,7 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
         if(!projectID){
           const res = await apiRequest(
             {
-              url:`/api/fhapp-service/organization/remove-from-organization/${state.currentOrgRole}/${eachUserID}`,
+              url:`/api/fhapp-service/organization/remove-from-organization/${state.currentOrgID}/${eachUserID}`,
               method:'DELETE'
             }
           )
