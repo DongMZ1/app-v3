@@ -6,6 +6,7 @@
     "@craco/craco": "^6.4.0",
     "@fulhaus/react.ui.action-modal": "0.0.16",
     "@fulhaus/react.ui.button": "0.0.10",
+    "@fulhaus/react.ui.checkbox": "0.0.6",
     "@fulhaus/react.ui.click-outside-an-element-handler": "0.0.4",
     "@fulhaus/react.ui.colors": "0.0.11",
     "@fulhaus/react.ui.dropdown-list-input": "0.0.6",

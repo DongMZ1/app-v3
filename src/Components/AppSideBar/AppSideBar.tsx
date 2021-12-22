@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import './AppSideBar.scss'
+import SelectAll from './AppSideBarComponents/SelectAll';
 import { AiOutlineUnorderedList, AiOutlineLeft } from 'react-icons/ai';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 const AppSideBar = () => {
@@ -17,6 +18,7 @@ const AppSideBar = () => {
                 <AiOutlineLeft size={22} />
             </div>
         </div>
+        <SelectAll />
     </div> : <div className='w-auto px-4 py-4 border-r border-black border-solid'>
         <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
     </div>)
