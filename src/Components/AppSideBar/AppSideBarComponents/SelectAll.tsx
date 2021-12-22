@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button } from '@fulhaus/react.ui.button';
 import { AiOutlineRight } from 'react-icons/ai';
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
-import {Checkbox} from '@fulhaus/react.ui.checkbox'
+import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { BsArrowLeft } from 'react-icons/bs'
 const SelectAll = () => {
     const [showDropDown, setshowDropDown] = useState(false);
@@ -16,18 +16,18 @@ const SelectAll = () => {
         {showDropDown && <div className='fixed px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
             {/**----------------first Mene page ------------------------------------------------------------ */}
             {
-                showGroupUnitRoomMenu && <ClickOutsideAnElementHandler onClickedOutside={()=> setshowDropDown(false)}>
-                    <div onClick={() =>{
+                showGroupUnitRoomMenu && <ClickOutsideAnElementHandler onClickedOutside={() => setshowDropDown(false)}>
+                    <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofGroup');
                     }} className='flex w-40 py-1 cursor-pointer'><div className='my-auto'>Of a group</div><AiOutlineRight className='my-auto ml-auto' /></div>
-                    <div onClick={() =>{
+                    <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofUnit');
                     }} className='flex w-40 py-1 cursor-pointer'><div className='my-auto'>Of a Unit</div><AiOutlineRight className='my-auto ml-auto' /></div>
-                    <div onClick={() =>{
+                    <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofRoomType');
@@ -37,44 +37,68 @@ const SelectAll = () => {
             {/**----------------Second select specific page ------------------------------------------------------------ */}
             {
                 showselectPage && selectPageType === 'ofGroup' && <>
-                    <div className='flex my-1'><BsArrowLeft onClick={() =>{
+                    <div className='flex my-1'><BsArrowLeft onClick={() => {
                         setshowselectPage(false);
                         setshowGroupUnitRoomMenu(true);
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a group</div></div>
                     {
-                        true? <div className='my-1 cursor-pointer text-link'>Select All</div> : <div className='my-1 cursor-pointer text-link'>Deselect All</div>
+                        groupCheckList.length === 4 ?
+                            <div onClick={() => setgroupCheckList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
+                            :
+                            <div onClick={() => setgroupCheckList(['Group-1BR', 'Group-2BR', 'Group-3BR', 'Group-Studio'])} className='my-1 cursor-pointer text-link'>Select All</div>
                     }
-                    <Checkbox className='my-1' label='Group-1BR' checked={groupCheckList.includes('Group-1BR')} onChange={(v)=>{
-                        if(v){
+                    <Checkbox className='my-2' label='Group-1BR' checked={groupCheckList.includes('Group-1BR')} onChange={(v) => {
+                        if (v) {
                             setgroupCheckList(state => [...state, 'Group-1BR'])
-                        }else{
-                            setgroupCheckList(state => state.filter(each => each!=='Group-1BR'))
+                        } else {
+                            setgroupCheckList(state => state.filter(each => each !== 'Group-1BR'))
+                        }
+                    }} />
+                    <Checkbox className='my-2' label='Group-2BR' checked={groupCheckList.includes('Group-2BR')} onChange={(v) => {
+                        if (v) {
+                            setgroupCheckList(state => [...state, 'Group-2BR'])
+                        } else {
+                            setgroupCheckList(state => state.filter(each => each !== 'Group-2BR'))
+                        }
+                    }} />
+                    <Checkbox className='my-2' label='Group-3BR' checked={groupCheckList.includes('Group-3BR')} onChange={(v) => {
+                        if (v) {
+                            setgroupCheckList(state => [...state, 'Group-3BR'])
+                        } else {
+                            setgroupCheckList(state => state.filter(each => each !== 'Group-3BR'))
+                        }
+                    }} />
+                    <Checkbox className='my-2' label='Group-Studio' checked={groupCheckList.includes('Group-Studio')} onChange={(v) => {
+                        if (v) {
+                            setgroupCheckList(state => [...state, 'Group-Studio'])
+                        } else {
+                            setgroupCheckList(state => state.filter(each => each !== 'Group-Studio'))
                         }
                     }} />
                 </>
             }
             {
                 showselectPage && selectPageType === 'ofUnit' && <>
-                    <div className='flex my-1'><BsArrowLeft onClick={() =>{
+                    <div className='flex my-1'><BsArrowLeft onClick={() => {
                         setshowselectPage(false);
                         setshowGroupUnitRoomMenu(true);
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Unit</div></div>
                     {
-                        true? <div className='my-1 cursor-pointer text-link'>Select All</div> : <div className='my-1 cursor-pointer text-link'>Deselect All</div>
+                        true ? <div className='my-1 cursor-pointer text-link'>Select All</div> : <div className='my-1 cursor-pointer text-link'>Deselect All</div>
                     }
                 </>
             }
             {
                 showselectPage && selectPageType === 'ofRoomType' && <>
-                    <div className='flex my-1'><BsArrowLeft onClick={() =>{
+                    <div className='flex my-1'><BsArrowLeft onClick={() => {
                         setshowselectPage(false);
                         setshowGroupUnitRoomMenu(true);
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Room Type</div></div>
                     {
-                        true? <div className='my-1 cursor-pointer text-link'>Select All</div> : <div className='my-1 cursor-pointer text-link'>Deselect All</div>
+                        true ? <div className='my-1 cursor-pointer text-link'>Select All</div> : <div className='my-1 cursor-pointer text-link'>Deselect All</div>
                     }
                 </>
             }
