@@ -77,7 +77,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
       method: 'GET'
     })
     if (res?.success) {
-      setpeopleList(res?.userProfiles?.data);
+      setpeopleList(res?.organizationUsers);
     }
     if (!res?.success) {
       console.log('fetch organization users failed')
@@ -90,7 +90,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
       method: 'GET'
     });
     if (res?.success) {
-      setpeopleList(res?.userProfiles?.data);
+      setpeopleList(res?.projectUsers);
     }
     if (!res?.success) {
       console.log('fetch organization users for specific project failed')
@@ -108,7 +108,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
           <div className='w-1/12'><Button disabled={peopleKeyWord === ""} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         {peopleList?.map(each =>
-          <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role='viewer' />
+          <InvitePeopleUserRow projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role[0]} />
         )}
       </div>
     </div>
