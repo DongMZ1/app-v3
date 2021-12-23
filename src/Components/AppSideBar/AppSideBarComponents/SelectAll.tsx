@@ -4,15 +4,27 @@ import { Button } from '@fulhaus/react.ui.button';
 import { AiOutlineRight } from 'react-icons/ai';
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
+import { Radio } from '@fulhaus/react.ui.radio'
+import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
 const SelectAll = () => {
     const [showDropDown, setshowDropDown] = useState(false);
     const [showGroupUnitRoomMenu, setshowGroupUnitRoomMenu] = useState(true);
     const [showselectPage, setshowselectPage] = useState(false);
-    const [selectPageType, setselectPageType] = useState<'ofGroup' | 'ofUnit' | 'ofRoomType' | undefined>()
-    const [groupCheckList, setgroupCheckList] = useState<string[]>([])
-    const [unitCheckList, setunitCheckList] = useState<string[]>([])
-    const [roomTypeCheckList, setroomTypeCheckList] = useState<string[]>([])
+    const [selectPageType, setselectPageType] = useState<'ofGroup' | 'ofUnit' | 'ofRoomType' | undefined>();
+    const [showAddItemPage, setshowAddItemPage] = useState(false);
+    const [addItemPageType, setaddItemPageType] = useState<'ofGroup' | 'ofUnit' | 'ofRoomType' | undefined>();
+    const [AddOrRemoveItem, setAddOrRemoveItem] = useState<'addItem' | 'removeItem'>('addItem');
+    const [groupCheckList, setgroupCheckList] = useState<string[]>([]);
+    const [unitCheckList, setunitCheckList] = useState<string[]>([]);
+    const [roomTypeCheckList, setroomTypeCheckList] = useState<string[]>([]);
+    const [selectedItem, setselectedItem] = useState<string | undefined>();
+
+    const handleAddOrRemoveItem = () => {
+        setshowDropDown(false)
+        setshowAddItemPage(false);
+        setshowGroupUnitRoomMenu(true);
+    }
     return <div className='mt-4 select-all'>
         <Button onClick={() => setshowDropDown(true)} className='select-none' variant='secondary'>Select All...</Button>
         {showDropDown && <div className='fixed px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
@@ -85,7 +97,11 @@ const SelectAll = () => {
                             setselectPageType(undefined);
                             setshowDropDown(false);
                         }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                        <Button variant='primary' className='w-20'>Next</Button>
+                        <Button disabled={groupCheckList.length === 0} onClick={() => {
+                            setshowselectPage(false);
+                            setaddItemPageType('ofGroup');
+                            setshowAddItemPage(true);
+                        }} variant='primary' className='w-20'>Next</Button>
                     </div>
                 </>
             }
@@ -158,7 +174,11 @@ const SelectAll = () => {
                             setselectPageType(undefined);
                             setshowDropDown(false);
                         }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                        <Button variant='primary' className='w-20'>Next</Button>
+                        <Button disabled={unitCheckList.length === 0} onClick={() => {
+                            setshowselectPage(false);
+                            setaddItemPageType('ofUnit');
+                            setshowAddItemPage(true);
+                        }} variant='primary' className='w-20'>Next</Button>
                     </div>
                 </>
             }
@@ -210,7 +230,54 @@ const SelectAll = () => {
                             setselectPageType(undefined);
                             setshowDropDown(false);
                         }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                        <Button variant='primary' className='w-20'>Next</Button>
+                        <Button disabled={roomTypeCheckList.length === 0} onClick={() => {
+                            setshowselectPage(false);
+                            setaddItemPageType('ofRoomType');
+                            setshowAddItemPage(true);
+                        }} variant='primary' className='w-20'>Next</Button>
+                    </div>
+                </>
+            }
+            {/**----------------third page add item for unit or group or type ------------------------------------------------------ */}
+            {
+                showAddItemPage && <>
+                    <div className='flex my-2'><BsArrowLeft onClick={() => {
+                        setshowAddItemPage(false);
+                        setshowselectPage(true);
+                    }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>
+                            {addItemPageType === 'ofGroup' && `${groupCheckList.length} groups selected`}
+                            {addItemPageType === 'ofUnit' && `${unitCheckList.length} units selected`}
+                            {addItemPageType === 'ofRoomType' && `${roomTypeCheckList.length} rooms selected`}
+                        </div></div>
+                    <div className='flex my-4'>
+                        {addItemPageType === 'ofGroup' && <>
+                            <Radio className='mr-4' label='Add Item' checked={AddOrRemoveItem === 'addItem'} onChange={() => setAddOrRemoveItem('addItem')} />
+                            <Radio label='Remove Item' checked={AddOrRemoveItem === 'removeItem'} onChange={() => setAddOrRemoveItem('removeItem')} />
+                        </>}
+                        {addItemPageType === 'ofUnit' && <>
+                            <Radio className='mr-4' label='Add Item' checked={AddOrRemoveItem === 'addItem'} onChange={() => setAddOrRemoveItem('addItem')} />
+                            <Radio label='Remove Item' checked={AddOrRemoveItem === 'removeItem'} onChange={() => setAddOrRemoveItem('removeItem')} />
+                        </>}
+                        {addItemPageType === 'ofRoomType' && <>
+                            <Radio className='mr-4' label='Add Item' checked={AddOrRemoveItem === 'addItem'} onChange={() => setAddOrRemoveItem('addItem')} />
+                            <Radio label='Remove Item' checked={AddOrRemoveItem === 'removeItem'} onChange={() => setAddOrRemoveItem('removeItem')} />
+                        </>}
+                    </div>
+                    <div>item</div>
+                    <DropdownListInput onSelect={(v) => setselectedItem(v)} placeholder='SELECT AN ITEM' options={['Coffee Table', 'Tablet', 'Sofa']} />
+                    <div className='flex mt-4 mb-2'>
+                        <Button onClick={() => {
+                            setshowDropDown(false)
+                            setshowAddItemPage(false);
+                            setshowGroupUnitRoomMenu(true);
+                        }} className='w-24 mr-4' variant='secondary'>Cancel</Button>
+                        <Button onClick={() => {
+                            handleAddOrRemoveItem()
+                        }} variant='primary' className='w-24'>
+                            {
+                                AddOrRemoveItem === 'addItem' ? 'Add' : 'Remove'
+                            }
+                        </Button>
                     </div>
                 </>
             }
