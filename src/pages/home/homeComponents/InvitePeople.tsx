@@ -81,6 +81,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
         )}
       </div>
   );
+  
 };
 
 export default InvitePeople;
