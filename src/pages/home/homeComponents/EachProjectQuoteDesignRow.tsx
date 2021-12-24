@@ -1,39 +1,76 @@
 //for scss, please refer Home.scss
 import React, { useState } from 'react'
 import { useHistory, Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
-
+import { useGetProjectRole } from '../../../Hooks/useGetProjectRole'
+import { deleteSpecificProject, renameSpecificProjectAction } from '../../../redux/Actions'
+import { Tappstate } from '../../../redux/reducers';
 type EachProjectQuoteDesignRowProps = {
-    name: string,
-    projectID: string,
-    type: 'design' | 'project' | 'quote',
-    lastUpdated: string,
-    lastEditby: string,
-    createdOn: string,
-    createdBy: string,
-    totalUnits?: number | string,
+    thisProject: {
+        title: string
+        _id: string
+        type: 'design' | 'project' | 'quote'
+        lastUpdated: string | undefined;
+        lastEditedBy: string | undefined;
+        createdAt: string;
+        createdBy: string;
+        totalUnits?: number | string,
+        projectAddress: null | {
+            apt: string,
+            street: string,
+            city: string,
+            state: string,
+            postalCode: string,
+            country: string,
+        }
+        budget: string;
+        currency: string;
+    },
     showInvitePeople?: () => void,
-    setSelectedProjectToInvite?: (object: { name: string, id: string }) => void
+    setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
+    setStartNewProjectQuoteDesignType: React.Dispatch<React.SetStateAction<"design" | "project" | "quote">>
+    setshowStartNewProjectQuotoDesign: React.Dispatch<React.SetStateAction<boolean>>
+    setProjectQuoteDesignInfoNeedDuplicate: React.Dispatch<React.SetStateAction<any>>
 }
-const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEditby, createdOn, createdBy, totalUnits, showInvitePeople, setSelectedProjectToInvite }: EachProjectQuoteDesignRowProps) => {
-    const history = useHistory();
+const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedProjectToInvite, setStartNewProjectQuoteDesignType, setshowStartNewProjectQuotoDesign, setProjectQuoteDesignInfoNeedDuplicate }: EachProjectQuoteDesignRowProps) => {
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
-    const [renameProjectName, setrenameProjectName] = useState(name)
+    const [renameProjectTitle, setrenameProjectTitle] = useState(thisProject.title);
+    const history = useHistory();
+    const projectRole = useGetProjectRole(thisProject._id);
+    const dispatch = useDispatch();
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const projects = useSelector((state: Tappstate) => state.projects);
     let optionList = [''];
     let linkURL = '';
-    if (type === 'design') {
-        optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
-        linkURL = `/design-only?id=${projectID}`
+    if (thisProject.type === 'design') {
+        if (projectRole === 'admin') {
+            optionList = ['Duplicate Design', 'Rename Design', 'Share Design'];
+        }
+        if (projectRole === 'owner') {
+            optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
+        }
+        linkURL = `/design-only?id=${thisProject._id}`
     }
-    if (type === 'quote') {
-        optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
-        linkURL = `/quote-only?id=${projectID}`
+    if (thisProject.type === 'quote') {
+        if (projectRole === 'admin') {
+            optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote'];
+        }
+        if (projectRole === 'owner') {
+            optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
+        }
+        linkURL = `/quote-only?id=${thisProject._id}`
     }
-    if (type === 'project') {
-        optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
-        linkURL = `/project/quote?id=${projectID}`
+    if (thisProject.type === 'project') {
+        if (projectRole === 'admin') {
+            optionList = ['Duplicate Project', 'Rename Project', 'Share Project'];
+        }
+        if (projectRole === 'owner') {
+            optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
+        }
+        linkURL = `/project/quote?id=${thisProject._id}`
     }
 
     const handleDropDown = (v: string) => {
@@ -41,6 +78,9 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
             case 'Duplicate Project':
             case 'Duplicate Quote':
             case 'Duplicate Design':
+                setProjectQuoteDesignInfoNeedDuplicate(thisProject);
+                setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type: 'project');
+                setshowStartNewProjectQuotoDesign(true);
                 break;
             case 'Rename Project':
             case 'Rename Quote':
@@ -52,8 +92,9 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
             case 'Share Project':
                 if (setSelectedProjectToInvite) {
                     setSelectedProjectToInvite({
-                        name,
-                        id: projectID
+                        name: thisProject.title,
+                        id: thisProject._id,
+                        userRole: projectRole
                     })
                 }
                 if (showInvitePeople) { showInvitePeople(); }
@@ -66,47 +107,61 @@ const EachProjectQuoteDesignRow = ({ name, projectID, type, lastUpdated, lastEdi
         }
     }
 
+    const renameThisProject = async () => {
+        dispatch(renameSpecificProjectAction(
+            renameProjectTitle, currentOrgID, thisProject._id, projects
+        ))
+        setshowRenameProject(false);
+    }
+
     return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
         <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
-                <input value={renameProjectName} onChange={e => setrenameProjectName(e.target.value)} onKeyDown={e => {
+                <input value={renameProjectTitle} onChange={e => setrenameProjectTitle(e.target.value)} onKeyDown={e => {
                     if (e.code === 'Enter') {
-                        setshowRenameProject(false);
+                        renameThisProject();
                     }
-                }} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} />
+                }} className='px-2 my-auto' type='text' onClick={e => e.stopPropagation()} onBlur={() => renameThisProject()} />
                 :
-                <div className='my-auto'>{name}</div>
+                <div className='my-auto'>{thisProject.title}</div>
             }
         </div>
         <div onClick={() => history.push(linkURL)} className='my-auto cursor-pointer width-10-percent'>
             {
-                type === "design" && "Design Only"
+                thisProject.type === "design" && "Design Only"
             }
             {
-                type === 'project' && "Project"
+                (thisProject.type === 'project') && "Project"
             }
             {
-                type === "quote" && "Quote Only"
+                thisProject.type === "quote" && "Quote Only"
             }
         </div>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{lastUpdated}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{lastEditby}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdOn}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{createdBy}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastUpdated ? thisProject.lastUpdated : 'Unknown'}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></Link>
+        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></Link>
         <div className='flex width-8-percent'>
-            <div className='my-auto'>{totalUnits}</div>
-            <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
-                <DropdownListInput
-                    listWrapperClassName='last-child-red'
-                    onSelect={v => handleDropDown(v)}
-                    wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
-                    suffixIcon={<div>···</div>}
-                    listWrapperFloatDirection='left' disabled={true}
-                    options={optionList} />
-            </div>
+            <div className='my-auto'>{thisProject.totalUnits ? thisProject.totalUnits : 0}</div>
+            {projectRole !== ('viewer' || 'editor') && projectRole &&
+                <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
+                    <DropdownListInput
+                        listWrapperClassName={projectRole === 'admin w-max-content' ? '' : 'last-child-red w-max-content'}
+                        onSelect={v => handleDropDown(v)}
+                        wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
+                        suffixIcon={<div>···</div>}
+                        listWrapperFloatDirection='left' disabled={true}
+                        options={optionList} />
+                </div>
+            }
         </div>
     </div>
-        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${type}`} subText={`Are you sure you want to permanently delete ${name} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => { }} />
+        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type? thisProject.type : 'Project'}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
+            if (currentOrgID) {
+                dispatch(deleteSpecificProject(currentOrgID, thisProject._id, projects));
+                setshowConfirmDeleteModal(false);
+            }
+        }} />
     </>
 
 }
