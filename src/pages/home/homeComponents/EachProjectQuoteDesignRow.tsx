@@ -52,7 +52,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         if (projectRole === 'owner') {
             optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
         }
-        linkURL = `/design-only?id=${thisProject._id}`
+        linkURL = `/design-only`
     }
     if (thisProject.type === 'quote') {
         if (projectRole === 'admin') {
@@ -61,7 +61,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         if (projectRole === 'owner') {
             optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
         }
-        linkURL = `/quote-only?id=${thisProject._id}`
+        linkURL = `/quote-only`
     }
     if (thisProject.type === 'project') {
         if (projectRole === 'admin') {
@@ -70,7 +70,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         if (projectRole === 'owner') {
             optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
         }
-        linkURL = `/project/quote?id=${thisProject._id}`
+        linkURL = `/project/quote`
     }
 
     const handleDropDown = (v: string) => {
@@ -114,8 +114,16 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         setshowRenameProject(false);
     }
 
+    const selectThisProject = () => {
+        dispatch({
+            type: 'selectedProject',
+            payload: thisProject 
+        })
+        history.push(linkURL)
+    }
+
     return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
-        <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
+        <div onClick={() => selectThisProject()} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
                 <input value={renameProjectTitle} onChange={e => setrenameProjectTitle(e.target.value)} onKeyDown={e => {
                     if (e.code === 'Enter') {
@@ -126,7 +134,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 <div className='my-auto'>{thisProject.title}</div>
             }
         </div>
-        <div onClick={() => history.push(linkURL)} className='my-auto cursor-pointer width-10-percent'>
+        <div onClick={() => selectThisProject()} className='my-auto cursor-pointer width-10-percent'>
             {
                 thisProject.type === "design" && "Design Only"
             }
@@ -137,16 +145,16 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 thisProject.type === "quote" && "Quote Only"
             }
         </div>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastUpdated ? thisProject.lastUpdated : 'Unknown'}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></Link>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastUpdated ? thisProject.lastUpdated : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject.totalUnits ? thisProject.totalUnits : 0}</div>
             {projectRole !== ('viewer' || 'editor') && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
-                        listWrapperClassName={projectRole === 'admin w-max-content' ? '' : 'last-child-red w-max-content'}
+                        listWrapperClassName={projectRole === 'admin' ? 'w-max-content' : 'last-child-red w-max-content'}
                         onSelect={v => handleDropDown(v)}
                         wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
                         suffixIcon={<div>···</div>}

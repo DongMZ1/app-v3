@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import "./Project.scss";
-
 import { Link, useHistory } from 'react-router-dom'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useSelector, useDispatch } from 'react-redux'
-import apiRequest from '../../Service/apiRequest';
+import { Tappstate } from '../../redux/reducers';
+import {deleteSpecificProject} from '../../redux/Actions'
+import { useGetProjectRole } from '../../Hooks/useGetProjectRole';
+import apiRequest from '../../Service/apiRequest'
+import produce from 'immer'
 import { ReactComponent as RightArrowWhiteIcon } from "../../styles/images/right-arrow-white.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
 import { ReactComponent as SaveIcon } from "../../styles/images/save.svg";
 import { ReactComponent as InformationIcon } from "../../styles/images/information.svg";
 import { ReactComponent as HistoryIcon } from "../../styles/images/history.svg";
-
 import Quote from '../../Components/Quote/Quote';
 import Design from '../../Components/Design/Design';
 import NoteModal from '../../Components/NoteModal/NoteModal';
@@ -24,8 +26,13 @@ const Project = () => {
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteProjectModal, setshowConfirmDeleteProjectModal] = useState(false);
     const [showNote, setshowNote] = useState(true);
-
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
+    const projectRole = useGetProjectRole(selectedProject?._id);
+    const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
+    const dispatch = useDispatch();
     const projectMenuOnSelect = async (v: string) => {
         switch (v) {
             case 'Rename Project':
@@ -37,7 +44,34 @@ const Project = () => {
         }
     }
     const deleteProject = async () => {
+        if(currentOrgID){
+        dispatch(deleteSpecificProject(currentOrgID, selectedProject._id, projects));
+        }
         history.push('/')
+    }
+
+    const renameProject = async () => {
+        const res = await apiRequest(
+            {
+            url: `/api/fhapp-service/project/${currentOrgID}/${selectedProject._id}`,
+            method:'PATCH',
+            body: {
+                title: projectTitle
+            }
+            }
+        )
+        if(res?.success){
+            const newSelectedProject = produce(selectedProject, (draftState: any) =>{ 
+                draftState.title = projectTitle;
+                })
+            dispatch({
+                type: 'selectedProject',
+                payload: newSelectedProject
+            })
+        }else{
+            console.log(res?.message);
+        }
+        setshowRenameProject(false);
     }
     return (<>
         {/**Project delete confirm modal */}
@@ -50,19 +84,21 @@ const Project = () => {
                     <Link className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
                     {showRenameProject ? <input onKeyDown={e => {
                         if (e.code === 'Enter') {
-                            setshowRenameProject(false);
+                            renameProject();
                         }
-                    }} className='w-40 px-2 my-auto mr-4 text-black' type='text' onClick={e => e.stopPropagation()} onBlur={() => setshowRenameProject(false)} /> :
-                        <div className='my-auto mr-4 text-lg'>PROJECT NAME</div>}
-                    <div className='hide-dropdown-list'>
-                        <DropdownListInput
-                            listWrapperClassName='last-child-red'
-                            onSelect={v => projectMenuOnSelect(v)}
-                            wrapperClassName='border-none cursor-pointer my-auto last:text-error' labelClassName='hidden'
-                            suffixIcon={<div className='text-white'>···</div>}
-                            listWrapperFloatDirection='right' disabled={true}
-                            options={['Rename Project', 'Delete Project']} />
-                    </div>
+                    }} value={projectTitle} onChange={e => setprojectTitle(e.target.value)} className='w-40 px-2 my-auto mr-4 text-black' type='text' onClick={e => e.stopPropagation()} onBlur={() => renameProject()} /> :
+                        <div className='my-auto mr-4 text-lg'>{selectedProject?.title}</div>}
+                    {(projectRole === 'admin' || projectRole === 'owner') && 
+                        <div className='hide-dropdown-list'>
+                            <DropdownListInput
+                                listWrapperClassName={projectRole === 'owner' ? 'last-child-red' :''}
+                                onSelect={v => projectMenuOnSelect(v)}
+                                wrapperClassName='border-none cursor-pointer my-auto last:text-error' labelClassName='hidden'
+                                suffixIcon={<div className='text-white'>···</div>}
+                                listWrapperFloatDirection='right' disabled={true}
+                                options={projectRole === 'owner' ? ['Rename Project', 'Delete Project'] : ['Rename Project']} />
+                        </div>
+                    }
                 </div>
                 {(window.location.href.includes('/project/quote') || window.location.href.includes('/project/design')) &&
                     <div className='flex ml-auto'>
