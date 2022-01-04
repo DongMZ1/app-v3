@@ -151,7 +151,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject.totalUnits ? thisProject.totalUnits : 0}</div>
-            {projectRole !== ('viewer' || 'editor') && projectRole &&
+            {(projectRole === ('owner') || (projectRole ==='admin')) && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
                         listWrapperClassName={projectRole === 'admin' ? 'w-max-content' : 'last-child-red w-max-content'}
