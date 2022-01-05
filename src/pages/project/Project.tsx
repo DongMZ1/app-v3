@@ -33,6 +33,11 @@ const Project = () => {
     const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
     const dispatch = useDispatch();
+    useEffect(() => {
+        window.addEventListener('beforeunload', (event) => {
+            event.returnValue = `Are you sure you want to leave?`;
+          })
+      }, [])
     useEffect(
         () =>{
             if(!selectedProject){
