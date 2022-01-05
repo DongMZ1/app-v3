@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "./Project.scss";
 import { Link, useHistory } from 'react-router-dom'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
@@ -33,11 +33,14 @@ const Project = () => {
     const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
     const dispatch = useDispatch();
-    useEffect(() => {
-        window.addEventListener('beforeunload', (event) => {
-            event.returnValue = `Are you sure you want to leave?`;
-          })
-      }, [])
+      useEffect(() => {
+        const handleUnload = (event:any) => {
+            event.preventDefault();
+            return event.returnValue = `Are you sure you want to leave?`;
+          };
+        window.addEventListener("beforeunload", handleUnload);
+        return () => window.removeEventListener("beforeunload", handleUnload);
+      }, []);
     useEffect(
         () =>{
             if(!selectedProject){
