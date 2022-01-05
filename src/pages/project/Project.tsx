@@ -34,6 +34,7 @@ const Project = () => {
     const history = useHistory();
     const dispatch = useDispatch();
       useEffect(() => {
+          //add warning for user when leave page
         const handleUnload = (event:any) => {
             event.preventDefault();
             return event.returnValue = `Are you sure you want to leave?`;
