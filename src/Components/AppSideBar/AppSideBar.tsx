@@ -19,6 +19,7 @@ const AppSideBar = () => {
             </div>
         </div>
         <SelectAll />
+        <div className='mt-2 text-sm font-ssp'>Total Units: 1</div>
     </div> : <div className='w-auto px-4 py-4 border-r border-black border-solid'>
         <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
     </div>)

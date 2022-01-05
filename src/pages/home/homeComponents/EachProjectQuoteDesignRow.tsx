@@ -115,9 +115,11 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     }
 
     const selectThisProject = () => {
+        localStorage.setItem('selectedProject', JSON.stringify({...thisProject, userRoleInThisProject: projectRole}));
+        localStorage.setItem('currentOrgID', currentOrgID? currentOrgID: '');
         dispatch({
             type: 'selectedProject',
-            payload: thisProject 
+            payload: {...thisProject, userRoleInThisProject: projectRole} 
         })
         history.push(linkURL)
     }

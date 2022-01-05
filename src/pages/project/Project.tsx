@@ -25,14 +25,34 @@ const Project = () => {
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteProjectModal, setshowConfirmDeleteProjectModal] = useState(false);
-    const [showNote, setshowNote] = useState(true);
+    const [showNote, setshowNote] = useState(false);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
-    const projectRole = useGetProjectRole(selectedProject?._id);
+    const projectRole = selectedProject?.userRoleInThisProject;
     const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
     const dispatch = useDispatch();
+    useEffect(
+        () =>{
+            if(!selectedProject){
+                const selectedProject = localStorage.getItem('selectedProject');
+                const currentOrgID = localStorage.getItem('currentOrgID');
+                if(selectedProject && currentOrgID){
+                    dispatch({
+                        type: 'selectedProject',
+                        payload: {...JSON.parse(selectedProject)}
+                    });
+                    dispatch({
+                        type: 'currentOrgID',
+                        payload: currentOrgID 
+                    });
+                }else{
+                    history.push('/')
+                }
+            }
+        },[]
+    )
     const projectMenuOnSelect = async (v: string) => {
         switch (v) {
             case 'Rename Project':
