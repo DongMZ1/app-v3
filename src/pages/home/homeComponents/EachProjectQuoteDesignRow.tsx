@@ -109,7 +109,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const renameThisProject = async () => {
         dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects
+            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type
         ))
         setshowRenameProject(false);
     }
