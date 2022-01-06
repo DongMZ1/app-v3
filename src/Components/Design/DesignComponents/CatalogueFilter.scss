@@ -1,10 +1,13 @@
 .catalogue-filter {
-  .dropdown-component-overwrite {
-    .dropdown-component-element-wrapper {
-      width: 400px !important;
+  .dropdown-list-input-overwrite {
+    .dropdown-list-input-box-wrapper {
+      font-size: 14px !important;
     }
-    .dropdown-component-label {
+    .dropdown-list-input-options {
         font-size: 14px !important;
     }
+  }
+  .w-400px {
+      width: 400px;
   }
 }
