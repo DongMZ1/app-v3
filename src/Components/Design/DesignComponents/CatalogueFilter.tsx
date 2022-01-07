@@ -79,7 +79,7 @@ const CatalogueFilter = () => {
                                         }} />)}
                                     </div>
                                 </div>
-                                <div className='flex mt-4 mb-2'>
+                                <div className='flex mt-8 mb-2'>
                                     <Button onClick={() => setshowRoomsAndStyle(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
                                     <Button className='w-24'>Apply</Button>
                                 </div>
@@ -142,7 +142,7 @@ const CatalogueFilter = () => {
                                         }} />)}
                                     </div>
                                 </div>
-                                <div className='flex mt-4 mb-2'>
+                                <div className='flex mt-8 mb-2'>
                                     <Button onClick={() => setshowSourceAvailability(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
                                     <Button className='w-24'>Apply</Button>
                                 </div>
@@ -199,7 +199,7 @@ const CatalogueFilter = () => {
                                     <div className='flex bg-white border-t border-b border-l border-black border-solid ml-7'><div className='pl-1 my-auto text-xs'>$</div></div>
                                     <input type='number' value={maxPrice} onChange={(e) => setmaxPrice(e.target.valueAsNumber)} className='py-1 text-xs border-t border-b border-r border-black border-solid w-36' />
                                 </div>
-                                <div className='flex mt-4 mb-2'>
+                                <div className='flex mt-8 mb-2'>
                                     <Button onClick={() => setshowPrice(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
                                     <Button className='w-24'>Apply</Button>
                                 </div>

@@ -27,6 +27,7 @@ type EachProjectQuoteDesignRowProps = {
         }
         budget: string;
         currency: string;
+        quoteID: string;
     },
     showInvitePeople?: () => void,
     setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
@@ -109,7 +110,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const renameThisProject = async () => {
         dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type
+            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type, thisProject.type === 'quote'? thisProject.quoteID : undefined
         ))
         setshowRenameProject(false);
     }

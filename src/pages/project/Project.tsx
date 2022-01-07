@@ -82,7 +82,7 @@ const Project = () => {
     const renameProject = async () => {
         const res = await apiRequest(
             {
-            url: `/api/fhapp-service/${selectedProject?.type}/${currentOrgID}/${selectedProject?._id}`,
+            url: `/api/fhapp-service/${selectedProject?.type}/${currentOrgID}/${selectedProject.type === 'quote'? selectedProject.quoteID : selectedProject?._id}`,
             method:'PATCH',
             body: {
                 title: projectTitle
