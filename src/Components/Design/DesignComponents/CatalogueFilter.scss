@@ -1,13 +1,79 @@
+@use "@fulhaus/react.ui.colors/dist/scss" as color;
 .catalogue-filter {
   .dropdown-list-input-overwrite {
     .dropdown-list-input-box-wrapper {
       font-size: 14px !important;
     }
     .dropdown-list-input-options {
-        font-size: 14px !important;
+      font-size: 14px !important;
     }
   }
   .w-400px {
-      width: 400px;
+    width: 400px;
+  }
+  .min-price-slider {
+    background: transparent;
+    -webkit-appearance: none;
+    &::-ms-track {
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    &::-webkit-slider-thumb {
+      z-index: 50;
+      -webkit-appearance: none;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      border: 2px solid black;
+      background-color: white;
+      position: relative;
+      margin-top: -6px;
+    }
+    &::-moz-progress-bar {
+        z-index: 999;
+        background:rgba(0, 0, 0, 0.25);
+    }
+    &::-webkit-slider-runnable-track {
+      height: 5px;
+      border: none;
+      border-radius: 20px;
+      background:rgba(0, 0, 0, 0.25);
+    }
+  }
+  .max-price-slider {
+    background: transparent;
+    -webkit-appearance: none;
+    &::-ms-track {
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      border: 2px solid black;
+      background-color: white;
+      position: relative;
+      margin-top: -6px;
+    }
+    &::-moz-progress-bar {
+        z-index: 99;
+        background:rgba(0, 0, 0);
+    }
+    &::-webkit-slider-runnable-track {
+      height: 5px;
+      border: none;
+      border-radius: 20px;
+      background:rgba(0, 0, 0, 0.25);
+    }
   }
 }

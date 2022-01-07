@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { DropdownComponent } from '@fulhaus/react.ui.dropdown-component'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler'
@@ -28,6 +28,8 @@ const CatalogueFilter = () => {
 
     //Price state
     const [showPrice, setshowPrice] = useState(false);
+    const [minPrice, setminPrice] = useState(0);
+    const [maxPrice, setmaxPrice] = useState(3200);
     return (
         <div className="w-full px-4 catalogue-filter">
             <div className="flex mt-4">
@@ -148,8 +150,43 @@ const CatalogueFilter = () => {
                         </ClickOutsideAnElementHandler>
                     }
                 </div>
+                {/**---------------------------------------price--------------------------------------------------------- */}
                 <div className='w-1/6 mr-4'>
-                    <div className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
+                    <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
+                    {showPrice &&
+                        <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
+                            <div className='absolute z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
+                                <div className='text-sm font-semibold font-ssp'>Source</div>
+                                <div className='relative w-full mt-4'>
+                                    <input
+                                        type="range"
+                                        value={minPrice}
+                                        onChange={
+                                            (e) =>{
+                                                setminPrice(e.target.valueAsNumber)
+                                            }    
+                                        }
+                                        min="0"
+                                        max="3200"
+                                        className="absolute w-full min-price-slider"
+                                    />
+                                    <input
+                                        type="range"
+                                        value={maxPrice}
+                                        onChange={(e) => {
+                                                setmaxPrice(e.target.valueAsNumber)
+                                        }}
+                                        min="0"
+                                        max="3200"
+                                        className="absolute w-full max-price-slider"
+                                    />
+                                </div>
+                                <div className='flex w-full mt-1'>
+                                    <div className='absolute'></div>
+                                </div>
+                            </div>
+                        </ClickOutsideAnElementHandler>
+                    }
                 </div>
                 <div className='w-1/6 mr-4'>
                     <div className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Distance</div><BsChevronDown className='my-auto' /></div>
