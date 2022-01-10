@@ -5,7 +5,7 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../redux/reducers';
-import {deleteSpecificProject} from '../../redux/Actions'
+import {deleteSpecificProject, getQuoteDetail} from '../../redux/Actions'
 import { useGetProjectRole } from '../../Hooks/useGetProjectRole';
 import apiRequest from '../../Service/apiRequest'
 import produce from 'immer'
@@ -33,7 +33,13 @@ const Project = () => {
     const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
     const dispatch = useDispatch();
-      useEffect(() => {
+    useEffect(() => {
+        //get quote detail when initail rendering
+       if(selectedProject?.quoteID && currentOrgID){
+           dispatch(getQuoteDetail({organizationID: currentOrgID, quoteID: selectedProject.quoteID}))
+       }
+    }, [selectedProject])
+    useEffect(() => {
           //add warning for user when leave page
         const handleUnload = (event:any) => {
             event.preventDefault();
@@ -43,6 +49,7 @@ const Project = () => {
         return () => window.removeEventListener("beforeunload", handleUnload);
       }, []);
     useEffect(
+        //if there is no selected project, then get it from localstorage, see EachProjectQuoteDesign.tsx for logic
         () =>{
             if(!selectedProject){
                 const selectedProject = localStorage.getItem('selectedProject');
