@@ -30,6 +30,11 @@ const CatalogueFilter = () => {
     const [showPrice, setshowPrice] = useState(false);
     const [minPrice, setminPrice] = useState(0);
     const [maxPrice, setmaxPrice] = useState(3200);
+
+    //Colour
+    const [showColorMenu, setshowColorMenu] = useState(false);
+    const [showOtherColorMenu, setshowOtherColorMenu] = useState(false);
+
     return (
         <div className="w-full px-4 catalogue-filter">
             <div className="flex mt-4">
@@ -93,8 +98,21 @@ const CatalogueFilter = () => {
                 <div className='w-24 mr-4'>
                     <div className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Item type</div><BsChevronDown className='my-auto' /></div>
                 </div>
+                {/**--------------------------------------COLOUR-------------------------------------------------------- */}
                 <div className='w-1/6 mr-4'>
-                    <div className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Colour</div><BsChevronDown className='my-auto' /></div>
+                    <div onClick={()=>setshowColorMenu(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Colour</div><BsChevronDown className='my-auto' /></div>
+                    {
+                        showColorMenu && <ClickOutsideAnElementHandler onClickedOutside={() => setshowColorMenu(false)}>
+                            <div className='absolute z-50 px-4 py-6 bg-white border border-black border-solid w-400px'>
+                                {
+                                    ['red', 'blue', 'orange', 'black', 'grey'].map(each => <div className='flex justify-between px-1 py-2'>
+                                           <div style={{borderRadius: '50%', backgroundColor: each}} className='w-2 h-2 '></div>
+                                        </div>
+                                        )
+                                }
+                            </div>
+                        </ClickOutsideAnElementHandler>
+                    }
                 </div>
             </div>
             <div className="flex mt-4 dropdown-component-overwrite">
