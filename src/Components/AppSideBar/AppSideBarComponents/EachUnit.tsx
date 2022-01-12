@@ -17,6 +17,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
     const dispatch = useDispatch();
 
     const saveName = async () => {
@@ -92,9 +93,11 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
           }
     } 
     return <>
-        <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.unitName ? eachUnit.unitName : 'Unknown'}`} />
+        <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
+                onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
+                onUnitsChange={(count) => setcount(count)}
                 deleteUnit={()=>deleteUnit()}
                 finishRenameUnit={()=>saveName()}
                 renameUnit={(v) => setname(v)}

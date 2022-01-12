@@ -5,7 +5,7 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../redux/reducers';
-import {deleteSpecificProject, getQuoteDetail} from '../../redux/Actions'
+import { deleteSpecificProject, getQuoteDetail } from '../../redux/Actions'
 import { useGetProjectRole } from '../../Hooks/useGetProjectRole';
 import apiRequest from '../../Service/apiRequest'
 import produce from 'immer'
@@ -33,39 +33,39 @@ const Project = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         //get quote detail when initail rendering
-       if(selectedProject?.quoteID && currentOrgID){
-           dispatch(getQuoteDetail({organizationID: currentOrgID, quoteID: selectedProject.quoteID}))
-       }
+        if (selectedProject?.quoteID && currentOrgID) {
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject.quoteID }))
+        }
     }, [selectedProject])
     useEffect(() => {
-          //add warning for user when leave page
-        const handleUnload = (event:any) => {
+        //add warning for user when leave page
+        const handleUnload = (event: any) => {
             event.preventDefault();
             return event.returnValue = `Are you sure you want to leave?`;
-          };
+        };
         window.addEventListener("beforeunload", handleUnload);
         return () => window.removeEventListener("beforeunload", handleUnload);
-      }, []);
+    }, []);
     useEffect(
         //if there is no selected project, then get it from localstorage, see EachProjectQuoteDesign.tsx for logic
-        () =>{
-            if(!selectedProject){
+        () => {
+            if (!selectedProject) {
                 const selectedProject = localStorage.getItem('selectedProject');
                 const currentOrgID = localStorage.getItem('currentOrgID');
-                if(selectedProject && currentOrgID){
+                if (selectedProject && currentOrgID) {
                     dispatch({
                         type: 'selectedProject',
-                        payload: {...JSON.parse(selectedProject)}
+                        payload: { ...JSON.parse(selectedProject) }
                     });
                     dispatch({
                         type: 'currentOrgID',
-                        payload: currentOrgID 
+                        payload: currentOrgID
                     });
-                }else{
+                } else {
                     history.push('/')
                 }
             }
-        },[]
+        }, []
     )
     const projectMenuOnSelect = async (v: string) => {
         switch (v) {
@@ -78,8 +78,8 @@ const Project = () => {
         }
     }
     const deleteProject = async () => {
-        if(currentOrgID){
-        dispatch(deleteSpecificProject(currentOrgID, selectedProject._id, projects));
+        if (currentOrgID) {
+            dispatch(deleteSpecificProject(currentOrgID, selectedProject._id, projects));
         }
         history.push('/')
     }
@@ -87,22 +87,22 @@ const Project = () => {
     const renameProject = async () => {
         const res = await apiRequest(
             {
-            url: `/api/fhapp-service/${selectedProject?.type}/${currentOrgID}/${selectedProject.type === 'quote'? selectedProject.quoteID : selectedProject?._id}`,
-            method:'PATCH',
-            body: {
-                title: projectTitle
-            }
+                url: `/api/fhapp-service/${selectedProject?.type}/${currentOrgID}/${selectedProject.type === 'quote' ? selectedProject.quoteID : selectedProject?._id}`,
+                method: 'PATCH',
+                body: {
+                    title: projectTitle
+                }
             }
         )
-        if(res?.success){
-            const newSelectedProject = produce(selectedProject, (draftState: any) =>{ 
+        if (res?.success) {
+            const newSelectedProject = produce(selectedProject, (draftState: any) => {
                 draftState.title = projectTitle;
-                })
+            })
             dispatch({
                 type: 'selectedProject',
                 payload: newSelectedProject
             })
-        }else{
+        } else {
             console.log(res?.message);
         }
         setshowRenameProject(false);
@@ -113,17 +113,20 @@ const Project = () => {
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
-                    <Link className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
+                    <Link onClick={() => dispatch({
+                        type: 'selectedQuoteUnit',
+                        payload: undefined
+                    })} className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
                     {showRenameProject ? <input onKeyDown={e => {
                         if (e.code === 'Enter') {
                             renameProject();
                         }
                     }} value={projectTitle} onChange={e => setprojectTitle(e.target.value)} className='w-40 px-2 my-auto mr-4 text-black' type='text' onClick={e => e.stopPropagation()} onBlur={() => renameProject()} /> :
                         <div className='my-auto mr-4 text-lg'>{selectedProject?.title}</div>}
-                    {(projectRole === 'admin' || projectRole === 'owner') && 
+                    {(projectRole === 'admin' || projectRole === 'owner') &&
                         <div className='hide-dropdown-list'>
                             <DropdownListInput
-                                listWrapperClassName={projectRole === 'owner' ? 'last-child-red' :''}
+                                listWrapperClassName={projectRole === 'owner' ? 'last-child-red' : ''}
                                 onSelect={v => projectMenuOnSelect(v)}
                                 wrapperClassName='border-none cursor-pointer my-auto last:text-error' labelClassName='hidden'
                                 suffixIcon={<div className='text-white'>···</div>}
