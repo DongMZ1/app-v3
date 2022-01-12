@@ -31,12 +31,14 @@ const Project = () => {
     const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
     const dispatch = useDispatch();
+
     useEffect(() => {
         //get quote detail when initail rendering
         if (selectedProject?.quoteID && currentOrgID) {
             dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject.quoteID }))
         }
     }, [selectedProject])
+
     useEffect(() => {
         //add warning for user when leave page
         const handleUnload = (event: any) => {
@@ -46,6 +48,7 @@ const Project = () => {
         window.addEventListener("beforeunload", handleUnload);
         return () => window.removeEventListener("beforeunload", handleUnload);
     }, []);
+
     useEffect(
         //if there is no selected project, then get it from localstorage, see EachProjectQuoteDesign.tsx for logic
         () => {
@@ -67,6 +70,20 @@ const Project = () => {
             }
         }, []
     )
+
+    const exitPage = () => {
+        //clear selected quote unit and quote detail when exit the page
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: undefined
+        })
+        dispatch(
+            {
+                type:'quoteDetail',
+                payload: undefined
+            }
+        )
+    }
     const projectMenuOnSelect = async (v: string) => {
         switch (v) {
             case 'Rename Project':
@@ -113,10 +130,7 @@ const Project = () => {
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
-                    <Link onClick={() => dispatch({
-                        type: 'selectedQuoteUnit',
-                        payload: undefined
-                    })} className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
+                    <Link onClick={() => exitPage()} className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
                     {showRenameProject ? <input onKeyDown={e => {
                         if (e.code === 'Enter') {
                             renameProject();
