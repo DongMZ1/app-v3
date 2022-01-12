@@ -117,11 +117,11 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const selectThisProject = () => {
         //put selectedProject, projectRole, currentOrgID into localstorage avoid user refresh page on project page
-        localStorage.setItem('selectedProject', JSON.stringify({...thisProject, userRoleInThisProject: projectRole}));
+        localStorage.setItem('selectedProject', JSON.stringify({...thisProject, userRole: projectRole}));
         localStorage.setItem('currentOrgID', currentOrgID? currentOrgID: '');
         dispatch({
             type: 'selectedProject',
-            payload: {...thisProject, userRoleInThisProject: projectRole} 
+            payload: {...thisProject, userRole: projectRole} 
         })
         history.push(linkURL)
     }

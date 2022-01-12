@@ -29,7 +29,7 @@ const Project = () => {
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
-    const projectRole = selectedProject?.userRoleInThisProject;
+    const projectRole = selectedProject?.userRole;
     const projects = useSelector((state: Tappstate) => state.projects);
     const history = useHistory();
     const dispatch = useDispatch();
