@@ -16,7 +16,6 @@ import { ReactComponent as InformationIcon } from "../../styles/images/informati
 import { ReactComponent as HistoryIcon } from "../../styles/images/history.svg";
 import Quote from '../../Components/Quote/Quote';
 import Design from '../../Components/Design/Design';
-import NoteModal from '../../Components/NoteModal/NoteModal';
 import ProjectInformation from './ProjectComponents/ProjectInformation';
 import VersionHistory from './ProjectComponents/VersionHistory';
 import AppSideBar from '../../Components/AppSideBar/AppSideBar';
@@ -25,7 +24,6 @@ const Project = () => {
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteProjectModal, setshowConfirmDeleteProjectModal] = useState(false);
-    const [showNote, setshowNote] = useState(false);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
@@ -112,8 +110,6 @@ const Project = () => {
     return (<>
         {/**Project delete confirm modal */}
         <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteProjectModal} message={`Delete Project`} subText={`Are you sure you want to permanently delete ${'project'} ?`} onCancel={() => setshowConfirmDeleteProjectModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteProject()} />
-
-        <NoteModal show={showNote} close={() => setshowNote(false)} save={() => { }} unitName={'Unit A'} />
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
                 <div className='flex px-4 py-3 text-white bg-black font-moret'>
