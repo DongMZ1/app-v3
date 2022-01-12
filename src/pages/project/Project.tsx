@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import "./Project.scss";
 import { Link, useHistory } from 'react-router-dom'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
+import {Popup} from '@fulhaus/react.ui.popup'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../redux/reducers';
 import { deleteSpecificProject, getQuoteDetail } from '../../redux/Actions'
-import { useGetProjectRole } from '../../Hooks/useGetProjectRole';
+import InvitePeople from '../../Components/InvitePeople/InvitePeople';
 import apiRequest from '../../Service/apiRequest'
 import produce from 'immer'
 import { ReactComponent as RightArrowWhiteIcon } from "../../styles/images/right-arrow-white.svg";
@@ -20,6 +21,7 @@ import ProjectInformation from './ProjectComponents/ProjectInformation';
 import VersionHistory from './ProjectComponents/VersionHistory';
 import AppSideBar from '../../Components/AppSideBar/AppSideBar';
 const Project = () => {
+    const [showInvitePeople, setshowInvitePeople] = useState(false);
     const [showHistory, setshowHistory] = useState(false);
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showRenameProject, setshowRenameProject] = useState(false);
@@ -79,7 +81,7 @@ const Project = () => {
         })
         dispatch(
             {
-                type:'quoteDetail',
+                type: 'quoteDetail',
                 payload: undefined
             }
         )
@@ -125,6 +127,11 @@ const Project = () => {
         setshowRenameProject(false);
     }
     return (<>
+        <Popup show={showInvitePeople} allowCloseOnClickOutside={false} boxShadow={false} onClose={() => {
+            setshowInvitePeople(false);
+        }}>
+            <InvitePeople userRole={selectedProject?.userRole} projectName={selectedProject?.title} projectID={selectedProject?._id} close={() => { setshowInvitePeople(false); }} />
+        </Popup>
         {/**Project delete confirm modal */}
         <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteProjectModal} message={`Delete Project`} subText={`Are you sure you want to permanently delete ${'project'} ?`} onCancel={() => setshowConfirmDeleteProjectModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteProject()} />
         <div className="project bg-cream">
@@ -158,7 +165,7 @@ const Project = () => {
                 <div className={`${(window.location.href.includes('/quote-only') || window.location.href.includes('/design-only')) && 'ml-auto'} flex w-3/6`}>
                     <div className='my-auto ml-auto mr-6 text-sm font-ssp'>v0</div>
                     <div className='my-auto mr-8 text-sm font-ssp'>Never saved</div>
-                    <ShareAlt className='my-auto mr-8 cursor-pointer' />
+                    <ShareAlt onClick={()=>setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
                     <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
                     <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
                     <SaveIcon className='my-auto mr-8 cursor-pointer' />
