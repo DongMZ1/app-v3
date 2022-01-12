@@ -16,6 +16,8 @@ const AppSideBar = () => {
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const dispatch = useDispatch();
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
+
+    const totalUnitCount = quoteDetail?.data?.map((each:any) => each.count).reduce((a :any , b:any) => a + b);
     const createUnit = async (v: string) => {
         const res = await apiRequest(
             {
@@ -49,7 +51,7 @@ const AppSideBar = () => {
                 </div>
             </div>
             <div className='px-4'><SelectAll /></div>
-            <div className='px-4 mt-2 text-sm font-ssp'>Total Units: 1</div>
+            <div className='px-4 mt-2 text-sm font-ssp'>Total Units: {totalUnitCount}</div>
             <div className='w-full h-full px-4 overflow-y-auto'>
             {
               quoteDetail?.data?.map((each: any) => <EachUnit eachUnit={each} />)

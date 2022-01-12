@@ -11,8 +11,8 @@ type eachUnitType = {
 const EachUnit = ({ eachUnit }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
-    const [count, setcount] = useState(1);
-    const [notes, setnotes] = useState(eachUnit.notes);
+    const [count, setcount] = useState(eachUnit?.count);
+    const [notes, setnotes] = useState(eachUnit?.notes);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
@@ -33,6 +33,30 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
         if (res?.success) {
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).name = name
+            })
+            dispatch({
+                type:'quoteDetail',
+                payload:newQuoteDetail
+            })
+        }else{
+            console.log(res?.message)
+        }
+    }
+
+    const updateCount = async (v: number) => {
+          setcount(v);
+          const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+                body: {
+                    count : v
+                },
+                method: 'PATCH'
+            }
+        )
+        if (res?.success) {
+            const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
+                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
             })
             dispatch({
                 type:'quoteDetail',
@@ -97,7 +121,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
         <div className='w-full mt-4'>
             <GroupUnit
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
-                onUnitsChange={(count) => setcount(count)}
+                onUnitsChange={(count) => updateCount(count)}
                 deleteUnit={()=>deleteUnit()}
                 finishRenameUnit={()=>saveName()}
                 renameUnit={(v) => setname(v)}

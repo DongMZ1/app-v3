@@ -11,7 +11,7 @@ const Quote = () => {
             <>
                 <div className='flex'>
                 <div className='w-32 mr-8 text-sm-important'>
-                    <DropdownListInput placeholder='Add Room' wrapperClassName='cursor-pointer' listWrapperClassName='width-52-important' options={['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set']} />
+                    <DropdownListInput prefixIcon={<div className='flex'><div className='m-auto'>Add Room</div></div>} wrapperClassName='cursor-pointer dropdown-list-input-box-display-none' listWrapperClassName='width-52-important' options={['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set']} />
                 </div>
                 <div className='w-60 text-sm-important'>
                     <DropdownListInput placeholder='Add Muti-Room Package' wrapperClassName='cursor-pointer' listWrapperClassName='' options={['Custom Unit', 'Studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} />
