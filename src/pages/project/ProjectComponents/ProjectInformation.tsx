@@ -28,7 +28,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const [editNotes, seteditNotes] = useState(false);
     const [notesContent, setnotesContent] = useState('Dexter "The Blade" Jackson (born November 25, 1969) is a retired American IFBB professional bodybuilder and the 2008 Mr. Olympia bodybuilding champion.');
     return (
-        <div className='fixed top-0 right-0 flex w-full h-full bg-black bg-opacity-50'>
+        <div className='fixed top-0 right-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
             <div className='w-1/2 h-full' onClick={()=>close()}></div>
             <div className='z-10 w-1/2 h-full overflow-auto border-l border-black border-solid opacity-100 bg-cream project-information'>
                 <div className='flex'>
