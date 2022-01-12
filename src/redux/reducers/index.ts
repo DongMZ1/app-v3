@@ -11,7 +11,8 @@ export type Tappstate = {
    currentOrgRole: string | undefined;
    allOrganizations: any[] | undefined;
    selectedProject: undefined | any;
-   quoteDetail: undefined | any
+   quoteDetail: undefined | any;
+   selectedQuoteUnit: undefined | any;
 }
 const initialState = {
    projects: undefined,
@@ -24,6 +25,7 @@ const initialState = {
    showModal: false,
    selectedProject: undefined,
    quoteDetail: undefined,
+   selectedQuoteUnit: undefined,
 }
 const ReduxReducer: TReduxReducer = (state: Tappstate = initialState, action: any) => {
 	return {
