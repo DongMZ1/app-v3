@@ -12,7 +12,7 @@
     "@fulhaus/react.ui.colors": "0.0.11",
     "@fulhaus/react.ui.dropdown-component": "0.0.20",
     "@fulhaus/react.ui.dropdown-list-input": "0.0.6",
-    "@fulhaus/react.ui.furniture-in-room-header": "0.0.1",
+    "@fulhaus/react.ui.furniture-in-room-header": "0.0.2",
     "@fulhaus/react.ui.furniture-in-room-row-card": "0.0.1",
     "@fulhaus/react.ui.group-accordion": "0.0.1",
     "@fulhaus/react.ui.group-unit": "0.0.4",

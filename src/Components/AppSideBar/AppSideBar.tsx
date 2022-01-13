@@ -3,7 +3,7 @@ import './AppSideBar.scss'
 
 import SelectAll from './AppSideBarComponents/SelectAll';
 import EachUnit from './AppSideBarComponents/EachUnit';
-
+import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
 import { getQuoteDetail } from '../../redux/Actions'
@@ -29,9 +29,13 @@ const AppSideBar = () => {
             }
         )
         if (res?.success) {
-            if (quoteDetail?.quoteID && currentOrgID) {
-                dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: quoteDetail?.quoteID }))
-            }
+            const newQuoteDetail = produce(quoteDetail, (draft: any) =>{
+                draft.data = draft.data?.concat(res.newUnit);
+            })
+            dispatch({
+                type:'quoteDetail',
+                payload:newQuoteDetail
+            })
         } else {
             console.log(res?.message)
         }

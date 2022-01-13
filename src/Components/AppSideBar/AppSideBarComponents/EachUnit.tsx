@@ -35,38 +35,38 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).name = name
             })
             dispatch({
-                type:'quoteDetail',
-                payload:newQuoteDetail
+                type: 'quoteDetail',
+                payload: newQuoteDetail
             })
-        }else{
+        } else {
             console.log(res?.message)
         }
     }
 
     const updateCount = async (v: number) => {
-          setcount(v);
-          const res = await apiRequest(
-            {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
-                body: {
-                    count : v
-                },
-                method: 'PATCH'
+            setcount(v);
+            const res = await apiRequest(
+                {
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+                    body: {
+                        count: v
+                    },
+                    method: 'PATCH'
+                }
+            )
+            if (res?.success) {
+                const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
+                    (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
+                })
+                dispatch({
+                    type: 'quoteDetail',
+                    payload: newQuoteDetail
+                })
+            } else {
+                console.log(res?.message)
             }
-        )
-        if (res?.success) {
-            const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
-                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
-            })
-            dispatch({
-                type:'quoteDetail',
-                payload:newQuoteDetail
-            })
-        }else{
-            console.log(res?.message)
-        }
     }
-    
+
     const saveNotes = async () => {
         const res = await apiRequest(
             {
@@ -82,11 +82,11 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).notes = notes
             })
             dispatch({
-                type:'quoteDetail',
-                payload:newQuoteDetail
+                type: 'quoteDetail',
+                payload: newQuoteDetail
             })
             setshowNote(false);
-        }else{
+        } else {
             console.log(res?.message)
         }
     }
@@ -99,37 +99,37 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     }
 
     const deleteUnit = async () => {
-          const res = await apiRequest({
-              url:`/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
-              method:'DELETE'
-          })
-          if(res?.success){
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+            method: 'DELETE'
+        })
+        if (res?.success) {
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 draftState.data = draftState?.data?.filter((each: any) => each?.unitID !== eachUnit.unitID)
             })
             console.log(newQuoteDetail);
             dispatch({
-                type:'quoteDetail',
-                payload:newQuoteDetail
+                type: 'quoteDetail',
+                payload: newQuoteDetail
             })
-          }else{
-              console.log(res?.message)
-          }
-    } 
+        } else {
+            console.log(res?.message)
+        }
+    }
     return <>
         <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
                 onUnitsChange={(count) => updateCount(count)}
-                deleteUnit={()=>deleteUnit()}
-                finishRenameUnit={()=>saveName()}
+                deleteUnit={() => deleteUnit()}
+                finishRenameUnit={() => saveName()}
                 renameUnit={(v) => setname(v)}
                 viewOnly={userRole === 'viewer'}
-                onSelectedChange={() => onSelectUnit()} 
-                unitType={eachUnit?.unitType} 
-                unitName={name} 
-                units={count} 
+                onSelectedChange={() => onSelectUnit()}
+                unitType={eachUnit?.unitType}
+                unitName={name}
+                units={count}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
             />
