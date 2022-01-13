@@ -11,7 +11,6 @@ type eachUnitType = {
 const EachUnit = ({ eachUnit }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
-    const [count, setcount] = useState(eachUnit?.count);
     const [notes, setnotes] = useState(eachUnit?.notes);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
@@ -44,27 +43,25 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     }
 
     const updateCount = async (v: number) => {
-            setcount(v);
-            const res = await apiRequest(
-                {
-                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
-                    body: {
-                        count: v
-                    },
-                    method: 'PATCH'
-                }
-            )
-            if (res?.success) {
-                const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
-                    (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
-                })
-                dispatch({
-                    type: 'quoteDetail',
-                    payload: newQuoteDetail
-                })
-            } else {
-                console.log(res?.message)
+        const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
+            (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
+        })
+        dispatch({
+            type: 'quoteDetail',
+            payload: newQuoteDetail
+        })
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+                body: {
+                    count: v
+                },
+                method: 'PATCH'
             }
+        )
+        if (!res?.success) {
+            console.log(res?.message)
+        }
     }
 
     const saveNotes = async () => {
@@ -129,7 +126,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 onSelectedChange={() => onSelectUnit()}
                 unitType={eachUnit?.unitType}
                 unitName={name}
-                units={count}
+                units={eachUnit?.count}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
             />
