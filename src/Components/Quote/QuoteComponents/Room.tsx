@@ -17,15 +17,9 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
-    const updateRoomCount = async (count: number) => {
-        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-            draft.rooms[index].count = count;
-        });
-        dispatch({
-            type: 'selectedQuoteUnit',
-            payload: newselectedQuoteUnit
-        })
+
+    //need to update this every time, because selectedQuoteUnit info will not update with updateQuoteDetail
+    const updateQuoteDetail = (newselectedQuoteUnit: any) => {
         //update quoteDetail
         const newquoteDetail = produce(quoteDetail, (draft: any) => {
             const index = draft.data.findIndex((each: any) => each?.unitID === unitID)
@@ -35,6 +29,17 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
             type: 'quoteDetail',
             payload: newquoteDetail
         });
+    }
+    const updateRoomCount = async (count: number) => {
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+            draft.rooms[index].count = count;
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        })
+        updateQuoteDetail(newselectedQuoteUnit);
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
@@ -44,6 +49,26 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
         )
         if (!res?.success) {
             console.log(res.error)
+        }
+    }
+
+    const addItemToRoom = async (v: string) => {
+        if (!eachRoom.categories?.map((each: any) => each?.name)?.includes(v)) {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+                draft.rooms[index].categories = draft.rooms[index].categories.concat({
+                    name: v,
+                    rentable: false,
+                    count: 1,
+                    buyPrice: 0,
+                    rentPrice: 0
+                })
+            })
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newselectedQuoteUnit
+            });
+            updateQuoteDetail(newselectedQuoteUnit);
         }
     }
     const deleteRoom = async () => {
@@ -61,16 +86,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
                 type: 'selectedQuoteUnit',
                 payload: newselectedQuoteUnit
             });
-            //update quoteDetail
-            const newquoteDetail = produce(quoteDetail, (draft: any) => {
-                //find unit index at quote detail
-                const index = draft.data.findIndex((each: any) => each?.unitID === unitID)
-                draft.data[index] = newselectedQuoteUnit;
-            });
-            dispatch({
-                type: 'quoteDetail',
-                payload: newquoteDetail
-            });
+            updateQuoteDetail(newselectedQuoteUnit);
         }
     }
     return <div className='w-full mt-6'>
@@ -78,19 +94,34 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
             totalPrice={0}
             deleteRoom={() => deleteRoom()}
             addItemList={roomItemOptions}
+            addItemOnSelect={(v) => addItemToRoom(v)}
             roomNumber={eachRoom?.count}
             onRoomNumberChange={(v) => updateRoomCount(v)}
             roomName={eachRoom?.roomType}
             editable={userRole !== 'viewer'}
         >
             <>
+                {
+                    eachRoom.categories?.map((eachCategory: any) => <Category eachCategory={eachCategory} />)
+                }
+                <div className='h-1 '></div>
             </>
         </FurnitureInRoomHeader>
-    </div>
+    </div >
 }
 export default Room;
 
-const Category = () => {
-    return <div>
-    </div>
+type CategoryType = {
+    eachCategory: any
+}
+const Category = ({ eachCategory }: CategoryType) => {
+    const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
+    return <FurnitureInRoomRowCard
+        furnitureName={eachCategory.name ? eachCategory.name : ''}
+        number={eachCategory.count ? eachCategory.count : 0}
+        buy={!eachCategory.rentable}
+        rentMSRP={eachCategory.rentPrice ? eachCategory.rentPrice : 0}
+        buyMSRP={eachCategory.buyPrice ? eachCategory.buyPrice : 0}
+        editable={userRole !== 'viewer'}
+    />
 }
