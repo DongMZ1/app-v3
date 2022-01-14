@@ -17,7 +17,19 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
-
+    
+    const updateCatelogries = async (catelogries: any) => {
+        const res = await apiRequest({
+            url:`/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+            body: {
+                catelogries
+            },
+            method:'PATCH'
+        })
+        if(!res?.success){
+           console.log(res.message)
+        }
+    }
     //need to update this every time, because selectedQuoteUnit info will not update with updateQuoteDetail
     const updateQuoteDetail = (newselectedQuoteUnit: any) => {
         //update quoteDetail
@@ -53,8 +65,9 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     }
 
     const addItemToRoom = async (v: string) => {
+        //update the data, the pass entire catelogries of this room to backend
         if (!eachRoom.categories?.map((each: any) => each?.name)?.includes(v)) {
-            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, async (draft: any) => {
                 const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
                 draft.rooms[index].categories = draft.rooms[index].categories.concat({
                     name: v,
@@ -63,6 +76,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
                     buyPrice: 0,
                     rentPrice: 0
                 })
+                await updateCatelogries(draft.rooms[index].categories)
             })
             dispatch({
                 type: 'selectedQuoteUnit',
