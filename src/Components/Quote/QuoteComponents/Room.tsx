@@ -67,7 +67,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     const addItemToRoom = async (v: string) => {
         //update the data, the pass entire catelogries of this room to backend
         if (!eachRoom.categories?.map((each: any) => each?.name)?.includes(v)) {
-            const newselectedQuoteUnit = produce(selectedQuoteUnit, async (draft: any) => {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
                 const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
                 draft.rooms[index].categories = draft.rooms[index].categories.concat({
                     name: v,
@@ -76,7 +76,8 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
                     buyPrice: 0,
                     rentPrice: 0
                 })
-                await updateCatelogries(draft.rooms[index].categories)
+                //we do not have to wait this action
+                updateCatelogries(draft.rooms[index].categories)
             })
             dispatch({
                 type: 'selectedQuoteUnit',
@@ -107,6 +108,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
         <FurnitureInRoomHeader
             totalPrice={0}
             deleteRoom={() => deleteRoom()}
+            //filter out room item that already added to this room
             addItemList={roomItemOptions}
             addItemOnSelect={(v) => addItemToRoom(v)}
             roomNumber={eachRoom?.count}
