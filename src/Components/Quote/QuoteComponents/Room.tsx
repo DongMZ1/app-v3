@@ -6,9 +6,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
 type RoomType = {
-    eachRoom: any
+    eachRoom: any,
+    roomItemOptions: string[] | undefined
 }
-const Room = ({ eachRoom }: RoomType) => {
+const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -76,7 +77,7 @@ const Room = ({ eachRoom }: RoomType) => {
         <FurnitureInRoomHeader
             totalPrice={0}
             deleteRoom={() => deleteRoom()}
-            addItemList={[]}
+            addItemList={roomItemOptions}
             roomNumber={eachRoom?.count}
             onRoomNumberChange={(v) => updateRoomCount(v)}
             roomName={eachRoom?.roomType}

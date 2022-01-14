@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react'
 import './Quote.scss'
 import { ReactComponent as AddUnitIcon } from "../../styles/images/add-a-unit-to-get-start.svg";
 import Room from './QuoteComponents/Room';
@@ -7,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
 const Quote = () => {
+    const [roomItemOptions, setroomItemOptions] = useState<string[]>();
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const quoteUnitLength = useSelector((state: Tappstate) => state.quoteDetail)?.data?.length;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
@@ -15,6 +17,23 @@ const Quote = () => {
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
+    useEffect(
+        () =>{
+            //if item options is not provided
+            const getRoomItemOptions = async () => {
+                   const res = await apiRequest({
+                       url:'/api/products-service/categories',
+                       method:'GET'
+                   })
+                   if(res?.success){
+                       setroomItemOptions(res.data.map((each:any) => each.name))
+                   }
+            }
+            if(!roomItemOptions){
+                getRoomItemOptions();
+            }
+        },[]
+    )
     const addRoom = async (room: string) => {
         const res = await apiRequest({
             url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
@@ -59,7 +78,7 @@ const Quote = () => {
                     </div>
                 }
                 {
-                    selectedQuoteUnit?.rooms?.map((each: any) => <Room eachRoom={each} />)
+                    selectedQuoteUnit?.rooms?.map((each: any) => <Room roomItemOptions={roomItemOptions} eachRoom={each} />)
                 }
             </>
             :

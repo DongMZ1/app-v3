@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import './AppSideBar.scss'
-
 import SelectAll from './AppSideBarComponents/SelectAll';
 import EachUnit from './AppSideBarComponents/EachUnit';
 import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
-import { getQuoteDetail } from '../../redux/Actions'
 import apiRequest from '../../Service/apiRequest';
 import { AiOutlineUnorderedList, AiOutlineLeft } from 'react-icons/ai';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
