@@ -5,8 +5,9 @@ import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an
 import { Button } from '@fulhaus/react.ui.button'
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { BsChevronDown } from 'react-icons/bs'
-import {AiOutlineRight} from 'react-icons/ai'
-import {FiArrowLeft} from 'react-icons/fi'
+import { AiOutlineRight } from 'react-icons/ai'
+import { FiArrowLeft } from 'react-icons/fi'
+import { TextInput } from '@fulhaus/react.ui.text-input'
 import './CatalogueFilter.scss'
 //rooms and styles options
 const roomOptions = ['Dining Room', 'Bedroom', 'Living Room', 'Family Room', 'Bathroom', 'Office']
@@ -16,7 +17,8 @@ const groupOptions = ['Spring/Summer 2021', 'Fall/Winter 2021']
 //Source & Availability options
 const sourceOptions = ['Vendor Data', 'Clipped Items', 'Starred / Favourited'];
 const availabilityOptions = ['In Stock', 'Restocking', 'Out of Stock', 'Unknown'];
-
+//Item type
+const itemTypeOptions = ['Dining Chair', 'Office Chair', 'End Table', 'Office Table', 'Console Table', 'Couch', 'Loveseat']
 
 const CatalogueFilter = () => {
     //Rooms and Styles states
@@ -36,6 +38,17 @@ const CatalogueFilter = () => {
     //Colour
     const [showColorMenu, setshowColorMenu] = useState(false);
     const [showOtherColorMenu, setshowOtherColorMenu] = useState(false);
+
+    //itemType
+    const [showItemType, setshowItemType] = useState(false);
+    const [itemTypes, setitemTypes] = useState<string[]>([]);
+    const [lengthUnit, setlengthUnit] = useState('inch');
+    const [weightUnit, setweightUnit] = useState('Pounds');
+    const [W, setW] = useState('');
+    const [L, setL] = useState('');
+    const [H, setH] = useState('');
+    const [minWeight, setminWeight] = useState(0);
+    const [maxWeight, setmaxWeight] = useState(150);
 
     return (
         <div className="w-full px-4 catalogue-filter">
@@ -94,11 +107,146 @@ const CatalogueFilter = () => {
                         </ClickOutsideAnElementHandler>
                     }
                 </div>
+                {/*------------------------------------------------------Vendors------------------------------------------------*/}
                 <div className='w-24 mr-4'>
                     <div className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Vendors</div><BsChevronDown className='my-auto' /></div>
                 </div>
+                {/*------------------------------------------------------Item type------------------------------------------------*/}
                 <div className='w-24 mr-4'>
-                    <div className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Item type</div><BsChevronDown className='my-auto' /></div>
+                    <div onClick={() => setshowItemType(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Item type</div><BsChevronDown className='my-auto' /></div>
+                    {
+                        showItemType && <ClickOutsideAnElementHandler onClickedOutside={() => setshowItemType(false)}>
+                            <div className='absolute z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
+                                <div className='flex w-full'>
+                                    <div className='w-2/5 '>
+                                        <div className='text-sm font-semibold font-ssp'>Item Type</div>
+                                        {itemTypeOptions.every(each => itemTypes.includes(each)) ?
+                                            <div onClick={() => setitemTypes([])} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
+                                                Unselect All
+                                            </div>
+                                            :
+                                            <div onClick={() => setitemTypes(itemTypeOptions)} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
+                                                Select All
+                                            </div>}
+                                        {itemTypeOptions.map(eachType => <Checkbox label={eachType} className='mt-4 text-sm text-secondary' checked={itemTypes.includes(eachType)} onChange={(checked) => {
+                                            if (checked) {
+                                                setitemTypes(state => state.concat(eachType))
+                                            } else {
+                                                setitemTypes(state => state.filter(each => each !== eachType))
+                                            }
+                                        }} />)}
+                                    </div>
+                                    <div className='w-3/5 '>
+                                        <div className='text-sm font-semibold font-ssp'>Dimension</div>
+                                        <div className='flex mt-4'>
+                                            <DropdownListInput wrapperClassName='mr-4' initialValue={lengthUnit} options={['inch', 'cm']} />
+                                            <DropdownListInput wrapperClassName='' initialValue={weightUnit} options={['Pounds', 'kg']} />
+                                        </div>
+                                        <div className='flex justify-between mt-4'>
+                                            <div className='w-16 text-input-width-80p'>
+                                                <TextInput
+                                                    variant='box'
+                                                    value={W}
+                                                    onChange={(v) => setW((v.target as any).value)}
+                                                    inputName='widthInput'
+                                                    type='number'
+                                                    prefix={<small>W</small>}
+                                                />
+                                            </div>
+                                            <div className='w-16 text-input-width-80p'>
+                                                <TextInput
+                                                    variant='box'
+                                                    value={L}
+                                                    onChange={(v) => setL((v.target as any).value)}
+                                                    inputName='widthInput'
+                                                    type='number'
+                                                    prefix={<small>L</small>}
+                                                />
+                                            </div>
+                                            <div className='w-16 text-input-width-80p'>
+                                                <TextInput
+                                                    variant='box'
+                                                    value={H}
+                                                    onChange={(v) => setH((v.target as any).value)}
+                                                    inputName='widthInput'
+                                                    type='number'
+                                                    prefix={<small>H</small>}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className='relative w-full mt-4'>
+                                            <input
+                                                type="range"
+                                                value={minWeight}
+                                                onChange={
+                                                    (e) => {
+                                                        if (e.target.valueAsNumber < maxWeight) {
+                                                            setminWeight(e.target.valueAsNumber)
+                                                        }
+                                                    }
+                                                }
+                                                min="0"
+                                                max="150"
+                                                className="absolute w-full min-price-slider"
+                                            />
+                                            <input
+                                                type="range"
+                                                value={maxWeight}
+                                                onChange={(e) => {
+                                                    if (e.target.valueAsNumber > minWeight) {
+                                                        setmaxWeight(e.target.valueAsNumber)
+                                                    }
+                                                }}
+                                                min="0"
+                                                max="150"
+                                                className="absolute w-full max-price-slider"
+                                            />
+                                        </div>
+                                        <div className='relative flex w-full mt-6'>
+                                            <div className='absolute text-sm font-ssp' style={{ left: `${minWeight * 100 / (150 + minWeight / 10)}%` }}>{minWeight}</div>
+                                            <div className='absolute text-sm font-ssp' style={{ left: `${maxWeight * 100 / (150 + maxWeight / 10)}%` }}>{maxWeight}</div>
+                                        </div>
+                                        <div className='flex mt-8'>
+                                            <div className='w-1/2 text-xs font-ssp'>Minimum</div>
+                                            <div className='w-1/2 text-xs font-ssp'>Maximum</div>
+                                        </div>
+                                        <div className='flex mt-4'>
+                                            <div className='w-1/2 text-input-width-100p'>
+                                                <TextInput
+                                                    variant='box'
+                                                    value={minWeight?.toString()}
+                                                    onChange={(v) => {
+                                                        if (((v.target as any).value <= 150 && (v.target as any).value < maxWeight) || !(v.target as any).value)
+                                                            setminWeight((v.target as any).value)
+                                                    }}
+                                                    inputName='widthInput'
+                                                    type='number'
+                                                    suffix={<small>Lbs</small>}
+                                                />
+                                            </div>
+                                            <div className='w-1/2 text-input-width-100p'>
+                                                <TextInput
+                                                    variant='box'
+                                                    value={maxWeight?.toString()}
+                                                    onChange={(v) => {
+                                                        if (((v.target as any).value <= 150 && (v.target as any).value > minWeight) || !(v.target as any).value)
+                                                            setmaxWeight((v.target as any).value)
+                                                    }}
+                                                    inputName='widthInput'
+                                                    type='number'
+                                                    suffix={<small>Lbs</small>}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='flex mt-4'>
+                                    <Button onClick={() => setshowItemType(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
+                                    <Button className='w-24'>Apply</Button>
+                                </div>
+                            </div>
+                        </ClickOutsideAnElementHandler>
+                    }
                 </div>
                 {/**--------------------------------------COLOUR-------------------------------------------------------- */}
                 <div className='w-1/6 mr-4'>
@@ -129,11 +277,11 @@ const CatalogueFilter = () => {
                         showOtherColorMenu && <ClickOutsideAnElementHandler onClickedOutside={() => setshowOtherColorMenu(false)}>
                             <div className='absolute z-50 px-4 py-4 bg-white border border-black border-solid w-200px'>
                                 <div className='flex mb-2'>
-                                      <FiArrowLeft onClick={()=>{
-                                          setshowColorMenu(true);
-                                          setshowOtherColorMenu(false);
-                                      }} className='my-auto mr-4 cursor-pointer' />
-                                      <div className='my-auto text-sm font-semibold font-ssp'>Other Colour</div>
+                                    <FiArrowLeft onClick={() => {
+                                        setshowColorMenu(true);
+                                        setshowOtherColorMenu(false);
+                                    }} className='my-auto mr-4 cursor-pointer' />
+                                    <div className='my-auto text-sm font-semibold font-ssp'>Other Colour</div>
                                 </div>
                                 <ColorPicker />
                                 <div className='flex justify-around mt-4'>

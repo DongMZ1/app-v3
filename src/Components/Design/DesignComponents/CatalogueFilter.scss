@@ -84,4 +84,14 @@
       background: rgba(0, 0, 0);
     }
   }
+  .text-input-width-80p {
+    .input-variant-box {
+      width: 80px !important;
+    }
+  }
+  .text-input-width-100p {
+    .input-variant-box {
+      width: 100px !important;
+    }
+  }
 }
