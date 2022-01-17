@@ -9,8 +9,9 @@ import apiRequest from '../../../Service/apiRequest'
 type RoomType = {
     eachRoom: any,
     roomItemOptions: string[] | undefined
+    updateQuoteDetail:  (newselectedQuoteUnit: any) => void
 }
-const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
+const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -32,18 +33,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
            console.log(res.message)
         }
     }
-    //need to update this every time, because selectedQuoteUnit info will not update with updateQuoteDetail
-    const updateQuoteDetail = (newselectedQuoteUnit: any) => {
-        //update quoteDetail
-        const newquoteDetail = produce(quoteDetail, (draft: any) => {
-            const index = draft.data.findIndex((each: any) => each?.unitID === unitID)
-            draft.data[index] = newselectedQuoteUnit;
-        });
-        dispatch({
-            type: 'quoteDetail',
-            payload: newquoteDetail
-        });
-    }
+
     const updateRoomCount = async (count: number) => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
@@ -110,7 +100,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
             totalPrice={totalPriceOfEachRoom? totalPriceOfEachRoom : 0}
             deleteRoom={() => deleteRoom()}
             //filter out room item that already added to this room
-            addItemList={roomItemOptions}
+            addItemList={roomItemOptions?.filter(each => !eachRoom?.categories.map((each:any) => each.name).includes(each))}
             addItemOnSelect={(v) => addItemToRoom(v)}
             roomNumber={eachRoom?.count}
             onRoomNumberChange={(v) => updateRoomCount(v)}
