@@ -118,7 +118,13 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
         >
             <>
                 {
-                    eachRoom.categories?.map((eachCategory: any) => <Category eachCategory={eachCategory} />)
+                    eachRoom.categories?.map((eachCategory: any) => 
+                    <Category
+                     eachRoom={eachRoom}
+                     eachCategory={eachCategory}
+                     updateQuoteDetail={updateQuoteDetail}
+                     updateCatelogries={updateCatelogries}
+                      />)
                 }
                 <div className='h-1 '></div>
             </>
@@ -128,13 +134,37 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
 export default Room;
 
 type CategoryType = {
-    eachCategory: any
+    eachCategory: any,
+    eachRoom: any,
+    updateQuoteDetail: (newselectedQuoteUnit: any) => void,
+    updateCatelogries: (catelogries: any) => Promise<void>,
 }
-const Category = ({ eachCategory }: CategoryType) => {
+const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCatelogries}: CategoryType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
+    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
+    const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const dispatch = useDispatch();
+    const updateCount = (count:number) => {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+                const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
+                draft.rooms[roomIndex].categories[categoriesIndex] = count
+                //we do not have to wait this action
+                updateCatelogries(draft.rooms[roomIndex].categories)
+            });
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newselectedQuoteUnit
+            });
+            updateQuoteDetail(newselectedQuoteUnit);
+    }
     return <FurnitureInRoomRowCard
         furnitureName={eachCategory.name ? eachCategory.name : ''}
         number={eachCategory.count ? eachCategory.count : 0}
+        onNumberChange={(v)=>updateCount(v)}
         buy={!eachCategory.rentable}
         rentMSRP={eachCategory.rentPrice ? eachCategory.rentPrice : 0}
         buyMSRP={eachCategory.buyPrice ? eachCategory.buyPrice : 0}
