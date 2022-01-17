@@ -4,6 +4,7 @@ import produce from 'immer'
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header'
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
+import debounce from 'lodash.debounce'
 import apiRequest from '../../../Service/apiRequest'
 type RoomType = {
     eachRoom: any,
@@ -16,13 +17,14 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const totalPriceOfEachRoom = eachRoom?.categories?.map((each:any) => each?.qty * each?.budget)?.reduce((a : number, b:number) => a+b, 0)* eachRoom?.count;
     const dispatch = useDispatch();
     
-    const updateCatelogries = async (catelogries: any) => {
+    const updateCategories = async (categories: any) => {
         const res = await apiRequest({
             url:`/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
             body: {
-                catelogries
+                categories
             },
             method:'PATCH'
         })
@@ -65,19 +67,18 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     }
 
     const addItemToRoom = async (v: string) => {
-        //update the data, the pass entire catelogries of this room to backend
+        //update the data, the pass entire categories of this room to backend
         if (!eachRoom.categories?.map((each: any) => each?.name)?.includes(v)) {
             const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
                 const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
                 draft.rooms[index].categories = draft.rooms[index].categories.concat({
                     name: v,
                     rentable: false,
-                    count: 1,
-                    buyPrice: 0,
-                    rentPrice: 0
+                    qty: 1,
+                    budget: 0,
                 })
                 //we do not have to wait this action
-                updateCatelogries(draft.rooms[index].categories)
+                updateCategories(draft.rooms[index].categories)
             })
             dispatch({
                 type: 'selectedQuoteUnit',
@@ -106,7 +107,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
     }
     return <div className='w-full mt-6'>
         <FurnitureInRoomHeader
-            totalPrice={0}
+            totalPrice={totalPriceOfEachRoom? totalPriceOfEachRoom : 0}
             deleteRoom={() => deleteRoom()}
             //filter out room item that already added to this room
             addItemList={roomItemOptions}
@@ -123,7 +124,7 @@ const Room = ({ eachRoom, roomItemOptions }: RoomType) => {
                      eachRoom={eachRoom}
                      eachCategory={eachCategory}
                      updateQuoteDetail={updateQuoteDetail}
-                     updateCatelogries={updateCatelogries}
+                     updateCategories={updateCategories}
                       />)
                 }
                 <div className='h-1 '></div>
@@ -137,9 +138,9 @@ type CategoryType = {
     eachCategory: any,
     eachRoom: any,
     updateQuoteDetail: (newselectedQuoteUnit: any) => void,
-    updateCatelogries: (catelogries: any) => Promise<void>,
+    updateCategories: (categories: any) => Promise<void>,
 }
-const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCatelogries}: CategoryType) => {
+const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories}: CategoryType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -147,13 +148,43 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCatelogries
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
+
+    const categoryPriceChange = (MSRP: number) =>{
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+            const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
+            draft.rooms[roomIndex].categories[categoriesIndex].budget = MSRP
+            //we do not have to wait this action
+            updateCategories(draft.rooms[roomIndex].categories)
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        updateQuoteDetail(newselectedQuoteUnit);
+    }
+    
+    const deleteCatogory = () => {
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+            draft.rooms[roomIndex].categories = draft.rooms[roomIndex]?.categories?.filter((each: any) => each?.name !== eachCategory.name);
+            //we do not have to wait this action
+            updateCategories(draft.rooms[roomIndex].categories)
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        updateQuoteDetail(newselectedQuoteUnit);
+    }
+
     const updateCount = (count:number) => {
             const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
                 const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
                 const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
-                draft.rooms[roomIndex].categories[categoriesIndex] = count
+                draft.rooms[roomIndex].categories[categoriesIndex].qty = count
                 //we do not have to wait this action
-                updateCatelogries(draft.rooms[roomIndex].categories)
+                updateCategories(draft.rooms[roomIndex].categories)
             });
             dispatch({
                 type: 'selectedQuoteUnit',
@@ -161,13 +192,31 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCatelogries
             });
             updateQuoteDetail(newselectedQuoteUnit);
     }
+
+    const updateRentable = (rentable: boolean) => {
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+            const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
+            draft.rooms[roomIndex].categories[categoriesIndex].rentable = rentable
+            //we do not have to wait this action
+            updateCategories(draft.rooms[roomIndex].categories)
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        updateQuoteDetail(newselectedQuoteUnit);
+    }
     return <FurnitureInRoomRowCard
         furnitureName={eachCategory.name ? eachCategory.name : ''}
-        number={eachCategory.count ? eachCategory.count : 0}
+        number={eachCategory.qty ? eachCategory.qty : 0}
         onNumberChange={(v)=>updateCount(v)}
         buy={!eachCategory.rentable}
-        rentMSRP={eachCategory.rentPrice ? eachCategory.rentPrice : 0}
-        buyMSRP={eachCategory.buyPrice ? eachCategory.buyPrice : 0}
+        rentMSRP={eachCategory.budget}
+        buyMSRP={eachCategory.budget}
+        onMSRPChange={(MSRP) => categoryPriceChange(MSRP)}
+        onRentableChange={(rentable) => updateRentable(rentable)}
         editable={userRole !== 'viewer'}
+        DeleteFurniture={() => deleteCatogory()}
     />
 }
