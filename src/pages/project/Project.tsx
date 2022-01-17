@@ -36,6 +36,10 @@ const Project = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        //if it is a project and does not have a quote ID, then create a quote that link to project
+        if(!selectedProject?.quoteID && selectedProject?.type === 'project' && currentOrgID){
+            
+        }
         //get quote detail when initail rendering
         if (selectedProject?.quoteID && currentOrgID) {
             dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject.quoteID }))
