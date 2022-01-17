@@ -50,6 +50,13 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
+        const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            draft.count = v;
+        })
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newSelectedQuoteUnit
+        })
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,

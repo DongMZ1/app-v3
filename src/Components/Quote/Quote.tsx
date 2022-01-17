@@ -100,7 +100,7 @@ const Quote = () => {
             console.log(res?.message)
         }
     }
-    return <div className='flex flex-col w-full h-full px-6 pt-4 overflow-y-auto quote'>
+    return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
         {(selectedQuoteUnit) ?
             <>
                 {userRole !== 'viewer' &&

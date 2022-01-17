@@ -27,6 +27,7 @@ const Project = () => {
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteProjectModal, setshowConfirmDeleteProjectModal] = useState(false);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
     const projectRole = selectedProject?.userRole;
@@ -181,9 +182,9 @@ const Project = () => {
                 {(window.location.href.includes('project/design') || window.location.href.includes('/design-only')) && <Design />}
             </div>
             <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
-                <div className='my-auto mr-4 text-lg font-semibold'>1BD</div>
+                <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit? selectedQuoteUnit.unitType : 'No Unit Selected'}</div>
                 <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
-                <div className='my-auto text-lg font-semibold'>1 Unit</div>
+                <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit? selectedQuoteUnit.count : '0'} Unit</div>
                 <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>$0.00</b></div>
                 <div className='my-auto mr-6 text-sm'>Project Total <b>$0.00</b></div>
                 <div className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
