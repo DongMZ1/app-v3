@@ -10,7 +10,7 @@ import { AiOutlineUnorderedList, AiOutlineLeft, AiOutlineDown } from 'react-icon
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
-import {Button} from '@fulhaus/react.ui.button'
+import { Button } from '@fulhaus/react.ui.button'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 
 const unitOptionList = ['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL'];
@@ -69,23 +69,23 @@ const AppSideBar = () => {
                             }}
                             />
                             <div className='w-full overflow-y-auto max-h-60'>
-                            {unitOptionList.filter(eachUnit => eachUnit.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
-                                <Checkbox className='my-2' label={each} checked={unitOptionCheckList.includes(each)} onChange={(v) => {
-                                    if (v) {
-                                        setunitOptionCheckList(state => [...state, each])
-                                    } else {
-                                        setunitOptionCheckList(state => state.filter(e => e !== each))
-                                    }
-                                }} />)}
+                                {unitOptionList.filter(eachUnit => eachUnit.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
+                                    <Checkbox className='my-2' label={each} checked={unitOptionCheckList.includes(each)} onChange={(v) => {
+                                        if (v) {
+                                            setunitOptionCheckList(state => [...state, each])
+                                        } else {
+                                            setunitOptionCheckList(state => state.filter(e => e !== each))
+                                        }
+                                    }} />)}
                             </div>
                             <div className='flex my-2'>
-                        <Button onClick={() => {
-                            setshowAddUnitDropdown(false)
-                        }} className='w-32 mr-4' variant='secondary'>Cancel</Button>
-                        <Button disabled={unitOptionCheckList.length === 0 && unitPackageKeyword === ''} onClick={() => {
-                            
-                        }} variant='primary' className='w-32'>Create Units</Button>
-                    </div>
+                                <Button onClick={() => {
+                                    setshowAddUnitDropdown(false)
+                                }} className='w-32 mr-4' variant='secondary'>Cancel</Button>
+                                <Button disabled={unitOptionCheckList.length === 0 && customUnitName === ''} onClick={() => {
+
+                                }} variant='primary' className='w-32'>Create Units</Button>
+                            </div>
                         </div>
                     </ClickOutsideAnElementHandler>}
                 </div>

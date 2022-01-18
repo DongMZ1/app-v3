@@ -3,12 +3,24 @@ import './Quote.scss'
 import { ReactComponent as AddUnitIcon } from "../../styles/images/add-a-unit-to-get-start.svg";
 import Room from './QuoteComponents/Room';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
+import { TextInput } from '@fulhaus/react.ui.text-input';
+import { Checkbox } from '@fulhaus/react.ui.checkbox'
+import { Button } from '@fulhaus/react.ui.button'
+import { AiOutlineDown } from 'react-icons/ai';
+import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
+
+const RoomOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set']
 const Quote = () => {
     const [roomItemOptions, setroomItemOptions] = useState<string[]>();
+    const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
+    const [customRoomName, setcustomRoomName] = useState('');
+    const [roomOptionCheckList, setroomOptionCheckList] = useState<string[]>([]);
+    const [roomPackageKeyword, setroomPackageKeyword] = useState('')
+
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const quoteUnitLength = useSelector((state: Tappstate) => state.quoteDetail)?.data?.length;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
@@ -51,26 +63,26 @@ const Quote = () => {
 
     const markAll = () => {
         //if all of them are rentable, then we need to unmark them
-            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-                draft.rooms.forEach((eachRoom: any) => {
-                    eachRoom.categories.forEach((eachCategory: any) => eachCategory.rentable = !allRentable)
-                    const res = apiRequest({
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
-                        body: {
-                            categories: eachRoom.categories
-                        },
-                        method: 'PATCH'
-                    })
-                    if (!(res as any)?.success) {
-                        console.log((res as any).message)
-                    }
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            draft.rooms.forEach((eachRoom: any) => {
+                eachRoom.categories.forEach((eachCategory: any) => eachCategory.rentable = !allRentable)
+                const res = apiRequest({
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+                    body: {
+                        categories: eachRoom.categories
+                    },
+                    method: 'PATCH'
                 })
-            });
-            dispatch({
-                type: 'selectedQuoteUnit',
-                payload: newselectedQuoteUnit
-            });
-            updateQuoteDetail(newselectedQuoteUnit);
+                if (!(res as any)?.success) {
+                    console.log((res as any).message)
+                }
+            })
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        updateQuoteDetail(newselectedQuoteUnit);
     }
     const addRoom = async (room: string) => {
         const res = await apiRequest({
@@ -105,10 +117,42 @@ const Quote = () => {
             <>
                 {userRole !== 'viewer' &&
                     <div className='flex'>
-                        <div className='w-32 mr-8 text-sm-important'>
-                            <DropdownListInput prefixIcon={<div className='flex'><div className='m-auto'>Add Room</div></div>} wrapperClassName='cursor-pointer dropdown-list-input-box-display-none' listWrapperClassName='width-52-important'
-                                onSelect={(v) => addRoom(v)}
-                                options={['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set']} />
+                        <div className='relative w-32 mr-8 text-sm-important'>
+                            <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            {showAddRoomDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
+                                <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                    <div className='ml-4 text-sm font-semibold font-ssp'>
+                                        New Room
+                                    </div>
+                                    <TextInput placeholder='Enter Room Name' variant='box' className='mt-2' inputName='customRoomName' value={customRoomName} onChange={(e) => setcustomRoomName((e.target as any).value)} />
+                                    <div className='mt-4 text-sm font-semibold font-ssp'>
+                                        Choose an existing unit package
+                                    </div>
+                                    <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
+                                        setroomPackageKeyword((e.target as any).value);
+                                        setroomOptionCheckList([]);
+                                    }}
+                                    />
+                                    <div className='w-full overflow-y-auto max-h-60'>
+                                        {RoomOptionList.filter(eachUnit => eachUnit.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                            <Checkbox className='my-2' label={each} checked={roomOptionCheckList.includes(each)} onChange={(v) => {
+                                                if (v) {
+                                                    setroomOptionCheckList(state => [...state, each])
+                                                } else {
+                                                    setroomOptionCheckList(state => state.filter(e => e !== each))
+                                                }
+                                            }} />)}
+                                    </div>
+                                    <div className='flex my-2'>
+                                        <Button onClick={() => {
+                                            setshowAddRoomDropdown(false)
+                                        }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
+                                        <Button disabled={roomOptionCheckList.length === 0 && customRoomName === ''} onClick={() => {
+
+                                        }} variant='primary' className='w-36'>Create Rooms</Button>
+                                    </div>
+                                </div>
+                            </ClickOutsideAnElementHandler>}
                         </div>
                         <div className='w-60 text-sm-important'>
                             <DropdownListInput placeholder='Add Muti-Room Package' wrapperClassName='cursor-pointer' listWrapperClassName='' options={['Custom Unit', 'Studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} />
