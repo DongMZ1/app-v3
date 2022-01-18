@@ -1,6 +1,8 @@
 import './SelectAll.scss'
 import apiRequest from '../../../Service/apiRequest';
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux';
+import produce from 'immer';
 import { Button } from '@fulhaus/react.ui.button';
 import { AiOutlineRight } from 'react-icons/ai';
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
@@ -8,6 +10,7 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Radio } from '@fulhaus/react.ui.radio'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
+import { Tappstate } from '../../../redux/reducers';
 
 const unitOptionList = ['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL'];
 const roomTypeOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set'];
@@ -27,12 +30,9 @@ const SelectAll = () => {
     const [roomTypeCheckList, setroomTypeCheckList] = useState<string[]>([]);
     const [selectedItem, setselectedItem] = useState<string | undefined>();
 
-    const handleAddOrRemoveItem = () => {
-        setshowDropDown(false)
-        setshowAddItemPage(false);
-        setshowGroupUnitRoomMenu(true);
-    }
-
+    const unitList = useSelector((state: Tappstate) => state.quoteDetail)?.data;
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
     useEffect(
         () => {
             //if item options is not provided
@@ -50,6 +50,64 @@ const SelectAll = () => {
             }
         }, []
     )
+
+    const handleAddOrRemoveItem = async () => {
+        if (addItemPageType === 'ofUnit') {
+            if (AddOrRemoveItem === 'addItem') {
+                //filter out units based on unitCheckList
+                (unitList as any[]).filter(async (eachUnit: any) => unitCheckList.includes(eachUnit.unitType)).forEach(
+                    async (eachUnitFiltered) => {
+                        (eachUnitFiltered.rooms as any[]).forEach(async (eachRoom) => {
+                            //if categories'type does not have selectedItem
+                            if (!(eachRoom.categories as any[])?.map((eachCategories: any) => eachCategories.name).includes(selectedItem)) {
+                                await updateCategories({
+                                    currentOrgID,
+                                    quoteID,
+                                    unitID: eachUnitFiltered.unitID,
+                                    roomID: eachRoom.roomID,
+                                    categories: eachRoom.categories.concat({
+                                        qty: 1,
+                                        rentable: false,
+                                        name: selectedItem,
+                                        budget: 0
+                                    })
+                                })
+                            }
+                        })
+                    }
+                )
+            }
+        }
+        setshowDropDown(false)
+        setshowAddItemPage(false);
+        setshowGroupUnitRoomMenu(true);
+    }
+
+
+    const updateCategories = async ({
+        currentOrgID,
+        quoteID,
+        unitID,
+        roomID,
+        categories,
+    }: {
+        currentOrgID: string | undefined,
+        quoteID: string,
+        unitID: string,
+        roomID: string,
+        categories: any
+    }) => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${roomID}`,
+            body: {
+                categories
+            },
+            method: 'PATCH'
+        })
+        if (!res?.success) {
+            console.log('updateCategories failed at line 33 Room.tsx')
+        }
+    }
     return <div className='mt-4 select-all'>
         <Button onClick={() => setshowDropDown(true)} className='select-none' variant='secondary'>Select All...</Button>
         {showDropDown && <div className='fixed z-50 px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
