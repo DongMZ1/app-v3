@@ -4,7 +4,6 @@ import produce from 'immer'
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header'
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
-import debounce from 'lodash.debounce'
 import apiRequest from '../../../Service/apiRequest'
 type RoomType = {
     eachRoom: any,
@@ -30,7 +29,33 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
             method:'PATCH'
         })
         if(!res?.success){
-           console.log(res.message)
+           console.log('updateCategories failed at line 33 Room.tsx')
+        }
+    }
+
+    const duplicateRoom = async () => {
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}/duplicate`,
+                body: {
+                    ...eachRoom,
+                    roomID: undefined
+                },
+                method:'POST'
+            }
+        )
+        if(res?.success){
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID) + 1;
+                (draft.rooms as any[])?.splice(roomIndex, 0, res?.duplicatedRoom)
+            });
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newselectedQuoteUnit
+            })
+            updateQuoteDetail(newselectedQuoteUnit);
+        }else{
+            console.log('duplicateRoom failed at Room.tsx')
         }
     }
 
@@ -52,7 +77,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
             }
         )
         if (!res?.success) {
-            console.log(res.error)
+            console.log('updateRoomCount failed at line 55 Room.tsx')
         }
     }
 
@@ -93,11 +118,14 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                 payload: newselectedQuoteUnit
             });
             updateQuoteDetail(newselectedQuoteUnit);
+        }else{
+            console.log('deleteRoom failed at Room.tsx')
         }
     }
     return <div className='w-full mt-6'>
         <FurnitureInRoomHeader
             totalPrice={totalPriceOfEachRoom? totalPriceOfEachRoom : 0}
+            duplicateRoom={() => duplicateRoom()}
             deleteRoom={() => deleteRoom()}
             //filter out room item that already added to this room
             addItemList={roomItemOptions?.filter(each => !eachRoom?.categories.map((each:any) => each.name).includes(each))}
