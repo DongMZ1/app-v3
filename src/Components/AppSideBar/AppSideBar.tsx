@@ -15,7 +15,7 @@ const AppSideBar = () => {
     const dispatch = useDispatch();
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
 
-    const totalUnitCount = quoteDetail?.data?.map((each:any) => each.count).reduce((a :any , b:any) => a + b);
+    const totalUnitCount = quoteDetail?.data?.map((each:any) => each.count)?.reduce((a :any , b:any) => a + b, 0);
     const createUnit = async (v: string) => {
         const res = await apiRequest(
             {

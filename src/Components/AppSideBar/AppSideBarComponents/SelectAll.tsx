@@ -1,5 +1,6 @@
 import './SelectAll.scss'
-import { useState } from 'react'
+import apiRequest from '../../../Service/apiRequest';
+import { useState, useEffect } from 'react'
 import { Button } from '@fulhaus/react.ui.button';
 import { AiOutlineRight } from 'react-icons/ai';
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
@@ -7,7 +8,13 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Radio } from '@fulhaus/react.ui.radio'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
+
+const unitOptionList = ['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL'];
+const roomTypeOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set'];
+
 const SelectAll = () => {
+    const [roomItemOptions, setroomItemOptions] = useState<string[]>();
+
     const [showDropDown, setshowDropDown] = useState(false);
     const [showGroupUnitRoomMenu, setshowGroupUnitRoomMenu] = useState(true);
     const [showselectPage, setshowselectPage] = useState(false);
@@ -25,17 +32,37 @@ const SelectAll = () => {
         setshowAddItemPage(false);
         setshowGroupUnitRoomMenu(true);
     }
+
+    useEffect(
+        () => {
+            //if item options is not provided
+            const getRoomItemOptions = async () => {
+                const res = await apiRequest({
+                    url: '/api/products-service/categories',
+                    method: 'GET'
+                })
+                if (res?.success) {
+                    setroomItemOptions(res.data.map((each: any) => each.name))
+                }
+            }
+            if (!roomItemOptions) {
+                getRoomItemOptions();
+            }
+        }, []
+    )
     return <div className='mt-4 select-all'>
         <Button onClick={() => setshowDropDown(true)} className='select-none' variant='secondary'>Select All...</Button>
-        {showDropDown && <div className='fixed px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
+        {showDropDown && <div className='fixed z-50 px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
             {/**----------------first Mene page ------------------------------------------------------------ */}
             {
                 showGroupUnitRoomMenu && <ClickOutsideAnElementHandler onClickedOutside={() => setshowDropDown(false)}>
+                    {/*
                     <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
                         setselectPageType('ofGroup');
-                    }} className='flex w-40 py-2 cursor-pointer'><div className='my-auto'>Of a group</div><AiOutlineRight className='my-auto ml-auto' /></div>
+                    }} className='flex w-40 py-2 cursor-pointer'><div className='my-auto'>Of a group</div><AiOutlineRight className='my-auto ml-auto' /></div> 
+                    */}
                     <div onClick={() => {
                         setshowGroupUnitRoomMenu(false);
                         setshowselectPage(true);
@@ -113,60 +140,19 @@ const SelectAll = () => {
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Unit</div></div>
                     {
-                        unitCheckList.length === 8 ?
+                        unitCheckList.length === unitOptionList.length ?
                             <div onClick={() => setunitCheckList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
                             :
-                            <div onClick={() => setunitCheckList(['1BRv1', '1BRv2', '1BRv3', '1BRv4', '2BRv1', '2BRv2', '3BRv1', 'Studio'])} className='my-1 cursor-pointer text-link'>Select All</div>
+                            <div onClick={() => setunitCheckList(unitOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                     }
-                    <Checkbox className='my-2' label='1BRv1' checked={unitCheckList.includes('1BRv1')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, '1BRv1'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== '1BRv1'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='1BRv2' checked={unitCheckList.includes('1BRv2')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, '1BRv2'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== '1BRv2'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='1BRv3' checked={unitCheckList.includes('1BRv3')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, '1BRv3'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== '1BRv3'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='2BRv1' checked={unitCheckList.includes('2BRv1')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, '2BRv1'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== '2BRv1'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='2BRv2' checked={unitCheckList.includes('2BRv2')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, '2BRv2'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== '2BRv2'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='3BRv1' checked={unitCheckList.includes('3BRv1')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, '3BRv1'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== '3BRv1'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='Studio' checked={unitCheckList.includes('Studio')} onChange={(v) => {
-                        if (v) {
-                            setunitCheckList(state => [...state, 'Studio'])
-                        } else {
-                            setunitCheckList(state => state.filter(each => each !== 'Studio'))
-                        }
-                    }} />
+                    {unitOptionList.map(each =>
+                        <Checkbox className='my-2' label={each} checked={unitCheckList.includes(each)} onChange={(v) => {
+                            if (v) {
+                                setunitCheckList(state => [...state, each])
+                            } else {
+                                setunitCheckList(state => state.filter(e => e !== each))
+                            }
+                        }} />)}
                     <div className='flex my-2'>
                         <Button onClick={() => {
                             setshowselectPage(false);
@@ -190,39 +176,20 @@ const SelectAll = () => {
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Room Type</div></div>
                     {
-                        roomTypeCheckList.length === 4 ?
+                        roomTypeCheckList.length === roomTypeOptionList.length ?
                             <div onClick={() => setroomTypeCheckList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
                             :
-                            <div onClick={() => setroomTypeCheckList(['Dining Room', 'BedRoom', 'Living Room', 'BathRoom'])} className='my-1 cursor-pointer text-link'>Select All</div>
+                            <div onClick={() => setroomTypeCheckList(roomTypeOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                     }
-                    <Checkbox className='my-2' label='Dining Room' checked={roomTypeCheckList.includes('Dining Room')} onChange={(v) => {
-                        if (v) {
-                            setroomTypeCheckList(state => [...state, 'Dining Room'])
-                        } else {
-                            setroomTypeCheckList(state => state.filter(each => each !== 'Dining Room'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='BedRoom' checked={roomTypeCheckList.includes('BedRoom')} onChange={(v) => {
-                        if (v) {
-                            setroomTypeCheckList(state => [...state, 'BedRoom'])
-                        } else {
-                            setroomTypeCheckList(state => state.filter(each => each !== 'BedRoom'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='Living Room' checked={roomTypeCheckList.includes('Living Room')} onChange={(v) => {
-                        if (v) {
-                            setroomTypeCheckList(state => [...state, 'Living Room'])
-                        } else {
-                            setroomTypeCheckList(state => state.filter(each => each !== 'Living Room'))
-                        }
-                    }} />
-                    <Checkbox className='my-2' label='Living Room' checked={roomTypeCheckList.includes('BathRoom')} onChange={(v) => {
-                        if (v) {
-                            setroomTypeCheckList(state => [...state, 'BathRoom'])
-                        } else {
-                            setroomTypeCheckList(state => state.filter(each => each !== 'BathRoom'))
-                        }
-                    }} />
+                    {roomTypeOptionList.map(each =>
+                        <Checkbox className='my-2' label={each} checked={roomTypeCheckList.includes(each)} onChange={(v) => {
+                            if (v) {
+                                setroomTypeCheckList(state => [...state, each])
+                            } else {
+                                setroomTypeCheckList(state => state.filter(e => e !== each))
+                            }
+                        }} />)
+                    }
                     <div className='flex my-2'>
                         <Button onClick={() => {
                             setshowselectPage(false);
@@ -264,7 +231,7 @@ const SelectAll = () => {
                         </>}
                     </div>
                     <div>item</div>
-                    <DropdownListInput onSelect={(v) => setselectedItem(v)} placeholder='SELECT AN ITEM' options={['Coffee Table', 'Tablet', 'Sofa']} />
+                    <DropdownListInput onSelect={(v) => setselectedItem(v)} placeholder='SELECT AN ITEM' options={roomItemOptions ? roomItemOptions : []} />
                     <div className='flex mt-4 mb-2'>
                         <Button onClick={() => {
                             setshowDropDown(false)

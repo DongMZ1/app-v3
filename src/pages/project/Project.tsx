@@ -36,9 +36,22 @@ const Project = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const createQuoteForProject = async () => {
+            const res = await apiRequest(
+                {
+                    url:'/api/fhapp-service/quote',
+                    body:{
+                        project: selectedProject._id,
+                        title: selectedProject.title,
+                        organization: currentOrgID
+                    },
+                    method:'POST'
+                }
+            )
+        }
         //if it is a project and does not have a quote ID, then create a quote that link to project
         if(!selectedProject?.quoteID && selectedProject?.type === 'project' && currentOrgID){
-            
+            createQuoteForProject();
         }
         //get quote detail when initail rendering
         if (selectedProject?.quoteID && currentOrgID) {

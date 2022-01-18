@@ -63,6 +63,7 @@ const App = () => {
         <Route exact path={`/`} component={Home} />
         <Route exact path={`/project/quote`} component={Project} />
         <Route exact path={`/project/design`} component={Project} />
+        <Route exact path={`/view-budget/rental`} component={Project} />
         <Route exact path={`/quote-only`} component={Project} />
         <Route exact path={`/design-only`} component={Project} />
         <Route exact path={`/verify-invite`} component={VerifyEmail} />

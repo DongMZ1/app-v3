@@ -19,6 +19,27 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
     const dispatch = useDispatch();
 
+    const duplicateUnit = async () => {
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}/duplicate`,
+                method:'POST'
+            }
+        )
+        if(res?.success){
+            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                const unitIndex = draft.data.findIndex((each: any) => each?.unitID === eachUnit.unitID) + 1;
+                (draft?.data as any[])?.splice(unitIndex, 0, res?.duplicatedUnit);
+            })
+            dispatch({
+                type: 'quoteDetail',
+                payload: newQuoteDetail
+            })
+        }else{
+            console.log('duplicate failed at line 38 EachUnit.tsx')
+        }
+    }
+
     const saveName = async () => {
         const res = await apiRequest(
             {
@@ -38,7 +59,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 payload: newQuoteDetail
             })
         } else {
-            console.log(res?.message)
+            console.log('saveName failed at line 61 EachUnit.tsx')
         }
     }
 
@@ -67,7 +88,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
             }
         )
         if (!res?.success) {
-            console.log(res?.message)
+            console.log('updateCount failed at line 90 EachUnit.tsx')
         }
     }
 
@@ -111,7 +132,6 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 draftState.data = draftState?.data?.filter((each: any) => each?.unitID !== eachUnit.unitID)
             })
-            console.log(newQuoteDetail);
             dispatch({
                 type: 'quoteDetail',
                 payload: newQuoteDetail
@@ -126,6 +146,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
             <GroupUnit
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
                 onUnitsChange={(count) => updateCount(count)}
+                duplicateUnit={()=>duplicateUnit()}
                 deleteUnit={() => deleteUnit()}
                 finishRenameUnit={() => saveName()}
                 renameUnit={(v) => setname(v)}
