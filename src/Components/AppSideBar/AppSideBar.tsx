@@ -38,12 +38,12 @@ const AppSideBar = () => {
             console.log(res?.message)
         }
     }
-    return (showEntendSideBar ? <div className={`w-96 h-full flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
+    return (showEntendSideBar ? <div className={`h-full w-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
         {userRole !== 'viewer' && <>
             <div className='flex px-4'>
                 <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                 <div className='w-16 text-sm-important dropdown-list-input-box-display-none'>
-                    <DropdownListInput prefixIcon={<div className='flex'><div className='m-auto'>Unit</div></div>} wrapperClassName='cursor-pointer' listWrapperClassName='width-52-important' onSelect={(v) => createUnit(v)} options={['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} />
+                    
                 </div>
                 <div className='w-20 ml-4 text-sm-important dropdown-list-input-box-display-none'>
                     <DropdownListInput prefixIcon={<div className='flex'><div className='m-auto'>Group</div></div>} wrapperClassName='cursor-pointer' listWrapperClassName='width-52-important' options={['Custom Unit', 'Studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} />

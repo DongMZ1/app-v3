@@ -152,7 +152,6 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 renameUnit={(v) => setname(v)}
                 viewOnly={userRole === 'viewer'}
                 onSelectedChange={() => onSelectUnit()}
-                unitType={eachUnit?.unitType}
                 unitName={name}
                 units={eachUnit?.count}
                 hasNotes={notes}

@@ -128,8 +128,6 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
             duplicateRoom={() => duplicateRoom()}
             deleteRoom={() => deleteRoom()}
             //filter out room item that already added to this room
-            addItemList={roomItemOptions?.filter(each => !eachRoom?.categories.map((each:any) => each.name).includes(each))}
-            addItemOnSelect={(v) => addItemToRoom(v)}
             roomNumber={eachRoom?.count}
             onRoomNumberChange={(v) => updateRoomCount(v)}
             roomName={eachRoom?.roomType}
