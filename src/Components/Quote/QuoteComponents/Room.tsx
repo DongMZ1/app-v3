@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { FurnitureInRoomRowCard } from '@fulhaus/react.ui.furniture-in-room-row-card'
+import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import produce from 'immer'
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header'
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
+
 type RoomType = {
     eachRoom: any,
     roomItemOptions: string[] | undefined
     updateQuoteDetail:  (newselectedQuoteUnit: any) => void
 }
 const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
+    const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -146,6 +149,13 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                 <div className='h-1 '></div>
             </>
         </FurnitureInRoomHeader>
+        <div className='relative w-24 text-sm-important'>
+                    <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='m-auto'>Add Room</div></div>
+                    {showAddUnitDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
+                        <div className='absolute z-50 bg-white border border-black border-solid w-96 h-96'>
+                        </div>
+                    </ClickOutsideAnElementHandler>}
+                </div>
     </div >
 }
 export default Room;
