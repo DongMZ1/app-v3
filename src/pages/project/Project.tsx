@@ -42,7 +42,7 @@ const Project = () => {
                     url:'/api/fhapp-service/quote',
                     body:{
                         project: selectedProject._id,
-                        title: selectedProject.title,
+                        title: selectedProject.title + '-quote',
                         organization: currentOrgID
                     },
                     method:'POST'

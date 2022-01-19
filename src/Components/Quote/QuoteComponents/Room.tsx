@@ -16,11 +16,19 @@ type RoomType = {
     roomItemOptions: string[] | undefined
     updateQuoteDetail: (newselectedQuoteUnit: any) => void
 }
+
+//dummy packages
+const roomPackagesOptions = ['room Package 1', 'room Package 2', 'room Package 3', 'room Package 4']
 const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
+
     const [showAddItemDropdown, setshowAddItemDropdown] = useState(false);
     const [customItemName, setcustomItemName] = useState('');
     const [itemOptionCheckList, setitemOptionCheckList] = useState<string[]>([]);
-    const [itemPackageKeyword, setitemPackageKeyword] = useState('')
+    const [itemKeyword, setitemKeyword] = useState('');
+
+    const [showAddPackageDropdown, setshowAddPackageDropdown] = useState(false);
+    const [roomPackageOptionCheckList, setroomPackageOptionCheckList] = useState<string[]>([]);
+    const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
@@ -169,24 +177,24 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
             </>
         </FurnitureInRoomHeader>
         <div className='flex'>
-            <div className='relative w-32 mr-8 text-sm-important'>
+            <div className='relative w-32 mr-4 text-sm-important'>
                 <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
                 {showAddItemDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddItemDropdown(false)}>
                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                        <div className='ml-4 text-sm font-semibold font-ssp'>
+                        <div className='text-sm font-semibold font-ssp'>
                             Custom item
                         </div>
                         <TextInput placeholder='Enter Custom Item' variant='box' className='mt-2' inputName='customItemName' value={customItemName} onChange={(e) => setcustomItemName((e.target as any).value)} />
                         <div className='mt-4 text-sm font-semibold font-ssp'>
                             Choose from existing Categories
                         </div>
-                        <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemPackageKeyword} onChange={(e) => {
-                            setitemPackageKeyword((e.target as any).value);
+                        <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
+                            setitemKeyword((e.target as any).value);
                             setitemOptionCheckList([]);
                         }}
                         />
                         <div className='w-full overflow-y-auto max-h-60'>
-                            {roomItemOptions?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.toLowerCase().includes(itemPackageKeyword.toLowerCase())).map(each =>
+                            {roomItemOptions?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
                                 <Checkbox className='my-2' label={each} checked={itemOptionCheckList.includes(each)} onChange={(v) => {
                                     if (v) {
                                         setitemOptionCheckList(state => [...state, each])
@@ -207,6 +215,39 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                         </div>
                     </div>
                 </ClickOutsideAnElementHandler>}
+            </div>
+            <div className='relative w-40 mr-8 text-sm-important'>
+                <div onClick={() => setshowAddPackageDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                {
+                    showAddPackageDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddPackageDropdown(false)}>
+                        <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                            <TextInput placeholder='Search Existing UnitPackages' variant='box' className='mt-2' inputName='add package keywords' value={roomPackageKeyword} onChange={(e) => {
+                                setroomPackageKeyword((e.target as any).value);
+                                setroomPackageOptionCheckList([]);
+                            }}
+                            />
+                            <div className='w-full overflow-y-auto max-h-60'>
+                                {roomPackagesOptions.filter(eachPackage => eachPackage.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                    <Checkbox className='my-2' label={each} checked={roomPackageOptionCheckList.includes(each)} onChange={(v) => {
+                                        if (v) {
+                                            setroomPackageOptionCheckList(state => [...state, each])
+                                        } else {
+                                            setroomPackageOptionCheckList(state => state.filter(e => e !== each))
+                                        }
+                                    }} />)}
+                            </div>
+                            <div className='flex my-2'>
+                                <Button onClick={() => {
+                                    setshowAddPackageDropdown(false)
+                                }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
+                                <Button disabled={itemOptionCheckList.length === 0 && customItemName === ''} onClick={() => {
+                                    setroomPackageOptionCheckList([]);
+                                    setshowAddPackageDropdown(false)
+                                }} variant='primary' className='w-36'>Create Items</Button>
+                            </div>
+                        </div>
+                    </ClickOutsideAnElementHandler>
+                }
             </div>
         </div>
     </div >

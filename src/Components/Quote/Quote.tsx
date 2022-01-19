@@ -121,7 +121,7 @@ const Quote = () => {
                             <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
                             {showAddRoomDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
                                 <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                    <div className='ml-4 text-sm font-semibold font-ssp'>
+                                    <div className='text-sm font-semibold font-ssp'>
                                         New Room
                                     </div>
                                     <TextInput placeholder='Enter Room Name' variant='box' className='mt-2' inputName='customRoomName' value={customRoomName} onChange={(e) => setcustomRoomName((e.target as any).value)} />
@@ -159,7 +159,8 @@ const Quote = () => {
                         </div>
                         <div
                             onClick={() => markAll()}
-                            className='my-auto ml-auto font-semibold border-b border-solid cursor-pointer text-link font-ssp border-link'>{allRentable ? 'Mark all as not rentable' : 'Mark all as rentable'}</div>
+                            className='my-auto ml-auto font-semibold border-b border-solid cursor-pointer text-link font-ssp border-link'>{allRentable ? 'Mark all as not rentable' : 'Mark all as rentable'}
+                        </div>
                     </div>
                 }
                 {

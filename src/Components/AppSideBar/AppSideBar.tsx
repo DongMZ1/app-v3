@@ -56,7 +56,7 @@ const AppSideBar = () => {
                     <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
                     {showAddUnitDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
                         <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                            <div className='ml-4 text-sm font-semibold font-ssp'>
+                            <div className='text-sm font-semibold font-ssp'>
                                 New Unit
                             </div>
                             <TextInput placeholder='Enter Unit Name' variant='box' className='mt-2' inputName='customUnitName' value={customUnitName} onChange={(e) => setcustomUnitName((e.target as any).value)} />
