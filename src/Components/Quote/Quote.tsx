@@ -15,6 +15,8 @@ import apiRequest from '../../Service/apiRequest';
 
 const RoomOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set']
 const Quote = () => {
+    const [RoomOptionList, setRoomOptionList] = useState<string[]>();
+
     const [roomItemOptions, setroomItemOptions] = useState<string[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
@@ -30,6 +32,13 @@ const Quote = () => {
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
     const allRentable = !(selectedQuoteUnit?.rooms as any[])?.some(eachRoom => (eachRoom?.categories as any[])?.some(eachCategory => !eachCategory.rentable))
+
+    useEffect(
+        () => {
+            //get the room option list on first render
+            getRoomOptionList()
+        }, [currentOrgID]
+    )
     useEffect(
         () => {
             //if item options is not provided
@@ -47,6 +56,22 @@ const Quote = () => {
             }
         }, []
     )
+
+    const getRoomOptionList = async () => {
+        if (currentOrgID) {
+            const res = await apiRequest(
+                {
+                    url: `/api/fhapp-service/packages/room/${currentOrgID}`,
+                    method: 'GET'
+                }
+            )
+            if(res?.success){
+                setRoomOptionList(res?.roomPackages?.map((each: any) => each.name))
+            }else{
+                console.log('getRoomOptionsList failed at Quote.tsx')
+            }
+        }
+    }
 
     //need to update this every time, because selectedQuoteUnit info will not update with updateQuoteDetail
     const updateQuoteDetail = (newselectedQuoteUnit: any) => {
@@ -118,7 +143,7 @@ const Quote = () => {
                 {userRole !== 'viewer' &&
                     <div className='flex'>
                         <div className='relative w-32 mr-8 text-sm-important'>
-                            <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
                             {showAddRoomDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
                                 <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
                                     <div className='text-sm font-semibold font-ssp'>
@@ -134,7 +159,7 @@ const Quote = () => {
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
-                                        {RoomOptionList.filter(eachUnit => eachUnit.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                        {RoomOptionList?.filter(eachUnit => eachUnit.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
                                             <Checkbox className='my-2' label={each} checked={roomOptionCheckList.includes(each)} onChange={(v) => {
                                                 if (v) {
                                                     setroomOptionCheckList(state => [...state, each])
@@ -148,8 +173,8 @@ const Quote = () => {
                                             setshowAddRoomDropdown(false)
                                         }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
                                         <Button disabled={roomOptionCheckList.length === 0 && customRoomName === ''} onClick={() => {
-                                                  setroomOptionCheckList([]);
-                                                  setshowAddRoomDropdown(false);
+                                            setroomOptionCheckList([]);
+                                            setshowAddRoomDropdown(false);
                                         }} variant='primary' className='w-36'>Create Rooms</Button>
                                     </div>
                                 </div>

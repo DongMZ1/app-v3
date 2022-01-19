@@ -178,7 +178,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
         </FurnitureInRoomHeader>
         <div className='flex'>
             <div className='relative w-32 mr-4 text-sm-important'>
-                <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
                 {showAddItemDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddItemDropdown(false)}>
                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
                         <div className='text-sm font-semibold font-ssp'>
@@ -217,7 +217,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                 </ClickOutsideAnElementHandler>}
             </div>
             <div className='relative w-40 mr-8 text-sm-important'>
-                <div onClick={() => setshowAddPackageDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                <div onClick={() => setshowAddPackageDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
                 {
                     showAddPackageDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddPackageDropdown(false)}>
                         <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>

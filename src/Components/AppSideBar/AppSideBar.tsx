@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './AppSideBar.scss'
 import SelectAll from './AppSideBarComponents/SelectAll';
 import EachUnit from './AppSideBarComponents/EachUnit';
@@ -13,8 +13,6 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 
-const unitOptionList = ['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL'];
-
 const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -24,8 +22,25 @@ const AppSideBar = () => {
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitOptionCheckList, setunitOptionCheckList] = useState<string[]>([]);
-    const [unitPackageKeyword, setunitPackageKeyword] = useState('')
+    const [unitPackageKeyword, setunitPackageKeyword] = useState('');
+    const [unitOptionList, setunitOptionList] = useState<string[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
+    useEffect(() => {
+        getUnitPackages()
+    }, [currentOrgID])
+    const getUnitPackages = async () => {
+        if (currentOrgID) {
+            const res = await apiRequest(
+                {
+                    url: `/api/fhapp-service/packages/unit/${currentOrgID}`,
+                    method: 'GET'
+                }
+            )
+            if (res?.success) {
+                setunitOptionList(res?.unitPackages?.map((each: any) => each.name))
+            }
+        }
+    }
     const createUnit = async (v: string) => {
         const res = await apiRequest(
             {
@@ -69,7 +84,7 @@ const AppSideBar = () => {
                             }}
                             />
                             <div className='w-full overflow-y-auto max-h-60'>
-                                {unitOptionList.filter(eachUnit => eachUnit.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
+                                {unitOptionList?.filter(eachUnit => eachUnit.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
                                     <Checkbox className='my-2' label={each} checked={unitOptionCheckList.includes(each)} onChange={(v) => {
                                         if (v) {
                                             setunitOptionCheckList(state => [...state, each])

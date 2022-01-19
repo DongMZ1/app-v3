@@ -152,7 +152,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 renameUnit={(v) => setname(v)}
                 viewOnly={userRole === 'viewer'}
                 onSelectedChange={() => onSelectUnit()}
-                unitName={name}
+                unitName={eachUnit?.name}
                 units={eachUnit?.count}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
