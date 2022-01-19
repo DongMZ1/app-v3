@@ -148,7 +148,8 @@ const Quote = () => {
                                             setshowAddRoomDropdown(false)
                                         }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
                                         <Button disabled={roomOptionCheckList.length === 0 && customRoomName === ''} onClick={() => {
-
+                                                  setroomOptionCheckList([]);
+                                                  setshowAddRoomDropdown(false);
                                         }} variant='primary' className='w-36'>Create Rooms</Button>
                                     </div>
                                 </div>
