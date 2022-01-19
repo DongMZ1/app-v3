@@ -53,7 +53,7 @@ const AppSideBar = () => {
             <div className='flex px-4'>
                 <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                 <div className='relative w-20 text-sm-important'>
-                    <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 bg-white border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                    <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
                     {showAddUnitDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
                         <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
                             <div className='text-sm font-semibold font-ssp'>
