@@ -1,6 +1,6 @@
 import './ProjectInformation.scss'
 import React, { useState } from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
 import { ReactComponent as CopyIcon } from '../../../styles/images/copy-black.svg'
@@ -13,8 +13,8 @@ type ProjectInformationType = {
 }
 
 const ProjectInformation = ({ close }: ProjectInformationType) => {
-    const quoteDetail = useSelector((state:Tappstate) => state.quoteDetail);
-    const selectedProject = useSelector((state:Tappstate) => state.selectedProject);
+    const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
     const [discountCode, setdiscountCode] = useState('');
 
@@ -28,14 +28,14 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const [notesContent, setnotesContent] = useState('Dexter "The Blade" Jackson (born November 25, 1969) is a retired American IFBB professional bodybuilder and the 2008 Mr. Olympia bodybuilding champion.');
     return (
         <div className='fixed top-0 right-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
-            <div className='w-1/2 h-full' onClick={()=>close()}></div>
+            <div className='w-1/2 h-full' onClick={() => close()}></div>
             <div className='z-10 w-1/2 h-full overflow-auto border-l border-black border-solid opacity-100 bg-cream project-information'>
                 <div className='flex'>
                     <div className='text-2xl uppercase font-moret'>project information</div>
                     <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
                 </div>
                 <div className='flex mt-2'>
-                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {quoteDetail.quoteID ? quoteDetail.quoteID: ''}</div>
+                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {quoteDetail.quoteID ? quoteDetail.quoteID : ''}</div>
                     {CopiedQuoteID ? <div className='my-auto mr-4 text-sm font-semibold font-ssp'>Copied!</div> : <CopyIcon onClick={() => {
                         navigator.clipboard.writeText(quoteDetail?.quoteID);
                         setCopiedQuoteID(true);
@@ -48,7 +48,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='w-20'>
                         <DropdownListInput
                             initialValue={quoteDetail?.currency}
-                            onSelect={(value) => {}}
+                            onSelect={(value) => { }}
                             options={['CAD', 'USD', 'EURO']} />
                     </div>
                 </div>
@@ -116,8 +116,13 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                 <div className='flex mt-4 font-ssp'>
                     <div className='w-1/2'>
                         <div className='text-xs'>Project Address</div>
-                        <div className='mt-1 text-sm'>{selectedProject?.projectAddress?.apt ? 'Apt.'+selectedProject?.projectAddress?.apt+ ', ' : ''}{selectedProject?.projectAddress?.street}, 
-                        {selectedProject?.projectAddress?.city}, {selectedProject?.projectAddress?.state}, {selectedProject?.projectAddress?.country},<br /> {selectedProject?.projectAddress?.postalCode}
+                        <div className='mt-1 text-sm'>
+                            {selectedProject?.projectAddress?.apt ? 'Apt.' + selectedProject?.projectAddress?.apt + ', ' : ''}{selectedProject?.projectAddress?.street ? selectedProject?.projectAddress?.street + ', ' : ''}
+                            {selectedProject?.projectAddress?.city ? selectedProject?.projectAddress?.city + ', ' : ''}
+                            {selectedProject?.projectAddress?.state ? selectedProject?.projectAddress?.state + ', ' : ''}
+                            {selectedProject?.projectAddress?.country ? selectedProject?.projectAddress?.country + ', ' : ''}
+                            {selectedProject?.projectAddress ? <br /> : ''}
+                            {selectedProject?.projectAddress?.postalCode ? selectedProject?.projectAddress?.postalCode + ', ' : ''}
                         </div>
                     </div>
                     <div className='w-1/2'>
