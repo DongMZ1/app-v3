@@ -35,9 +35,9 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
                 </div>
                 <div className='flex mt-2'>
-                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {selectedProject.quoteID? selectedProject.quoteID: ''}</div>
+                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {quoteDetail.quoteID ? quoteDetail.quoteID: ''}</div>
                     {CopiedQuoteID ? <div className='my-auto mr-4 text-sm font-semibold font-ssp'>Copied!</div> : <CopyIcon onClick={() => {
-                        navigator.clipboard.writeText(selectedProject?.quoteID);
+                        navigator.clipboard.writeText(quoteDetail?.quoteID);
                         setCopiedQuoteID(true);
                         setTimeout(() => setCopiedQuoteID(false), 500);
                     }} className='my-auto mr-4 cursor-pointer' />}
@@ -47,7 +47,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='my-auto mr-6 text-sm font-semibold font-ssp'>Currency:</div>
                     <div className='w-20'>
                         <DropdownListInput
-                            initialValue={selectedProject?.currency}
+                            initialValue={quoteDetail?.currency}
                             onSelect={(value) => {}}
                             options={['CAD', 'USD', 'EURO']} />
                     </div>
