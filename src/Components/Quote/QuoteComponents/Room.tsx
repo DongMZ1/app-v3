@@ -162,10 +162,10 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                 <div className='mx-2 text-2xl text-center font-moret'>
                     What will you name your room package?
                 </div>
-                <div className='mt-4 text-xs font-ssp'>
+                <div className='mt-2 text-xs font-ssp'>
                     Package Name
                 </div>
-                <TextInput className='mt-4' inputName='save as room package input' variant='box' value={saveAsRoomPackageName} onChange={(e) => setsaveAsRoomPackageName((e.target as any).value)} />
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveAsRoomPackageName} onChange={(e) => setsaveAsRoomPackageName((e.target as any).value)} />
                 <div className='flex my-2'>
                         <Button onClick={() => {
                             setshowSaveAsRoomPackage(false);

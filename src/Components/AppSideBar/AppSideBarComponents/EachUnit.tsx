@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { GroupUnit } from '@fulhaus/react.ui.group-unit'
+import { Popup } from '@fulhaus/react.ui.popup'
+import { TextInput } from '@fulhaus/react.ui.text-input'
+import {Button} from '@fulhaus/react.ui.button'
 import { useDispatch, useSelector } from 'react-redux'
 import produce from 'immer'
 import NoteModal from '../../NoteModal/NoteModal'
@@ -18,6 +21,9 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
     const dispatch = useDispatch();
+
+    const [saveAsMutiRoomPackageName, setsaveAsMutiRoomPackageName] = useState('');
+    const [showSaveAsMutiRoomPackage, setshowSaveAsMutiRoomPackage] = useState(false);
 
     const duplicateUnit = async () => {
         const res = await apiRequest(
@@ -141,9 +147,30 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
         }
     }
     return <>
+    <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsMutiRoomPackage(false)} show={showSaveAsMutiRoomPackage}>
+            <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
+                <div className='mx-2 text-2xl text-center font-moret'>
+                    What will you name your multi-room package?
+                </div>
+                <div className='mt-2 text-xs font-ssp'>
+                    Multi-Package Name
+                </div>
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveAsMutiRoomPackageName} onChange={(e) => setsaveAsMutiRoomPackageName((e.target as any).value)} />
+                <div className='flex my-2'>
+                        <Button onClick={() => {
+                            setshowSaveAsMutiRoomPackage(false);
+                        }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
+                        <Button disabled={!saveAsMutiRoomPackageName} onClick={() => {
+                            setsaveAsMutiRoomPackageName('')
+                            setshowSaveAsMutiRoomPackage(false);
+                        }} variant='primary' className='w-20'>Save</Button>
+                    </div>
+            </div>
+        </Popup>
         <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
+                saveUnitAsMultiRoomPackage={()=>setshowSaveAsMutiRoomPackage(true)}
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
                 onUnitsChange={(count) => updateCount(count)}
                 duplicateUnit={()=>duplicateUnit()}
