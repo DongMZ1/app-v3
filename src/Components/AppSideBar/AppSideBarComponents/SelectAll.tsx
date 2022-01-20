@@ -105,7 +105,7 @@ const SelectAll = () => {
             method: 'PATCH'
         })
         if (!res?.success) {
-            console.log('updateCategories failed at line 33 Room.tsx')
+            console.log('updateCategories failed at SelectAll.tsx')
         }
     }
     return <div className='mt-4 select-all'>

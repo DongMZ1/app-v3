@@ -13,30 +13,36 @@ const ProjectFooter = () => {
     useEffect(
         () => {
             const getQuoteTotal = async () => {
-                const quoteTotalRes = await apiRequest(
+                const res = await apiRequest(
                     {
                         url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail.quoteID}/total`,
                         method: 'GET'
                     }
                 )
+                if(res?.success){
+                    setquoteTotal(res.quoteTotal);
+                }
             }
             if (JSONquoteDetail) {
-                getQuoteTotal();
+                setTimeout(() => getQuoteTotal() , 300);
             }
         }, [JSONquoteDetail]
     )
     useEffect(
         () => {
             const getUnitTotal = async () => {
-                const unitTotalRes = await apiRequest(
+                const res = await apiRequest(
                     {
                         url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail.quoteID}/${selectedQuoteUnit.unitID}/total`,
                         method: 'GET'
                     }
                 )
+                if(res?.success){
+                    setunitTotal(res.unitTotal);
+                }
             }
             if(JSONselectedQuoteUnit){
-                getUnitTotal();
+                setTimeout(() => getUnitTotal() , 300);
             }
         }, [JSONselectedQuoteUnit]
     )
@@ -44,8 +50,8 @@ const ProjectFooter = () => {
         <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.unitType : 'No Unit Selected'}</div>
         <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
         <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
-        <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>$0.00</b></div>
-        <div className='my-auto mr-6 text-sm'>Project Total <b>$0.00</b></div>
+        <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit? `$${unitTotal}`: 'No Unit Selected'}</b></div>
+        <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal}</b></div>
         <div className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
     </div>
 }
