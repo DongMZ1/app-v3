@@ -6,12 +6,11 @@ const getQuoteDetail = ({
 }:{organizationID: string; projectOrQuoteID: string, idType: 'quoteID' | 'project'}) => async (dispatch:any) => {
     const res = await apiRequest(
         {
-            url:`/api/fhapp-service/quote/${organizationID}/${projectOrQuoteID}`,
-            body: {idType},
+            url:`/api/fhapp-service/quote/${organizationID}/${idType}/${projectOrQuoteID}`,
             method:'GET'
         }
     )
-    if(res?.success && idType==='quoteID'){
+    if(res?.success){
          dispatch({
              type:'quoteDetail',
              payload: res?.quote
