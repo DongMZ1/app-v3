@@ -13,9 +13,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
 
-const RoomOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set']
 const Quote = () => {
-    const [RoomOptionList, setRoomOptionList] = useState<string[]>();
+    const [RoomOptionList, setRoomOptionList] = useState<{name:string, id:string}[]>();
 
     const [roomItemOptions, setroomItemOptions] = useState<string[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
@@ -66,7 +65,12 @@ const Quote = () => {
                 }
             )
             if(res?.success){
-                setRoomOptionList(res?.roomPackages?.map((each: any) => each.name))
+                setRoomOptionList(res?.roomPackages?.map((each: any) => {
+                    return {
+                        name: each.name,
+                        id: each._id
+                    }
+                }))
             }else{
                 console.log('getRoomOptionsList failed at Quote.tsx')
             }
@@ -159,12 +163,12 @@ const Quote = () => {
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
-                                        {RoomOptionList?.filter(eachUnit => eachUnit.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each} checked={roomOptionCheckList.includes(each)} onChange={(v) => {
+                                        {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                            <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckList.includes(each?.name)} onChange={(v) => {
                                                 if (v) {
-                                                    setroomOptionCheckList(state => [...state, each])
+                                                    setroomOptionCheckList(state => [...state, each?.name])
                                                 } else {
-                                                    setroomOptionCheckList(state => state.filter(e => e !== each))
+                                                    setroomOptionCheckList(state => state.filter(e => e !== each?.name))
                                                 }
                                             }} />)}
                                     </div>

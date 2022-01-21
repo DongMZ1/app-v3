@@ -23,7 +23,7 @@ const AppSideBar = () => {
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitOptionCheckList, setunitOptionCheckList] = useState<string[]>([]);
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
-    const [unitOptionList, setunitOptionList] = useState<string[]>([]);
+    const [unitOptionList, setunitOptionList] = useState<{name: string, id: string}[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
     useEffect(() => {
         getUnitPackages()
@@ -37,7 +37,10 @@ const AppSideBar = () => {
                 }
             )
             if (res?.success) {
-                setunitOptionList(res?.unitPackages?.map((each: any) => each.name))
+                setunitOptionList(res?.unitPackages?.map((each: any) => 
+                {return {name: each.name, id: each._id}}
+                
+                ))
             }
         }
     }
@@ -84,12 +87,12 @@ const AppSideBar = () => {
                             }}
                             />
                             <div className='w-full overflow-y-auto max-h-60'>
-                                {unitOptionList?.filter(eachUnit => eachUnit.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
-                                    <Checkbox className='my-2' label={each} checked={unitOptionCheckList.includes(each)} onChange={(v) => {
+                                {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
+                                    <Checkbox className='my-2' label={each?.name} checked={unitOptionCheckList.includes(each.name)} onChange={(v) => {
                                         if (v) {
-                                            setunitOptionCheckList(state => [...state, each])
+                                            setunitOptionCheckList(state => [...state, each?.name])
                                         } else {
-                                            setunitOptionCheckList(state => state.filter(e => e !== each))
+                                            setunitOptionCheckList(state => state.filter(e => e !== each?.name))
                                         }
                                     }} />)}
                             </div>

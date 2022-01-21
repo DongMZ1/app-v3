@@ -58,7 +58,7 @@ const ProjectFooter = () => {
         <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
         <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
         <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit? `$${unitTotal}`: 'No Unit Selected'}</b></div>
-        <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal}</b></div>
+        <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal? quoteTotal : 0}</b></div>
         <div className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
     </div>
 }
