@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Tappstate } from "../../../redux/reducers";
 import { useSelector } from "react-redux";
 import apiRequest from '../../../Service/apiRequest';
+import debounce from 'lodash.debounce';
 const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
@@ -23,8 +24,11 @@ const ProjectFooter = () => {
                     setquoteTotal(res.quoteTotal);
                 }
             }
+            const debounceGetQuoteTotal = debounce(
+                getQuoteTotal, 500
+            )
             if (JSONquoteDetail) {
-                setTimeout(() => getQuoteTotal() , 300);
+                debounceGetQuoteTotal();
             }
         }, [JSONquoteDetail]
     )
@@ -41,8 +45,11 @@ const ProjectFooter = () => {
                     setunitTotal(res.unitTotal);
                 }
             }
+            const debounceGetUnitTotal = debounce(
+                getUnitTotal, 500
+            )
             if(JSONselectedQuoteUnit){
-                setTimeout(() => getUnitTotal() , 300);
+                debounceGetUnitTotal();
             }
         }, [JSONselectedQuoteUnit]
     )
