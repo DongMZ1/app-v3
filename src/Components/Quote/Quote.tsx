@@ -14,7 +14,7 @@ import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
 
 const Quote = () => {
-    const [RoomOptionList, setRoomOptionList] = useState<{name:string, id:string}[]>();
+    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string }[]>();
 
     const [roomItemOptions, setroomItemOptions] = useState<string[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
@@ -64,14 +64,14 @@ const Quote = () => {
                     method: 'GET'
                 }
             )
-            if(res?.success){
+            if (res?.success) {
                 setRoomOptionList(res?.roomPackages?.map((each: any) => {
                     return {
                         name: each.name,
                         id: each._id
                     }
                 }))
-            }else{
+            } else {
                 console.log('getRoomOptionsList failed at Quote.tsx')
             }
         }
@@ -113,33 +113,46 @@ const Quote = () => {
         });
         updateQuoteDetail(newselectedQuoteUnit);
     }
-    const addRoom = async (room: string) => {
-        const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
-            body: { roomType: room },
-            method: 'POST'
-        })
-        if (res?.success) {
-            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-                draft.rooms = draft.rooms?.concat(res.newRoom);
-            });
-            //update selectedQuoteUnit
-            dispatch({
-                type: 'selectedQuoteUnit',
-                payload: newselectedQuoteUnit
-            });
-            //update quoteDetail
-            const newquoteDetail = produce(quoteDetail, (draft: any) => {
-                const index = draft.data.findIndex((each: any) => each?.unitID === unitID)
-                draft.data[index] = newselectedQuoteUnit;
-            });
-            dispatch({
-                type: 'quoteDetail',
-                payload: newquoteDetail
-            });
-        } else {
-            console.log(res?.message)
+    const addRooms = async () => {
+        let newRooms: any = [];
+        let allRoomsNames = roomOptionCheckList;
+        if(customRoomName){
+            allRoomsNames = allRoomsNames.concat(customRoomName);
         }
+        for (let eachRoomName of allRoomsNames) {
+            const res = await apiRequest({
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
+                body: { roomName: eachRoomName },
+                method: 'POST'
+            });
+            if(res?.success){
+                newRooms = newRooms.concat(res.newRoom);
+            }else{
+                console.log('addRooms failed at Quote.tsx')
+            }
+        }
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            draft.rooms = draft.rooms?.concat(newRooms);
+        });
+        //update selectedQuoteUnit
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        //update quoteDetail
+        const newquoteDetail = produce(quoteDetail, (draft: any) => {
+            const index = draft.data.findIndex((each: any) => each?.unitID === unitID)
+            draft.data[index] = newselectedQuoteUnit;
+        });
+        dispatch({
+            type: 'quoteDetail',
+            payload: newquoteDetail
+        });
+
+        //set customRoomName to default
+        setcustomRoomName('');
+        setroomOptionCheckList([]);
+        setshowAddRoomDropdown(false);
     }
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
         {(selectedQuoteUnit) ?
@@ -177,8 +190,7 @@ const Quote = () => {
                                             setshowAddRoomDropdown(false)
                                         }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
                                         <Button disabled={roomOptionCheckList.length === 0 && customRoomName === ''} onClick={() => {
-                                            setroomOptionCheckList([]);
-                                            setshowAddRoomDropdown(false);
+                                            addRooms();
                                         }} variant='primary' className='w-36'>Create Rooms</Button>
                                     </div>
                                 </div>

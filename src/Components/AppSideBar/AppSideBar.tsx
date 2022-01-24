@@ -23,7 +23,7 @@ const AppSideBar = () => {
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitOptionCheckList, setunitOptionCheckList] = useState<string[]>([]);
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
-    const [unitOptionList, setunitOptionList] = useState<{name: string, id: string}[]>([]);
+    const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
     useEffect(() => {
         getUnitPackages()
@@ -37,34 +37,47 @@ const AppSideBar = () => {
                 }
             )
             if (res?.success) {
-                setunitOptionList(res?.unitPackages?.map((each: any) => 
-                {return {name: each.name, id: each._id}}
-                
+                setunitOptionList(res?.unitPackages?.map((each: any) => { return { name: each.name, id: each._id } }
+
                 ))
             }
         }
     }
-    const createUnit = async (v: string) => {
-        const res = await apiRequest(
-            {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?.quoteID}`,
-                body: {
-                    unitType: v
-                },
-                method: 'POST'
-            }
-        )
-        if (res?.success) {
-            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                draft.data = draft.data?.concat(res.newUnit);
-            })
-            dispatch({
-                type: 'quoteDetail',
-                payload: newQuoteDetail
-            })
-        } else {
-            console.log(res?.message)
+    const createUnits = async () => {
+        let newUnits: any = [];
+        let allUnitsNames = unitOptionCheckList 
+        //add costum names
+        if(customUnitName){
+            allUnitsNames = unitOptionCheckList.concat(customUnitName);
         }
+        for (let eachUnitName of allUnitsNames){
+            const res = await apiRequest(
+                {
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?.quoteID}`,
+                    body: {
+                        unitName: eachUnitName
+                    },
+                    method: 'POST'
+                }
+            )
+            if (res?.success) {
+                newUnits = newUnits.concat(res.newUnit)
+            } else {
+                console.log('createUnits failed at AppSideBar.tsx')
+            }
+        }
+
+        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+            draft.data = draft.data?.concat(newUnits);
+        })
+        dispatch({
+            type: 'quoteDetail',
+            payload: newQuoteDetail
+        })
+        //set name to default
+        setcustomUnitName('');
+        setunitOptionCheckList([]);
+        setshowAddUnitDropdown(false);
     }
     return (showEntendSideBar ? <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
         {userRole !== 'viewer' && <>
@@ -101,7 +114,7 @@ const AppSideBar = () => {
                                     setshowAddUnitDropdown(false)
                                 }} className='w-32 mr-4' variant='secondary'>Cancel</Button>
                                 <Button disabled={unitOptionCheckList.length === 0 && customUnitName === ''} onClick={() => {
-
+                                      createUnits();
                                 }} variant='primary' className='w-32'>Create Units</Button>
                             </div>
                         </div>

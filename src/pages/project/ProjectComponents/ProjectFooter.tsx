@@ -54,7 +54,7 @@ const ProjectFooter = () => {
         }, [JSONselectedQuoteUnit]
     )
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
-        <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.unitType : 'No Unit Selected'}</div>
+        <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
         <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
         <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
         <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit? `$${unitTotal}`: 'No Unit Selected'}</b></div>
