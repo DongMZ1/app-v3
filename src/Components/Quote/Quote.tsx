@@ -196,9 +196,10 @@ const Quote = () => {
                                 </div>
                             </ClickOutsideAnElementHandler>}
                         </div>
+                        {/*
                         <div className='w-60 text-sm-important'>
                             <DropdownListInput placeholder='Add Muti-Room Package' wrapperClassName='cursor-pointer' listWrapperClassName='' options={['Custom Unit', 'Studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} />
-                        </div>
+                        </div>*/}
                         <div
                             onClick={() => markAll()}
                             className='my-auto ml-auto font-semibold border-b border-solid cursor-pointer text-link font-ssp border-link'>{allRentable ? 'Mark all as not rentable' : 'Mark all as rentable'}
