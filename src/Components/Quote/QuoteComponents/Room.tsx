@@ -14,7 +14,7 @@ import { Popup } from '@fulhaus/react.ui.popup';
 
 type RoomType = {
     eachRoom: any,
-    roomItemOptions: string[] | undefined
+    roomItemOptions: { name: string; id: string; }[] | undefined
     updateQuoteDetail: (newselectedQuoteUnit: any) => void
 }
 
@@ -24,7 +24,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
 
     const [showAddItemDropdown, setshowAddItemDropdown] = useState(false);
     const [customItemName, setcustomItemName] = useState('');
-    const [itemOptionCheckList, setitemOptionCheckList] = useState<string[]>([]);
+    const [itemOptionCheckList, setitemOptionCheckList] = useState<{ name: string; id: string; }[]>([]);
     const [itemKeyword, setitemKeyword] = useState('');
 
     const [showAddPackageDropdown, setshowAddPackageDropdown] = useState(false);
@@ -109,12 +109,13 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             let itemlist = itemOptionCheckList.filter(
                 each => !draft.rooms[index].categories.map((each: any) => each.name).includes(each)
-            ).map(eachItemName => {
+            ).map(eachItem => {
                 return {
-                    name: eachItemName,
+                    name: eachItem.name,
                     rentable: false,
                     qty: 1,
                     budget: 0,
+                    categoryID: eachItem.id as (string | null)
                 }
             })
             if (!draft.rooms[index].categories.map((each: any) => each.name).includes(customItemName) && customItemName !== '') {
@@ -124,6 +125,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                         rentable: false,
                         qty: 1,
                         budget: 0,
+                        categoryID: null,
                     }
                 )
             }
@@ -222,8 +224,8 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
-                                        {roomItemOptions?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each} checked={itemOptionCheckList.includes(each)} onChange={(v) => {
+                                        {roomItemOptions?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
+                                            <Checkbox className='my-2' label={each.name} checked={itemOptionCheckList.includes(each)} onChange={(v) => {
                                                 if (v) {
                                                     setitemOptionCheckList(state => [...state, each])
                                                 } else {

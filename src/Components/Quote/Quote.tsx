@@ -16,7 +16,7 @@ import apiRequest from '../../Service/apiRequest';
 const Quote = () => {
     const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string }[]>();
 
-    const [roomItemOptions, setroomItemOptions] = useState<string[]>();
+    const [roomItemOptions, setroomItemOptions] = useState<{name: string, id:string}[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
     const [roomOptionCheckList, setroomOptionCheckList] = useState<string[]>([]);
@@ -47,7 +47,7 @@ const Quote = () => {
                     method: 'GET'
                 })
                 if (res?.success) {
-                    setroomItemOptions(res.data.map((each: any) => each.name))
+                    setroomItemOptions(res.data.map((each: any) =>{return {name: each.name, id: each._id}}))
                 }
             }
             if (!roomItemOptions) {
@@ -116,7 +116,7 @@ const Quote = () => {
     const addRooms = async () => {
         let newRooms: any = [];
         let allRoomsNames = roomOptionCheckList;
-        if(customRoomName){
+        if (customRoomName) {
             allRoomsNames = allRoomsNames.concat(customRoomName);
         }
         for (let eachRoomName of allRoomsNames) {
@@ -125,9 +125,9 @@ const Quote = () => {
                 body: { roomName: eachRoomName },
                 method: 'POST'
             });
-            if(res?.success){
+            if (res?.success) {
                 newRooms = newRooms.concat(res.newRoom);
-            }else{
+            } else {
                 console.log('addRooms failed at Quote.tsx')
             }
         }
@@ -207,6 +207,12 @@ const Quote = () => {
                 }
                 {
                     selectedQuoteUnit?.rooms?.map((each: any) => <Room updateQuoteDetail={updateQuoteDetail} roomItemOptions={roomItemOptions} eachRoom={each} />)
+                }
+                {selectedQuoteUnit?.rooms?.length === 0 &&
+                    <div className='m-auto'>
+                        <AddUnitIcon />
+                        <div className='flex text-4xl font-moret'><div className='mx-auto'>Add a Room to get started</div></div>
+                    </div>
                 }
             </>
             :
