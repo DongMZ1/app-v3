@@ -16,7 +16,7 @@ const unitOptionList = ['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL
 const roomTypeOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set'];
 
 const SelectAll = () => {
-    const [roomItemOptions, setroomItemOptions] = useState<string[]>();
+    const [roomItemOptions, setroomItemOptions] = useState<{name: string, id: string}[]>();
 
     const [showDropDown, setshowDropDown] = useState(false);
     const [showGroupUnitRoomMenu, setshowGroupUnitRoomMenu] = useState(true);
@@ -33,6 +33,8 @@ const SelectAll = () => {
     const unitList = useSelector((state: Tappstate) => state.quoteDetail)?.data;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
+    const unitOptionList= quoteDetail?.data?.map((each: any) => each.name);
     useEffect(
         () => {
             //if item options is not provided
@@ -42,7 +44,10 @@ const SelectAll = () => {
                     method: 'GET'
                 })
                 if (res?.success) {
-                    setroomItemOptions(res.data.map((each: any) => each.name))
+                    setroomItemOptions(res.data.map((each: any) => {return{
+                        name: each.name,
+                        id: each._id
+                    }}))
                 }
             }
             if (!roomItemOptions) {
@@ -203,7 +208,7 @@ const SelectAll = () => {
                             :
                             <div onClick={() => setunitCheckList(unitOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                     }
-                    {unitOptionList.map(each =>
+                    {unitOptionList.map((each: any) =>
                         <Checkbox className='my-2' label={each} checked={unitCheckList.includes(each)} onChange={(v) => {
                             if (v) {
                                 setunitCheckList(state => [...state, each])
@@ -289,7 +294,7 @@ const SelectAll = () => {
                         </>}
                     </div>
                     <div>item</div>
-                    <DropdownListInput onSelect={(v) => setselectedItem(v)} placeholder='SELECT AN ITEM' options={roomItemOptions ? roomItemOptions : []} />
+                    <DropdownListInput onSelect={(v) => setselectedItem(v)} placeholder='SELECT AN ITEM' options={roomItemOptions ? roomItemOptions.map(each => each.name) : []} />
                     <div className='flex mt-4 mb-2'>
                         <Button onClick={() => {
                             setshowDropDown(false)
