@@ -1,7 +1,7 @@
 import './SelectAll.scss'
 import apiRequest from '../../../Service/apiRequest';
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import produce from 'immer';
 import { Button } from '@fulhaus/react.ui.button';
 import { AiOutlineRight } from 'react-icons/ai';
@@ -10,10 +10,11 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Radio } from '@fulhaus/react.ui.radio'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
+import { getQuoteDetail } from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
 
 const SelectAll = () => {
-    const [roomItemOptions, setroomItemOptions] = useState<{name: string, id: string}[]>();
+    const [roomItemOptions, setroomItemOptions] = useState<{ name: string, id: string }[]>();
     const [selectedItem, setselectedItem] = useState<string | undefined>();
 
     const [roomTypeOptionList, setroomTypeOptionList] = useState<string[]>([]);
@@ -30,11 +31,14 @@ const SelectAll = () => {
     const [AddOrRemoveItem, setAddOrRemoveItem] = useState<'addItem' | 'removeItem'>('addItem');
     const [groupCheckList, setgroupCheckList] = useState<string[]>([]);
 
+    const dispatch = useDispatch();
     const unitList = useSelector((state: Tappstate) => state.quoteDetail)?.data;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
-    const unitOptionList= quoteDetail?.data?.map((each: any) => each.name);
+    const unitOptionList = quoteDetail?.data?.map((each: any) => each.name);
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     useEffect(
         () => {
             //if item options is not provided
@@ -44,10 +48,12 @@ const SelectAll = () => {
                     method: 'GET'
                 })
                 if (res?.success) {
-                    setroomItemOptions(res.data.map((each: any) => {return{
-                        name: each.name,
-                        id: each._id
-                    }}))
+                    setroomItemOptions(res.data.map((each: any) => {
+                        return {
+                            name: each.name,
+                            id: each._id
+                        }
+                    }))
                 }
             }
 
@@ -69,7 +75,7 @@ const SelectAll = () => {
             if (!roomItemOptions) {
                 getRoomItemOptions();
             }
-            if(roomTypeOptionList.length === 0){
+            if (roomTypeOptionList.length === 0) {
                 getRoomOptionList();
             }
         }, [currentOrgID]
@@ -78,22 +84,55 @@ const SelectAll = () => {
     const handleAddOrRemoveItem = async () => {
         if (addItemPageType === 'ofUnit') {
             if (AddOrRemoveItem === 'addItem') {
-               await addItemToUnit()
+                await addItemToUnit()
             }
         }
         setshowDropDown(false)
         setshowAddItemPage(false);
         setshowGroupUnitRoomMenu(true);
     }
-  
-    const addItemToUnit = async () => {
-           let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckList.includes(eachUnit.name))
-           for(let unit of selectedUnitList){
-               //loop rooms
-               for(let room of unit.rooms){
 
-               }
-           }
+    const addItemToUnit = async () => {
+        const item = roomItemOptions?.filter(each => each.name === selectedItem)[0];
+        let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckList.includes(eachUnit.name))
+        for (let unit of selectedUnitList) {
+            //loop rooms
+            for (let room of unit.rooms) {
+                //if categories does not have the item
+                if (room?.categories?.filter((eachCategory: any) => eachCategory.name === item?.name)?.length === 0) {
+                    let newCategories = [...room?.categories, {
+                        qty: 1,
+                        rentable: false,
+                        name: item?.name,
+                        budget: 0,
+                        categoryID: item?.id
+                    }]
+                    await updateCategories({
+                        currentOrgID,
+                        quoteID,
+                        unitID: unit.unitID,
+                        roomID: room.roomID,
+                        categories: newCategories
+                    })
+                }
+            }
+        }
+        SyncRemoteQuoteAndSelectedQuoteUnit();
+    }
+
+    const SyncRemoteQuoteAndSelectedQuoteUnit = () => {
+        //if it is a project, then get the quote based on projectID
+        if (selectedProject?.type === 'project' && currentOrgID) {
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
+        }
+        //get quote detail when initail rendering
+        if (selectedProject?.quoteID && currentOrgID && selectedProject?.type === 'quote') {
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
+        }
+        dispatch({
+            type:'selectedQuoteUnit',
+            payload: undefined
+        });
     }
 
     const updateCategories = async ({
