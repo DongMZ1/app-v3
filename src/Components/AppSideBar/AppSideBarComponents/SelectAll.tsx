@@ -78,35 +78,17 @@ const SelectAll = () => {
     const handleAddOrRemoveItem = async () => {
         if (addItemPageType === 'ofUnit') {
             if (AddOrRemoveItem === 'addItem') {
-                //filter out units based on unitCheckList
-                (unitList as any[]).filter(async (eachUnit: any) => unitCheckList.includes(eachUnit.unitType)).forEach(
-                    async (eachUnitFiltered) => {
-                        (eachUnitFiltered.rooms as any[]).forEach(async (eachRoom) => {
-                            //if categories'type does not have selectedItem
-                            if (!(eachRoom.categories as any[])?.map((eachCategories: any) => eachCategories.name).includes(selectedItem)) {
-                                await updateCategories({
-                                    currentOrgID,
-                                    quoteID,
-                                    unitID: eachUnitFiltered.unitID,
-                                    roomID: eachRoom.roomID,
-                                    categories: eachRoom.categories.concat({
-                                        qty: 1,
-                                        rentable: false,
-                                        name: selectedItem,
-                                        budget: 0
-                                    })
-                                })
-                            }
-                        })
-                    }
-                )
+               await addItemToUnit()
             }
         }
         setshowDropDown(false)
         setshowAddItemPage(false);
         setshowGroupUnitRoomMenu(true);
     }
+  
+    const addItemToUnit = async () => {
 
+    }
 
     const updateCategories = async ({
         currentOrgID,
