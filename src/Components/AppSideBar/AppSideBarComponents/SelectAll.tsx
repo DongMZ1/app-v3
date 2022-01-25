@@ -87,7 +87,13 @@ const SelectAll = () => {
     }
   
     const addItemToUnit = async () => {
+           let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckList.includes(eachUnit.name))
+           for(let unit of selectedUnitList){
+               //loop rooms
+               for(let room of unit.rooms){
 
+               }
+           }
     }
 
     const updateCategories = async ({
