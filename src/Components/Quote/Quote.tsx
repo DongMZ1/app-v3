@@ -16,10 +16,10 @@ import apiRequest from '../../Service/apiRequest';
 const Quote = () => {
     const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string }[]>();
 
-    const [roomItemOptions, setroomItemOptions] = useState<{name: string, id:string}[]>();
+    const [roomItemOptionsList, setroomItemOptionsList] = useState<{name: string, id:string}[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
-    const [roomOptionCheckList, setroomOptionCheckList] = useState<string[]>([]);
+    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<string[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('')
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
@@ -41,17 +41,17 @@ const Quote = () => {
     useEffect(
         () => {
             //if item options is not provided
-            const getRoomItemOptions = async () => {
+            const getRoomItemOptionsList = async () => {
                 const res = await apiRequest({
                     url: '/api/products-service/categories',
                     method: 'GET'
                 })
                 if (res?.success) {
-                    setroomItemOptions(res.data.map((each: any) =>{return {name: each.name, id: each._id}}))
+                    setroomItemOptionsList(res.data.map((each: any) =>{return {name: each.name, id: each._id}}))
                 }
             }
-            if (!roomItemOptions) {
-                getRoomItemOptions();
+            if (!roomItemOptionsList) {
+                getRoomItemOptionsList();
             }
         }, []
     )
@@ -115,7 +115,7 @@ const Quote = () => {
     }
     const addRooms = async () => {
         let newRooms: any = [];
-        let allRoomsNames = roomOptionCheckList;
+        let allRoomsNames = roomOptionCheckedList;
         if (customRoomName) {
             allRoomsNames = allRoomsNames.concat(customRoomName);
         }
@@ -151,7 +151,7 @@ const Quote = () => {
 
         //set customRoomName to default
         setcustomRoomName('');
-        setroomOptionCheckList([]);
+        setroomOptionCheckedList([]);
         setshowAddRoomDropdown(false);
     }
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
@@ -172,16 +172,16 @@ const Quote = () => {
                                     </div>
                                     <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
                                         setroomPackageKeyword((e.target as any).value);
-                                        setroomOptionCheckList([]);
+                                        setroomOptionCheckedList([]);
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
                                         {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckList.includes(each?.name)} onChange={(v) => {
+                                            <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckedList.includes(each?.name)} onChange={(v) => {
                                                 if (v) {
-                                                    setroomOptionCheckList(state => [...state, each?.name])
+                                                    setroomOptionCheckedList(state => [...state, each?.name])
                                                 } else {
-                                                    setroomOptionCheckList(state => state.filter(e => e !== each?.name))
+                                                    setroomOptionCheckedList(state => state.filter(e => e !== each?.name))
                                                 }
                                             }} />)}
                                     </div>
@@ -189,7 +189,7 @@ const Quote = () => {
                                         <Button onClick={() => {
                                             setshowAddRoomDropdown(false)
                                         }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                        <Button disabled={roomOptionCheckList.length === 0 && customRoomName === ''} onClick={() => {
+                                        <Button disabled={roomOptionCheckedList.length === 0 && customRoomName === ''} onClick={() => {
                                             addRooms();
                                         }} variant='primary' className='w-36'>Create Rooms</Button>
                                     </div>
@@ -206,7 +206,7 @@ const Quote = () => {
                     </div>
                 }
                 {
-                    selectedQuoteUnit?.rooms?.map((each: any) => <Room updateQuoteDetail={updateQuoteDetail} roomItemOptions={roomItemOptions} eachRoom={each} />)
+                    selectedQuoteUnit?.rooms?.map((each: any) => <Room updateQuoteDetail={updateQuoteDetail} roomItemOptionsList={roomItemOptionsList} eachRoom={each} />)
                 }
                 {selectedQuoteUnit?.rooms?.length === 0 &&
                     <div className='m-auto'>

@@ -14,21 +14,21 @@ import { Popup } from '@fulhaus/react.ui.popup';
 
 type RoomType = {
     eachRoom: any,
-    roomItemOptions: { name: string; id: string; }[] | undefined
+    roomItemOptionsList: { name: string; id: string; }[] | undefined
     updateQuoteDetail: (newselectedQuoteUnit: any) => void
 }
 
 //dummy packages
 const roomPackagesOptions = ['room Package 1', 'room Package 2', 'room Package 3', 'room Package 4']
-const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
+const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) => {
 
     const [showAddItemDropdown, setshowAddItemDropdown] = useState(false);
     const [customItemName, setcustomItemName] = useState('');
-    const [itemOptionCheckList, setitemOptionCheckList] = useState<{ name: string; id: string; }[]>([]);
+    const [itemOptionCheckedList, setitemOptionCheckedList] = useState<{ name: string; id: string; }[]>([]);
     const [itemKeyword, setitemKeyword] = useState('');
 
     const [showAddPackageDropdown, setshowAddPackageDropdown] = useState(false);
-    const [roomPackageOptionCheckList, setroomPackageOptionCheckList] = useState<string[]>([]);
+    const [roomPackageOptionCheckedList, setroomPackageOptionCheckedList] = useState<string[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
     const [saveAsRoomPackageName, setsaveAsRoomPackageName] = useState('');
@@ -107,7 +107,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
     const addItemToRoom = () => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-            let itemlist = itemOptionCheckList.filter(
+            let itemlist = itemOptionCheckedList.filter(
                 each => !draft.rooms[index].categories.map((each: any) => each.name).includes(each)
             ).map(eachItem => {
                 return {
@@ -139,7 +139,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
         updateQuoteDetail(newselectedQuoteUnit);
         //reset default varibles
         setcustomItemName('');
-        setitemOptionCheckList([]);
+        setitemOptionCheckedList([]);
         setshowAddItemDropdown(false);
     }
     const deleteRoom = async () => {
@@ -220,16 +220,16 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                                     </div>
                                     <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
                                         setitemKeyword((e.target as any).value);
-                                        setitemOptionCheckList([]);
+                                        setitemOptionCheckedList([]);
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
-                                        {roomItemOptions?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each.name} checked={itemOptionCheckList.includes(each)} onChange={(v) => {
+                                        {roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
+                                            <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
                                                 if (v) {
-                                                    setitemOptionCheckList(state => [...state, each])
+                                                    setitemOptionCheckedList(state => [...state, each])
                                                 } else {
-                                                    setitemOptionCheckList(state => state.filter(e => e !== each))
+                                                    setitemOptionCheckedList(state => state.filter(e => e !== each))
                                                 }
                                             }} />)}
                                     </div>
@@ -237,7 +237,7 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                                         <Button onClick={() => {
                                             setshowAddItemDropdown(false)
                                         }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                        <Button disabled={itemOptionCheckList.length === 0 && customItemName === ''} onClick={() => {
+                                        <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
                                             addItemToRoom();
                                         }} variant='primary' className='w-36'>Create Items</Button>
                                     </div>
@@ -251,16 +251,16 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
                                         <TextInput placeholder='Search Existing UnitPackages' variant='box' className='mt-2' inputName='add package keywords' value={roomPackageKeyword} onChange={(e) => {
                                             setroomPackageKeyword((e.target as any).value);
-                                            setroomPackageOptionCheckList([]);
+                                            setroomPackageOptionCheckedList([]);
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
                                             {roomPackagesOptions.filter(eachPackage => eachPackage.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                                <Checkbox className='my-2' label={each} checked={roomPackageOptionCheckList.includes(each)} onChange={(v) => {
+                                                <Checkbox className='my-2' label={each} checked={roomPackageOptionCheckedList.includes(each)} onChange={(v) => {
                                                     if (v) {
-                                                        setroomPackageOptionCheckList(state => [...state, each])
+                                                        setroomPackageOptionCheckedList(state => [...state, each])
                                                     } else {
-                                                        setroomPackageOptionCheckList(state => state.filter(e => e !== each))
+                                                        setroomPackageOptionCheckedList(state => state.filter(e => e !== each))
                                                     }
                                                 }} />)}
                                         </div>
@@ -268,8 +268,8 @@ const Room = ({ eachRoom, roomItemOptions, updateQuoteDetail }: RoomType) => {
                                             <Button onClick={() => {
                                                 setshowAddPackageDropdown(false)
                                             }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                            <Button disabled={itemOptionCheckList.length === 0 && customItemName === ''} onClick={() => {
-                                                setroomPackageOptionCheckList([]);
+                                            <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
+                                                setroomPackageOptionCheckedList([]);
                                                 setshowAddPackageDropdown(false)
                                             }} variant='primary' className='w-36'>Create Items</Button>
                                         </div>
