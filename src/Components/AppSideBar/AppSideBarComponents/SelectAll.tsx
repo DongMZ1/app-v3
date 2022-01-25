@@ -86,6 +86,9 @@ const SelectAll = () => {
             if (AddOrRemoveItem === 'addItem') {
                 await addItemToUnit()
             }
+            if(AddOrRemoveItem === 'removeItem'){
+                await removeItemFromUnit();
+            }
         }
         setshowDropDown(false)
         setshowAddItemPage(false);
@@ -120,6 +123,25 @@ const SelectAll = () => {
         SyncRemoteQuoteAndSelectedQuoteUnit();
     }
 
+    const removeItemFromUnit = async () => {
+        const item = roomItemOptions?.filter(each => each.name === selectedItem)[0];
+        let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckList.includes(eachUnit.name))
+        for (let unit of selectedUnitList) {
+            //loop rooms
+            for (let room of unit.rooms) {
+                let newCategories = room?.categories.filter((eachCategory: any) => eachCategory.name !== item?.name)
+                await updateCategories({
+                    currentOrgID,
+                    quoteID,
+                    unitID: unit.unitID,
+                    roomID: room.roomID,
+                    categories: newCategories
+                })
+            }
+        }
+        SyncRemoteQuoteAndSelectedQuoteUnit();
+    }
+
     const SyncRemoteQuoteAndSelectedQuoteUnit = () => {
         //if it is a project, then get the quote based on projectID
         if (selectedProject?.type === 'project' && currentOrgID) {
@@ -130,7 +152,7 @@ const SelectAll = () => {
             dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
         }
         dispatch({
-            type:'selectedQuoteUnit',
+            type: 'selectedQuoteUnit',
             payload: undefined
         });
     }
