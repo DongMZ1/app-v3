@@ -86,13 +86,65 @@ const SelectAll = () => {
             if (AddOrRemoveItem === 'addItem') {
                 await addItemToUnit()
             }
-            if(AddOrRemoveItem === 'removeItem'){
+            if (AddOrRemoveItem === 'removeItem') {
                 await removeItemFromUnit();
+            }
+        }
+        if (addItemPageType === 'ofRoomType') {
+            if (AddOrRemoveItem === 'addItem') {
+                await addItemToRoom();
+            }
+            if (AddOrRemoveItem === 'removeItem') {
+                await removeItemFromRoom();
             }
         }
         setshowDropDown(false)
         setshowAddItemPage(false);
         setshowGroupUnitRoomMenu(true);
+    }
+
+    const removeItemFromRoom = async () => {
+        const item = roomItemOptions?.filter(each => each.name === selectedItem)[0];
+        for (let unit of quoteDetail?.data) {
+            for (let room of unit.rooms) {
+                if (roomTypeCheckedList.includes(room.name)) {
+                    let newCategories = room?.categories.filter((eachCategory: any) => eachCategory.name !== item?.name)
+                    await updateCategories({
+                        currentOrgID,
+                        quoteID,
+                        unitID: unit.unitID,
+                        roomID: room.roomID,
+                        categories: newCategories
+                    })
+                }
+            }
+        }
+        SyncRemoteQuote();
+    }
+
+    const addItemToRoom = async () => {
+        const item = roomItemOptions?.filter(each => each.name === selectedItem)[0];
+        for (let unit of quoteDetail?.data) {
+            for (let room of unit.rooms) {
+                if ((room?.categories?.filter((eachCategory: any) => eachCategory.name === item?.name)?.length === 0) && roomTypeCheckedList.includes(room.name)) {
+                    let newCategories = [...room?.categories, {
+                        qty: 1,
+                        rentable: false,
+                        name: item?.name,
+                        budget: 0,
+                        categoryID: item?.id
+                    }]
+                    await updateCategories({
+                        currentOrgID,
+                        quoteID,
+                        unitID: unit.unitID,
+                        roomID: room.roomID,
+                        categories: newCategories
+                    })
+                }
+            }
+        }
+        SyncRemoteQuote();
     }
 
     const addItemToUnit = async () => {
@@ -120,7 +172,7 @@ const SelectAll = () => {
                 }
             }
         }
-        SyncRemoteQuoteAndSelectedQuoteUnit();
+        SyncRemoteQuote();
     }
 
     const removeItemFromUnit = async () => {
@@ -139,10 +191,10 @@ const SelectAll = () => {
                 })
             }
         }
-        SyncRemoteQuoteAndSelectedQuoteUnit();
+        SyncRemoteQuote();
     }
 
-    const SyncRemoteQuoteAndSelectedQuoteUnit = () => {
+    const SyncRemoteQuote = () => {
         //if it is a project, then get the quote based on projectID
         if (selectedProject?.type === 'project' && currentOrgID) {
             dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
