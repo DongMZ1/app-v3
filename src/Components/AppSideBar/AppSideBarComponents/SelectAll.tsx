@@ -12,11 +12,14 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
 import { Tappstate } from '../../../redux/reducers';
 
-const unitOptionList = ['custom unit', 'studio', '1BR', '2BR', '3BR', '1BR-HOTEL'];
-const roomTypeOptionList = ['bedroom', 'dining room', 'bathroom', 'living room', 'accessories', 'pillow set'];
-
 const SelectAll = () => {
     const [roomItemOptions, setroomItemOptions] = useState<{name: string, id: string}[]>();
+    const [selectedItem, setselectedItem] = useState<string | undefined>();
+
+    const [roomTypeOptionList, setroomTypeOptionList] = useState<string[]>([]);
+    const [roomTypeCheckList, setroomTypeCheckList] = useState<string[]>([]);
+
+    const [unitCheckList, setunitCheckList] = useState<string[]>([]);
 
     const [showDropDown, setshowDropDown] = useState(false);
     const [showGroupUnitRoomMenu, setshowGroupUnitRoomMenu] = useState(true);
@@ -26,9 +29,6 @@ const SelectAll = () => {
     const [addItemPageType, setaddItemPageType] = useState<'ofGroup' | 'ofUnit' | 'ofRoomType' | undefined>();
     const [AddOrRemoveItem, setAddOrRemoveItem] = useState<'addItem' | 'removeItem'>('addItem');
     const [groupCheckList, setgroupCheckList] = useState<string[]>([]);
-    const [unitCheckList, setunitCheckList] = useState<string[]>([]);
-    const [roomTypeCheckList, setroomTypeCheckList] = useState<string[]>([]);
-    const [selectedItem, setselectedItem] = useState<string | undefined>();
 
     const unitList = useSelector((state: Tappstate) => state.quoteDetail)?.data;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -50,10 +50,29 @@ const SelectAll = () => {
                     }}))
                 }
             }
+
+            const getRoomOptionList = async () => {
+                if (currentOrgID) {
+                    const res = await apiRequest(
+                        {
+                            url: `/api/fhapp-service/packages/room/${currentOrgID}`,
+                            method: 'GET'
+                        }
+                    )
+                    if (res?.success) {
+                        setroomTypeOptionList(res?.roomPackages?.map((each: any) => each.name))
+                    } else {
+                        console.log('getRoomOptionList failed at SelectAll.tsx')
+                    }
+                }
+            }
             if (!roomItemOptions) {
                 getRoomItemOptions();
             }
-        }, []
+            if(roomTypeOptionList.length === 0){
+                getRoomOptionList();
+            }
+        }, [currentOrgID]
     )
 
     const handleAddOrRemoveItem = async () => {
