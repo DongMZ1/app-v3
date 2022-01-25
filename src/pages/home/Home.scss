@@ -45,9 +45,10 @@
     .dropdown-list-input-wrapper {
       background-color: transparent !important;
       border: none !important;
+      width: 100% !important;
     }
     .dropdown-list-input-options-wrapper {
-      width: 100% !important;
+      // width: max-content !important;
     }
     .dropdown-list-input-box-wrapper {
       padding: 0 !important;
