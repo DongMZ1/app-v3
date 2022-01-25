@@ -18,9 +18,9 @@ const SelectAll = () => {
     const [selectedItem, setselectedItem] = useState<string | undefined>();
 
     const [roomTypeOptionList, setroomTypeOptionList] = useState<string[]>([]);
-    const [roomTypeCheckList, setroomTypeCheckList] = useState<string[]>([]);
+    const [roomTypeCheckedList, setroomTypeCheckList] = useState<string[]>([]);
 
-    const [unitCheckList, setunitCheckList] = useState<string[]>([]);
+    const [unitCheckedList, setunitCheckedList] = useState<string[]>([]);
 
     const [showDropDown, setshowDropDown] = useState(false);
     const [showGroupUnitRoomMenu, setshowGroupUnitRoomMenu] = useState(true);
@@ -97,7 +97,7 @@ const SelectAll = () => {
 
     const addItemToUnit = async () => {
         const item = roomItemOptions?.filter(each => each.name === selectedItem)[0];
-        let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckList.includes(eachUnit.name))
+        let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckedList.includes(eachUnit.name))
         for (let unit of selectedUnitList) {
             //loop rooms
             for (let room of unit.rooms) {
@@ -125,7 +125,7 @@ const SelectAll = () => {
 
     const removeItemFromUnit = async () => {
         const item = roomItemOptions?.filter(each => each.name === selectedItem)[0];
-        let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckList.includes(eachUnit.name))
+        let selectedUnitList = quoteDetail?.data.filter((eachUnit: any) => unitCheckedList.includes(eachUnit.name))
         for (let unit of selectedUnitList) {
             //loop rooms
             for (let room of unit.rooms) {
@@ -271,17 +271,17 @@ const SelectAll = () => {
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Unit</div></div>
                     {
-                        unitCheckList.length === unitOptionList.length ?
-                            <div onClick={() => setunitCheckList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
+                        unitCheckedList.length === unitOptionList.length ?
+                            <div onClick={() => setunitCheckedList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
                             :
-                            <div onClick={() => setunitCheckList(unitOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
+                            <div onClick={() => setunitCheckedList(unitOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                     }
                     {unitOptionList.map((each: any) =>
-                        <Checkbox className='my-2' label={each} checked={unitCheckList.includes(each)} onChange={(v) => {
+                        <Checkbox className='my-2' label={each} checked={unitCheckedList.includes(each)} onChange={(v) => {
                             if (v) {
-                                setunitCheckList(state => [...state, each])
+                                setunitCheckedList(state => [...state, each])
                             } else {
-                                setunitCheckList(state => state.filter(e => e !== each))
+                                setunitCheckedList(state => state.filter(e => e !== each))
                             }
                         }} />)}
                     <div className='flex my-2'>
@@ -291,7 +291,7 @@ const SelectAll = () => {
                             setselectPageType(undefined);
                             setshowDropDown(false);
                         }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                        <Button disabled={unitCheckList.length === 0} onClick={() => {
+                        <Button disabled={unitCheckedList.length === 0} onClick={() => {
                             setshowselectPage(false);
                             setaddItemPageType('ofUnit');
                             setshowAddItemPage(true);
@@ -307,13 +307,13 @@ const SelectAll = () => {
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Room Type</div></div>
                     {
-                        roomTypeCheckList.length === roomTypeOptionList.length ?
+                        roomTypeCheckedList.length === roomTypeOptionList.length ?
                             <div onClick={() => setroomTypeCheckList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
                             :
                             <div onClick={() => setroomTypeCheckList(roomTypeOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                     }
                     {roomTypeOptionList.map(each =>
-                        <Checkbox className='my-2' label={each} checked={roomTypeCheckList.includes(each)} onChange={(v) => {
+                        <Checkbox className='my-2' label={each} checked={roomTypeCheckedList.includes(each)} onChange={(v) => {
                             if (v) {
                                 setroomTypeCheckList(state => [...state, each])
                             } else {
@@ -328,7 +328,7 @@ const SelectAll = () => {
                             setselectPageType(undefined);
                             setshowDropDown(false);
                         }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                        <Button disabled={roomTypeCheckList.length === 0} onClick={() => {
+                        <Button disabled={roomTypeCheckedList.length === 0} onClick={() => {
                             setshowselectPage(false);
                             setaddItemPageType('ofRoomType');
                             setshowAddItemPage(true);
@@ -344,8 +344,8 @@ const SelectAll = () => {
                         setshowselectPage(true);
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>
                             {addItemPageType === 'ofGroup' && `${groupCheckList.length} groups selected`}
-                            {addItemPageType === 'ofUnit' && `${unitCheckList.length} units selected`}
-                            {addItemPageType === 'ofRoomType' && `${roomTypeCheckList.length} rooms selected`}
+                            {addItemPageType === 'ofUnit' && `${unitCheckedList.length} units selected`}
+                            {addItemPageType === 'ofRoomType' && `${roomTypeCheckedList.length} rooms selected`}
                         </div></div>
                     <div className='flex my-4'>
                         {addItemPageType === 'ofGroup' && <>
