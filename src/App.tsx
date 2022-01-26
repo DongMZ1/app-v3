@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Switch, Route, withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Tappstate } from "./redux/reducers";
@@ -10,17 +10,18 @@ import "./styles/index.scss";
 const App = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state: Tappstate) => state.userRole);
+  const [verifyUser, setverifyUser] = useState(false);
   //get role first
   useEffect(
     () => {
       dispatch(checkUserLogined(window.location.href));
       dispatch(getUserRole());
-    }, []
+    }, [verifyUser]
   );
   useEffect(
     () => {
       createExternalUserOrganization()
-    }, [userRole]
+    }, [userRole, verifyUser]
   );
 
   //check first time user login, does he have a organiztion, if so that skip, else create a organization
@@ -34,18 +35,18 @@ const App = () => {
     });
     let hasFulhausOrganization = userRole?.organizations.some(each => each.organization.name === 'Fulhaus');
     //first check if userRole is fetched, if has fulhaus organization, then this person must have already login as a internal user, as external user cannot be invited to fulhaus organizaton, therefore we do not need to create a organization
-    if (userRole && (!isOwner) &&(!hasFulhausOrganization)) {
+    if (userRole && (!isOwner) && (!hasFulhausOrganization)) {
       const res = await apiRequest({
         url: '/api/fhapp-service/organization',
         method: 'POST'
       })
       if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
-          dispatch(
-            showMessageAction(
-              true,
-              "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
-            )
+        dispatch(
+          showMessageAction(
+            true,
+            "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
           )
+        )
         return;
       }
       if (res?.success) {
@@ -65,7 +66,9 @@ const App = () => {
         <Route exact path={`/project/design`} component={Project} />
         <Route exact path={`/quote-only`} component={Project} />
         <Route exact path={`/design-only`} component={Project} />
-        <Route exact path={`/verify-invite`} component={VerifyEmail} />
+        <Route exact path={`/verify-invite`} >
+          <VerifyEmail setverifyUser={setverifyUser} />
+        </Route>
       </Switch>
     </>
   )
