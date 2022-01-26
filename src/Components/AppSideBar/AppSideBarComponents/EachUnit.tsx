@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GroupUnit } from '@fulhaus/react.ui.group-unit'
 import { Popup } from '@fulhaus/react.ui.popup'
 import { TextInput } from '@fulhaus/react.ui.text-input'
@@ -8,6 +8,8 @@ import produce from 'immer'
 import NoteModal from '../../NoteModal/NoteModal'
 import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
+import useDebounce from '../../../Hooks/useDebounce';
+import useIsFirstRender from '../../../Hooks/useIsFirstRender'
 type eachUnitType = {
     eachUnit: any
 }
@@ -15,15 +17,26 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
+    const [unitCount, setunitCount] = useState(eachUnit?.count);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
     const dispatch = useDispatch();
+    const isFirstRendering = useIsFirstRender();
 
     const [saveAsMutiRoomPackageName, setsaveAsMutiRoomPackageName] = useState('');
     const [showSaveAsMutiRoomPackage, setshowSaveAsMutiRoomPackage] = useState(false);
+
+    const debouncedUnitCount = useDebounce(unitCount, 300)
+
+    useEffect(() => {
+        //add debounce to update the count of unit
+        if(!isFirstRendering){
+        updateCount(debouncedUnitCount);
+        }
+    }, [debouncedUnitCount])
 
     const duplicateUnit = async () => {
         const res = await apiRequest(
@@ -172,7 +185,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
             <GroupUnit
                 saveUnitAsMultiRoomPackage={()=>setshowSaveAsMutiRoomPackage(true)}
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
-                onUnitsChange={(count) => updateCount(count)}
+                onUnitsChange={(count) => setunitCount(count)}
                 duplicateUnit={()=>duplicateUnit()}
                 deleteUnit={() => deleteUnit()}
                 finishRenameUnit={() => saveName()}
@@ -180,7 +193,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 viewOnly={userRole === 'viewer'}
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
-                units={eachUnit?.count}
+                units={unitCount}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
             />
