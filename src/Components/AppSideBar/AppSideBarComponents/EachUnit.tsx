@@ -30,6 +30,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     const [showSaveAsMutiRoomPackage, setshowSaveAsMutiRoomPackage] = useState(false);
 
     const debouncedUnitCount = useDebounce(unitCount, 300)
+    const viewOnly = userRole === 'viewer'
 
     useEffect(() => {
         //add debounce to update the count of unit
@@ -190,7 +191,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 deleteUnit={() => deleteUnit()}
                 finishRenameUnit={() => saveName()}
                 renameUnit={(v) => setname(v)}
-                viewOnly={userRole === 'viewer'}
+                viewOnly={viewOnly}
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
                 units={unitCount}
