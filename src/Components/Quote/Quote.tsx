@@ -102,9 +102,6 @@ const Quote = () => {
                     },
                     method: 'PATCH'
                 })
-                if (!(res as any)?.success) {
-                    console.log((res as any).message)
-                }
             })
         });
         dispatch({
