@@ -323,7 +323,7 @@ const SelectAll = () => {
                         setselectPageType(undefined)
                     }} className='my-auto mr-4 cursor-pointer' /><div className='my-auto'>Of a Unit</div></div>
                     {
-                        unitCheckedList.length === unitOptionList.length ?
+                        unitCheckedList?.length === unitOptionList?.length ?
                             <div onClick={() => setunitCheckedList([])} className='my-1 cursor-pointer text-link'>Deselect All</div>
                             :
                             <div onClick={() => setunitCheckedList(unitOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
