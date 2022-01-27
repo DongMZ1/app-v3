@@ -173,7 +173,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             url: `/api/fhapp-service/package/unit/${currentOrgID}`,
             body: {
                 name: saveRoomPackageName,
-                rooms: eachUnit.rooms.map((eachRoom: any) => eachRoom.roomID)
+                rooms: eachUnit.rooms
             },
             method: 'POST'
         })
