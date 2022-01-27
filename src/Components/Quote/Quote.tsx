@@ -14,6 +14,7 @@ import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
 
 const Quote = () => {
+    //add room and add room packages list share the same name and ID
     const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string }[]>();
 
     const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>();
@@ -207,7 +208,14 @@ const Quote = () => {
                     </div>
                 }
                 {
-                    selectedQuoteUnit?.rooms?.map((each: any) => <Room updateQuoteDetail={updateQuoteDetail} roomItemOptionsList={roomItemOptionsList} eachRoom={each} />)
+                    selectedQuoteUnit?.rooms?.map((each: any) => 
+                    <Room 
+                    updateQuoteDetail={updateQuoteDetail} 
+                    RoomOptionList={RoomOptionList} 
+                    roomItemOptionsList={roomItemOptionsList} 
+                    eachRoom={each}
+                    getRoomOptionList={getRoomOptionList}
+                     />)
                 }
                 {selectedQuoteUnit?.rooms?.length === 0 &&
                     <div className='m-auto'>

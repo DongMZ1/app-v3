@@ -15,12 +15,15 @@ import { Popup } from '@fulhaus/react.ui.popup';
 type RoomType = {
     eachRoom: any,
     roomItemOptionsList: { name: string; id: string; }[] | undefined
-    updateQuoteDetail: (newselectedQuoteUnit: any) => void
+    updateQuoteDetail: (newselectedQuoteUnit: any) => void,
+    RoomOptionList: {
+        name: string;
+        id: string;
+    }[] | undefined,
+    getRoomOptionList: () => Promise<void>
 }
 
-//dummy packages
-const roomPackagesOptions = ['room Package 1', 'room Package 2', 'room Package 3', 'room Package 4']
-const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) => {
+const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList, getRoomOptionList}: RoomType) => {
 
     const [showAddItemDropdown, setshowAddItemDropdown] = useState(false);
     const [customItemName, setcustomItemName] = useState('');
@@ -28,7 +31,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) =>
     const [itemKeyword, setitemKeyword] = useState('');
 
     const [showAddPackageDropdown, setshowAddPackageDropdown] = useState(false);
-    const [roomPackageOptionCheckedList, setroomPackageOptionCheckedList] = useState<string[]>([]);
+    const [roomPackageOptionCheckedList, setroomPackageOptionCheckedList] = useState<{
+        name: string;
+        id: string | null
+    }[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
     const [saveAsRoomPackageName, setsaveAsRoomPackageName] = useState('');
@@ -54,6 +60,24 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) =>
         if (!res?.success) {
             console.log('updateCategories failed at line 33 Room.tsx')
         }
+    }
+
+    const saveAsRoomPackage = async () => {
+         const res = await apiRequest(
+             {
+                 url:`/api/fhapp-service/package/room/${currentOrgID}`,
+                 body:{
+                     name: saveAsRoomPackageName,
+                     itemCategories: eachRoom.categories
+                 },
+                 method: 'POST'
+             }
+         )
+         if(res?.success){
+             await getRoomOptionList();
+         }else{
+             console.log('save as room package failed');
+         }
     }
 
     const duplicateRoom = async () => {
@@ -162,6 +186,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) =>
             console.log('deleteRoom failed at Room.tsx')
         }
     }
+
+    const addRoomPackagesToRoom = async () => {
+        
+    }
     return <>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsRoomPackage(false)} show={showSaveAsRoomPackage}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
@@ -177,6 +205,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) =>
                         setshowSaveAsRoomPackage(false);
                     }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
                     <Button disabled={!saveAsRoomPackageName} onClick={() => {
+                        saveAsRoomPackage();
                         setsaveAsRoomPackageName('')
                         setshowSaveAsRoomPackage(false);
                     }} variant='primary' className='w-20'>Save</Button>
@@ -255,8 +284,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) =>
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {roomPackagesOptions.filter(eachPackage => eachPackage.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                                <Checkbox className='my-2' label={each} checked={roomPackageOptionCheckedList.includes(each)} onChange={(v) => {
+                                            {RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                                <Checkbox className='my-2' label={each.name} checked={roomPackageOptionCheckedList.includes(each)} onChange={(v) => {
                                                     if (v) {
                                                         setroomPackageOptionCheckedList(state => [...state, each])
                                                     } else {
@@ -269,9 +298,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail }: RoomType) =>
                                                 setshowAddPackageDropdown(false)
                                             }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
                                             <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
+                                                addRoomPackagesToRoom();
                                                 setroomPackageOptionCheckedList([]);
                                                 setshowAddPackageDropdown(false)
-                                            }} variant='primary' className='w-36'>Create Items</Button>
+                                            }} variant='primary' className='w-36'>Add Room Package Items</Button>
                                         </div>
                                     </div>
                                 </ClickOutsideAnElementHandler>
