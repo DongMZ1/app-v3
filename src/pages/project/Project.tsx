@@ -153,12 +153,12 @@ const Project = () => {
                     {(projectRole === 'admin' || projectRole === 'owner') &&
                         <div className='hide-dropdown-list'>
                             <DropdownListInput
-                                listWrapperClassName={projectRole === 'owner' ? 'last-child-red' : ''}
+                                listWrapperClassName={'last-child-red'}
                                 onSelect={v => projectMenuOnSelect(v)}
                                 wrapperClassName='border-none cursor-pointer my-auto last:text-error' labelClassName='hidden'
                                 suffixIcon={<div className='text-white'>···</div>}
                                 listWrapperFloatDirection='right' disabled={true}
-                                options={projectRole === 'owner' ? ['Rename Project', 'Delete Project'] : ['Rename Project']} />
+                                options={['Rename Project', 'Delete Project']} />
                         </div>
                     }
                 </div>
