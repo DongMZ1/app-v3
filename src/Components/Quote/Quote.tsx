@@ -15,7 +15,7 @@ import apiRequest from '../../Service/apiRequest';
 
 const Quote = () => {
     //add room and add room packages list share the same name and ID
-    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string }[]>();
+    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string, categories: any[] }[]>();
 
     const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
@@ -36,7 +36,7 @@ const Quote = () => {
     useEffect(
         () => {
             //get the room option list on first render
-            getRoomOptionList()
+            getRoomOptionList();
         }, [currentOrgID]
     )
     useEffect(
@@ -56,7 +56,8 @@ const Quote = () => {
             }
         }, []
     )
-
+    
+    //this is for room options and add room package
     const getRoomOptionList = async () => {
         if (currentOrgID) {
             const res = await apiRequest(
@@ -69,7 +70,16 @@ const Quote = () => {
                 setRoomOptionList(res?.roomPackages?.map((each: any) => {
                     return {
                         name: each.name,
-                        id: each._id
+                        id: each._id,
+                        categories: each?.categories?.map((each:any) => {
+                            return{
+                                budget: each.budget,
+                                categoryID: each.categoryID,
+                                name: each.name,
+                                qty: each.qty,
+                                rentable: each.rentable
+                            }
+                        })
                     }
                 }))
             } else {

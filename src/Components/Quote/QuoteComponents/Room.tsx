@@ -19,6 +19,7 @@ type RoomType = {
     RoomOptionList: {
         name: string;
         id: string;
+        categories: any[];
     }[] | undefined,
     getRoomOptionList: () => Promise<void>
 }
@@ -297,7 +298,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                             <Button onClick={() => {
                                                 setshowAddPackageDropdown(false)
                                             }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                            <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
+                                            <Button disabled={roomPackageOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
                                                 addRoomPackagesToRoom();
                                                 setroomPackageOptionCheckedList([]);
                                                 setshowAddPackageDropdown(false)
