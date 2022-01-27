@@ -27,8 +27,8 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
 
-    const [saveRoomPackageName, setsaveRoomPackageName] = useState('');
-    const [showSaveAsRoomPackage, setshowSaveAsRoomPackage] = useState(false);
+    const [saveUnitPackageName, setsaveUnitPackageName] = useState('');
+    const [showSaveAsUnitPackage, setshowSaveAsUnitPackage] = useState(false);
 
     const debouncedUnitCount = useDebounce(unitCount, 300)
     const viewOnly = userRole === 'viewer'
@@ -168,11 +168,11 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         }
     }
 
-    const saveUnitAsRoomPackage = async () => {
+    const saveUnitAsUnitPackage = async () => {
         const res = await apiRequest({
             url: `/api/fhapp-service/package/unit/${currentOrgID}`,
             body: {
-                name: saveRoomPackageName,
+                name: saveUnitPackageName,
                 rooms: eachUnit.rooms
             },
             method: 'POST'
@@ -184,23 +184,23 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         }
     }
     return <>
-        <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsRoomPackage(false)} show={showSaveAsRoomPackage}>
+        <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsUnitPackage(false)} show={showSaveAsUnitPackage}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-2xl text-center font-moret'>
-                    What will you name your multi-room package?
+                    What will you name your unit package?
                 </div>
                 <div className='mt-2 text-xs font-ssp'>
-                    Multi-Package Name
+                    unit Name
                 </div>
-                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveRoomPackageName} onChange={(e) => setsaveRoomPackageName((e.target as any).value)} />
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveUnitPackageName} onChange={(e) => setsaveUnitPackageName((e.target as any).value)} />
                 <div className='flex my-2'>
                     <Button onClick={() => {
-                        setshowSaveAsRoomPackage(false);
+                        setshowSaveAsUnitPackage(false);
                     }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                    <Button disabled={!saveRoomPackageName} onClick={() => {
-                        saveUnitAsRoomPackage();
-                        setsaveRoomPackageName('')
-                        setshowSaveAsRoomPackage(false);
+                    <Button disabled={!saveUnitPackageName} onClick={() => {
+                        saveUnitAsUnitPackage();
+                        setsaveUnitPackageName('')
+                        setshowSaveAsUnitPackage(false);
                     }} variant='primary' className='w-20'>Save</Button>
                 </div>
             </div>
@@ -208,7 +208,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
-                saveUnitRoomPackage={() => setshowSaveAsRoomPackage(true)}
+                saveUnitAsUnitPackage={() => setshowSaveAsUnitPackage(true)}
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
                 onUnitsChange={(count) => setunitCount(count)}
                 duplicateUnit={() => duplicateUnit()}
