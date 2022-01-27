@@ -16,10 +16,10 @@ import apiRequest from '../../Service/apiRequest';
 const Quote = () => {
     const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string }[]>();
 
-    const [roomItemOptionsList, setroomItemOptionsList] = useState<{name: string, id:string}[]>();
+    const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
-    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<string[]>([]);
+    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('')
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
@@ -47,7 +47,7 @@ const Quote = () => {
                     method: 'GET'
                 })
                 if (res?.success) {
-                    setroomItemOptionsList(res.data.map((each: any) =>{return {name: each.name, id: each._id}}))
+                    setroomItemOptionsList(res.data.map((each: any) => { return { name: each.name, id: each._id } }))
                 }
             }
             if (!roomItemOptionsList) {
@@ -114,12 +114,15 @@ const Quote = () => {
         let newRooms: any = [];
         let allRoomsNames = roomOptionCheckedList;
         if (customRoomName) {
-            allRoomsNames = allRoomsNames.concat(customRoomName);
+            allRoomsNames = allRoomsNames.concat({ name: customRoomName, id: null });
         }
-        for (let eachRoomName of allRoomsNames) {
+        for (let eachRoom of allRoomsNames) {
             const res = await apiRequest({
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
-                body: { roomName: eachRoomName },
+                body: {
+                    roomName: eachRoom.name,
+                    packageID: eachRoom.id
+                },
                 method: 'POST'
             });
             if (res?.success) {
@@ -174,11 +177,11 @@ const Quote = () => {
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
                                         {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckedList.includes(each?.name)} onChange={(v) => {
+                                            <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
                                                 if (v) {
-                                                    setroomOptionCheckedList(state => [...state, each?.name])
+                                                    setroomOptionCheckedList(state => [...state, each])
                                                 } else {
-                                                    setroomOptionCheckedList(state => state.filter(e => e !== each?.name))
+                                                    setroomOptionCheckedList(state => state.filter(e => e !== each))
                                                 }
                                             }} />)}
                                     </div>

@@ -21,8 +21,8 @@ const AppSideBar = () => {
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
-    const [unitOptionCheckList, setunitOptionCheckList] = useState<string[]>([]);
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
+    const [unitOptionCheckList, setunitOptionCheckList] = useState<string[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
     useEffect(() => {
