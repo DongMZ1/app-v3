@@ -150,6 +150,12 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             method: 'DELETE'
         })
         if (res?.success) {
+            if(eachUnit.unitID === selectedQuoteUnit.unitID){
+              dispatch({
+                  type:'selectedQuoteUnit',
+                  payload: undefined
+              })
+            }
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 draftState.data = draftState?.data?.filter((each: any) => each?.unitID !== eachUnit.unitID)
             })
