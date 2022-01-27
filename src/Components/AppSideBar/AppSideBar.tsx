@@ -22,7 +22,7 @@ const AppSideBar = () => {
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
-    const [unitOptionCheckList, setunitOptionCheckList] = useState<string[]>([]);
+    const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
     useEffect(() => {
@@ -45,17 +45,21 @@ const AppSideBar = () => {
     }
     const createUnits = async () => {
         let newUnits: any = [];
-        let allUnitsNames = unitOptionCheckList 
+        let allUnitsNames = unitOptionCheckedList 
         //add costum names
         if(customUnitName){
-            allUnitsNames = unitOptionCheckList.concat(customUnitName);
+            allUnitsNames = unitOptionCheckedList.concat({
+                name: customUnitName,
+                id: null
+            });
         }
-        for (let eachUnitName of allUnitsNames){
+        for (let eachUnit of allUnitsNames){
             const res = await apiRequest(
                 {
                     url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?.quoteID}`,
                     body: {
-                        unitName: eachUnitName
+                        unitName: eachUnit.name,
+                        packageID: eachUnit.id
                     },
                     method: 'POST'
                 }
@@ -76,7 +80,7 @@ const AppSideBar = () => {
         })
         //set name to default
         setcustomUnitName('');
-        setunitOptionCheckList([]);
+        setunitOptionCheckedList([]);
         setshowAddUnitDropdown(false);
     }
     return (showEntendSideBar ? <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
@@ -96,16 +100,16 @@ const AppSideBar = () => {
                             </div>
                             <TextInput placeholder='Search existing unit packages' variant='box' className='mt-2' inputName='unit package keywords' value={unitPackageKeyword} onChange={(e) => {
                                 setunitPackageKeyword((e.target as any).value);
-                                setunitOptionCheckList([]);
+                                setunitOptionCheckedList([]);
                             }}
                             />
                             <div className='w-full overflow-y-auto max-h-60'>
                                 {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
-                                    <Checkbox className='my-2' label={each?.name} checked={unitOptionCheckList.includes(each.name)} onChange={(v) => {
+                                    <Checkbox className='my-2' label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
                                         if (v) {
-                                            setunitOptionCheckList(state => [...state, each?.name])
+                                            setunitOptionCheckedList(state => [...state, each])
                                         } else {
-                                            setunitOptionCheckList(state => state.filter(e => e !== each?.name))
+                                            setunitOptionCheckedList(state => state.filter(e => e !== each))
                                         }
                                     }} />)}
                             </div>
@@ -113,7 +117,7 @@ const AppSideBar = () => {
                                 <Button onClick={() => {
                                     setshowAddUnitDropdown(false)
                                 }} className='w-32 mr-4' variant='secondary'>Cancel</Button>
-                                <Button disabled={unitOptionCheckList.length === 0 && customUnitName === ''} onClick={() => {
+                                <Button disabled={unitOptionCheckedList.length === 0 && customUnitName === ''} onClick={() => {
                                       createUnits();
                                 }} variant='primary' className='w-32'>Create Units</Button>
                             </div>
