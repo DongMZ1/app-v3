@@ -244,12 +244,12 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
       <div className='hide-dropdown-list'>
         {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
           ''
-          :
+          :(role !== 'owner' &&
           <DropdownListInput
             listWrapperClassName='last-child-red'
             onSelect={v => dropdownListAction(v)}
             wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-            options={optionList} />
+            options={optionList} />)
         }
       </div>
     </div>

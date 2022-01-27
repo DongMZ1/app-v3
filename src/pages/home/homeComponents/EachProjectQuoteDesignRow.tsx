@@ -47,31 +47,16 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     let optionList = [''];
     let linkURL = '';
     if (thisProject.type === 'design') {
-        if (projectRole === 'admin') {
-            optionList = ['Duplicate Design', 'Rename Design', 'Share Design'];
-        }
-        if (projectRole === 'owner') {
-            optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
-        }
-        linkURL = `/design-only`
+        optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
+        linkURL = `/design-only?id=${thisProject._id}`
     }
     if (thisProject.type === 'quote') {
-        if (projectRole === 'admin') {
-            optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote'];
-        }
-        if (projectRole === 'owner') {
-            optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
-        }
-        linkURL = `/quote-only`
+        optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
+        linkURL = `/quote-only?id=${thisProject._id}`
     }
     if (thisProject.type === 'project') {
-        if (projectRole === 'admin') {
-            optionList = ['Duplicate Project', 'Rename Project', 'Share Project'];
-        }
-        if (projectRole === 'owner') {
-            optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
-        }
-        linkURL = `/project/quote`
+        optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
+        linkURL = `/project/quote?id=${thisProject._id}`
     }
 
     const handleDropDown = (v: string) => {
@@ -80,7 +65,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             case 'Duplicate Quote':
             case 'Duplicate Design':
                 setProjectQuoteDesignInfoNeedDuplicate(thisProject);
-                setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type: 'project');
+                setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type : 'project');
                 setshowStartNewProjectQuotoDesign(true);
                 break;
             case 'Rename Project':
@@ -110,18 +95,18 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const renameThisProject = async () => {
         dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type, thisProject.type === 'quote'? thisProject.quoteID : undefined
+            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type, thisProject.type === 'quote' ? thisProject.quoteID : undefined
         ))
         setshowRenameProject(false);
     }
 
     const selectThisProject = () => {
         //put selectedProject, projectRole, currentOrgID into localstorage avoid user refresh page on project page
-        localStorage.setItem('selectedProject', JSON.stringify({...thisProject, userRole: projectRole}));
-        localStorage.setItem('currentOrgID', currentOrgID? currentOrgID: '');
+        localStorage.setItem('selectedProject', JSON.stringify({ ...thisProject, userRole: projectRole }));
+        localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
         dispatch({
             type: 'selectedProject',
-            payload: {...thisProject, userRole: projectRole} 
+            payload: { ...thisProject, userRole: projectRole }
         })
         history.push(linkURL)
     }
@@ -155,10 +140,10 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject.totalUnits ? thisProject.totalUnits : 0}</div>
-            {(projectRole === ('owner') || (projectRole ==='admin')) && projectRole &&
+            {(projectRole === ('owner') || (projectRole === 'admin')) && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
-                        listWrapperClassName={projectRole === 'admin' ? 'w-max-content' : 'last-child-red w-max-content'}
+                        listWrapperClassName={'last-child-red w-max-content'}
                         onSelect={v => handleDropDown(v)}
                         wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
                         suffixIcon={<div>···</div>}
@@ -168,7 +153,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             }
         </div>
     </div>
-        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type? thisProject.type : 'Project'}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
+        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type ? thisProject.type : 'Project'}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
             if (currentOrgID) {
                 dispatch(deleteSpecificProject(currentOrgID, thisProject._id, projects));
                 setshowConfirmDeleteModal(false);
