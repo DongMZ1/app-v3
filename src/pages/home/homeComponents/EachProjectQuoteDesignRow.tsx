@@ -48,15 +48,15 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     let linkURL = '';
     if (thisProject.type === 'design') {
         optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
-        linkURL = `/design-only?id=${thisProject._id}`
+        linkURL = `/design-only`
     }
     if (thisProject.type === 'quote') {
         optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
-        linkURL = `/quote-only?id=${thisProject._id}`
+        linkURL = `/quote-only`
     }
     if (thisProject.type === 'project') {
         optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
-        linkURL = `/project/quote?id=${thisProject._id}`
+        linkURL = `/project/quote`
     }
 
     const handleDropDown = (v: string) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { GroupUnit } from '@fulhaus/react.ui.group-unit'
 import { Popup } from '@fulhaus/react.ui.popup'
 import { TextInput } from '@fulhaus/react.ui.text-input'
-import {Button} from '@fulhaus/react.ui.button'
+import { Button } from '@fulhaus/react.ui.button'
 import { useDispatch, useSelector } from 'react-redux'
 import produce from 'immer'
 import NoteModal from '../../NoteModal/NoteModal'
@@ -11,9 +11,10 @@ import apiRequest from '../../../Service/apiRequest'
 import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender'
 type eachUnitType = {
-    eachUnit: any
+    eachUnit: any,
+    getUnitPackages: () => Promise<void>
 }
-const EachUnit = ({ eachUnit }: eachUnitType) => {
+const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
@@ -26,16 +27,16 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
 
-    const [saveAsMutiRoomPackageName, setsaveAsMutiRoomPackageName] = useState('');
-    const [showSaveAsMutiRoomPackage, setshowSaveAsMutiRoomPackage] = useState(false);
+    const [saveRoomPackageName, setsaveRoomPackageName] = useState('');
+    const [showSaveAsRoomPackage, setshowSaveAsRoomPackage] = useState(false);
 
     const debouncedUnitCount = useDebounce(unitCount, 300)
     const viewOnly = userRole === 'viewer'
 
     useEffect(() => {
         //add debounce to update the count of unit
-        if(!isFirstRendering){
-        updateCount(debouncedUnitCount);
+        if (!isFirstRendering) {
+            updateCount(debouncedUnitCount);
         }
     }, [debouncedUnitCount])
 
@@ -43,10 +44,10 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}/duplicate`,
-                method:'POST'
+                method: 'POST'
             }
         )
-        if(res?.success){
+        if (res?.success) {
             const newQuoteDetail = produce(quoteDetail, (draft: any) => {
                 const unitIndex = draft.data.findIndex((each: any) => each?.unitID === eachUnit.unitID) + 1;
                 (draft?.data as any[])?.splice(unitIndex, 0, res?.duplicatedUnit);
@@ -55,7 +56,7 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 type: 'quoteDetail',
                 payload: newQuoteDetail
             })
-        }else{
+        } else {
             console.log('duplicate failed at line 38 EachUnit.tsx')
         }
     }
@@ -160,8 +161,24 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
             console.log(res?.message)
         }
     }
+
+    const saveUnitAsRoomPackage = async () => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/package/unit/${currentOrgID}`,
+            body: {
+                name: saveRoomPackageName,
+                rooms: eachUnit.rooms.map((eachRoom: any) => eachRoom.roomID)
+            },
+            method: 'POST'
+        })
+        if (res?.success) {
+            getUnitPackages();
+        }else{
+            console.log('saveUnitAsRoomPackage failed at EachUnit.tsx')
+        }
+    }
     return <>
-    <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsMutiRoomPackage(false)} show={showSaveAsMutiRoomPackage}>
+        <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsRoomPackage(false)} show={showSaveAsRoomPackage}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-2xl text-center font-moret'>
                     What will you name your multi-room package?
@@ -169,25 +186,26 @@ const EachUnit = ({ eachUnit }: eachUnitType) => {
                 <div className='mt-2 text-xs font-ssp'>
                     Multi-Package Name
                 </div>
-                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveAsMutiRoomPackageName} onChange={(e) => setsaveAsMutiRoomPackageName((e.target as any).value)} />
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveRoomPackageName} onChange={(e) => setsaveRoomPackageName((e.target as any).value)} />
                 <div className='flex my-2'>
-                        <Button onClick={() => {
-                            setshowSaveAsMutiRoomPackage(false);
-                        }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                        <Button disabled={!saveAsMutiRoomPackageName} onClick={() => {
-                            setsaveAsMutiRoomPackageName('')
-                            setshowSaveAsMutiRoomPackage(false);
-                        }} variant='primary' className='w-20'>Save</Button>
-                    </div>
+                    <Button onClick={() => {
+                        setshowSaveAsRoomPackage(false);
+                    }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
+                    <Button disabled={!saveRoomPackageName} onClick={() => {
+                        saveUnitAsRoomPackage();
+                        setsaveRoomPackageName('')
+                        setshowSaveAsRoomPackage(false);
+                    }} variant='primary' className='w-20'>Save</Button>
+                </div>
             </div>
         </Popup>
         <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
-                saveUnitAsMultiRoomPackage={()=>setshowSaveAsMutiRoomPackage(true)}
+                saveUnitRoomPackage={() => setshowSaveAsRoomPackage(true)}
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
                 onUnitsChange={(count) => setunitCount(count)}
-                duplicateUnit={()=>duplicateUnit()}
+                duplicateUnit={() => duplicateUnit()}
                 deleteUnit={() => deleteUnit()}
                 finishRenameUnit={() => saveName()}
                 renameUnit={(v) => setname(v)}

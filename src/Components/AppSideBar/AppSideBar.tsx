@@ -132,7 +132,7 @@ const AppSideBar = () => {
             <div className='px-4 mt-2 text-sm font-ssp'>Total Units: {totalUnitCount}</div>
             <div className='w-full h-full px-4 overflow-y-auto'>
                 {
-                    quoteDetail?.data?.map((each: any) => <EachUnit eachUnit={each} />)
+                    quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
                 }
             </div>
         </>}
