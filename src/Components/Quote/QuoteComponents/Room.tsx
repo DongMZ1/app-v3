@@ -34,7 +34,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const [showAddPackageDropdown, setshowAddPackageDropdown] = useState(false);
     const [roomPackageOptionCheckedList, setroomPackageOptionCheckedList] = useState<{
         name: string;
-        id: string | null
+        id: string | null;
+        categories: any[];
     }[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
@@ -129,6 +130,26 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         }
     }
 
+    const addRoomPackagesToRoom = async () => {
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+            for(let roomPackage of roomPackageOptionCheckedList){
+                for(let roomPackageCategory of roomPackage.categories){
+                    //if Rooms.categories does not have this category, then add it
+                   if(draft.rooms[index]?.categories?.filter((each: any) => each.name === roomPackageCategory.name)?.length === 0){
+                      draft.rooms[index].categories = draft.rooms[index].categories.concat(roomPackageCategory);
+                   }
+                }
+            }
+            updateCategories(draft.rooms[index].categories)
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        updateQuoteDetail(newselectedQuoteUnit);
+    }
+
     const addItemToRoom = () => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
@@ -186,10 +207,6 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         } else {
             console.log('deleteRoom failed at Room.tsx')
         }
-    }
-
-    const addRoomPackagesToRoom = async () => {
-        
     }
     return <>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowSaveAsRoomPackage(false)} show={showSaveAsRoomPackage}>
