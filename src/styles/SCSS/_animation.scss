@@ -1,16 +1,16 @@
 .appv3-sidebar-animation-enter {
-    max-width: 0rem;
+    max-width: 3rem;
     overflow: hidden;
 }
 .appv3-sidebar-animation-enter-active {
-    max-width: 20rem;
-    transition: max-width .3s ease;
+    max-width: 420px;
+    transition: max-width .2s linear;
 }
-.appv3-sidebar-animation-leave {
-    max-width: 20rem;
+.appv3-sidebar-animation-exit {
+    max-width: 420px !important;
 }
-.appv3-sidebar-animation-leave-active {
-    max-height: 0;
-    transition: max-width .3s ease;
+.appv3-sidebar-animation-exit-active {
+    max-width: 3rem !important;
+    transition: max-width 0.2s linear;
     overflow: hidden;
 }
