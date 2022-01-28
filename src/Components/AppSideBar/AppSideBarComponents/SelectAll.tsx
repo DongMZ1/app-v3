@@ -2,7 +2,6 @@ import './SelectAll.scss'
 import apiRequest from '../../../Service/apiRequest';
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { CSSTransition } from 'react-transition-group';
 import { Button } from '@fulhaus/react.ui.button';
 import { AiOutlineRight } from 'react-icons/ai';
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';

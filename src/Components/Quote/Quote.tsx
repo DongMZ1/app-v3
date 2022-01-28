@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import './Quote.scss'
 import { ReactComponent as AddUnitIcon } from "../../styles/images/add-a-unit-to-get-start.svg";
 import Room from './QuoteComponents/Room';
-import { CSSTransition } from 'react-transition-group';
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
@@ -172,42 +171,40 @@ const Quote = () => {
                     <div className='flex'>
                         <div className='relative w-32 mr-8 text-sm-important'>
                             <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
-                                <CSSTransition in={showAddRoomDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
-                                    <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                        <div className='text-sm font-semibold font-ssp'>
-                                            New Room
-                                        </div>
-                                        <TextInput placeholder='Enter Room Name' variant='box' className='mt-2' inputName='customRoomName' value={customRoomName} onChange={(e) => setcustomRoomName((e.target as any).value)} />
-                                        <div className='mt-4 text-sm font-semibold font-ssp'>
-                                            Choose an existing unit package
-                                        </div>
-                                        <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
-                                            setroomPackageKeyword((e.target as any).value);
-                                            setroomOptionCheckedList([]);
-                                        }}
-                                        />
-                                        <div className='w-full overflow-y-auto max-h-60'>
-                                            {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                                <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
-                                                    if (v) {
-                                                        setroomOptionCheckedList(state => [...state, each])
-                                                    } else {
-                                                        setroomOptionCheckedList(state => state.filter(e => e !== each))
-                                                    }
-                                                }} />)}
-                                        </div>
-                                        <div className='flex my-2'>
-                                            <Button onClick={() => {
-                                                setshowAddRoomDropdown(false)
-                                            }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                            <Button disabled={roomOptionCheckedList.length === 0 && customRoomName === ''} onClick={() => {
-                                                addRooms();
-                                            }} variant='primary' className='w-36'>Create Rooms</Button>
-                                        </div>
+                            {showAddRoomDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
+                                <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                    <div className='text-sm font-semibold font-ssp'>
+                                        New Room
                                     </div>
-                                </CSSTransition>
-                            </ClickOutsideAnElementHandler>
+                                    <TextInput placeholder='Enter Room Name' variant='box' className='mt-2' inputName='customRoomName' value={customRoomName} onChange={(e) => setcustomRoomName((e.target as any).value)} />
+                                    <div className='mt-4 text-sm font-semibold font-ssp'>
+                                        Choose an existing unit package
+                                    </div>
+                                    <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
+                                        setroomPackageKeyword((e.target as any).value);
+                                        setroomOptionCheckedList([]);
+                                    }}
+                                    />
+                                    <div className='w-full overflow-y-auto max-h-60'>
+                                        {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                            <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
+                                                if (v) {
+                                                    setroomOptionCheckedList(state => [...state, each])
+                                                } else {
+                                                    setroomOptionCheckedList(state => state.filter(e => e !== each))
+                                                }
+                                            }} />)}
+                                    </div>
+                                    <div className='flex my-2'>
+                                        <Button onClick={() => {
+                                            setshowAddRoomDropdown(false)
+                                        }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
+                                        <Button disabled={roomOptionCheckedList.length === 0 && customRoomName === ''} onClick={() => {
+                                            addRooms();
+                                        }} variant='primary' className='w-36'>Create Rooms</Button>
+                                    </div>
+                                </div>
+                            </ClickOutsideAnElementHandler>}
                         </div>
                         {/*
                         <div className='w-60 text-sm-important'>
@@ -242,7 +239,7 @@ const Quote = () => {
                 <div className='flex text-4xl font-moret'><div className='mx-auto'>{quoteUnitLength === 0 ? 'Add' : 'Select'} a unit to get started</div></div>
             </div>
         }
-    </div>
+    </div >
 }
 
 export default Quote;
