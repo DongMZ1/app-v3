@@ -22,7 +22,7 @@ const NoteModal = ({ text, onChange, close, save, show, unitName }: NoteModalPro
             </div>
             <div className='flex my-4'>
                 <Button onClick={()=>{close();}} className='justify-center w-20 ml-auto'>Cancel</Button>
-                <Button onClick={save?()=>{save(); close();}: ()=>{}} variant='secondary' className='justify-center w-20 mx-4 fulhaus-bg-cream'>Save</Button>
+                <Button onClick={save?()=>{save();}: ()=>{}} variant='secondary' className='justify-center w-20 mx-4 fulhaus-bg-cream'>Save</Button>
             </div>
         </div>
     </Popup>

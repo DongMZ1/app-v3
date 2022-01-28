@@ -1,0 +1,4 @@
+@use "@fulhaus/react.ui.colors/dist/scss" as color;
+.bg-cream-important {
+    background-color: color.$cream !important;
+}

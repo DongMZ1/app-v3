@@ -44,10 +44,12 @@
   .hide-dropdown-list {
     .dropdown-list-input-wrapper {
       background-color: transparent !important;
+      width: 100% !important;
       border: none !important;
+      width: 100% !important;
     }
     .dropdown-list-input-options-wrapper {
-     // width: max-content !important;
+      // width: max-content !important;
     }
     .dropdown-list-input-box-wrapper {
       padding: 0 !important;

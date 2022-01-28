@@ -1,5 +1,7 @@
 import './ProjectInformation.scss'
 import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Tappstate } from '../../../redux/reducers'
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
 import { ReactComponent as CopyIcon } from '../../../styles/images/copy-black.svg'
 import { ReactComponent as EditPenIcon } from '../../../styles/images/edit-pen.svg'
@@ -11,31 +13,31 @@ type ProjectInformationType = {
 }
 
 const ProjectInformation = ({ close }: ProjectInformationType) => {
+    const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
-    const [currency, setcurrency] = useState('CAD');
     const [discountCode, setdiscountCode] = useState('');
 
     const [installationUnit, setinstallationUnit] = useState('%');
-    const [installationValue, setinstallationValue] = useState<number | undefined>();
+    const [installationValue, setinstallationValue] = useState<number | undefined>(quoteDetail?.installation);
 
     const [shippingUnit, setshippingUnit] = useState('CAD')
     const [shippingValue, setshippingValue] = useState<number | undefined>();
 
     const [editNotes, seteditNotes] = useState(false);
     const [notesContent, setnotesContent] = useState('Dexter "The Blade" Jackson (born November 25, 1969) is a retired American IFBB professional bodybuilder and the 2008 Mr. Olympia bodybuilding champion.');
-
     return (
-        <div className='fixed top-0 right-0 flex w-full h-full bg-black bg-opacity-50'>
-            <div className='w-1/2 h-full' onClick={()=>close()}></div>
+        <div className='fixed top-0 right-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
+            <div className='w-1/2 h-full' onClick={() => close()}></div>
             <div className='z-10 w-1/2 h-full overflow-auto border-l border-black border-solid opacity-100 bg-cream project-information'>
                 <div className='flex'>
                     <div className='text-2xl uppercase font-moret'>project information</div>
                     <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
                 </div>
                 <div className='flex mt-2'>
-                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: 45999DF</div>
+                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {quoteDetail.quoteID ? quoteDetail.quoteID : ''}</div>
                     {CopiedQuoteID ? <div className='my-auto mr-4 text-sm font-semibold font-ssp'>Copied!</div> : <CopyIcon onClick={() => {
-                        navigator.clipboard.writeText('this is a copy icon');
+                        navigator.clipboard.writeText(quoteDetail?.quoteID);
                         setCopiedQuoteID(true);
                         setTimeout(() => setCopiedQuoteID(false), 500);
                     }} className='my-auto mr-4 cursor-pointer' />}
@@ -45,8 +47,8 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='my-auto mr-6 text-sm font-semibold font-ssp'>Currency:</div>
                     <div className='w-20'>
                         <DropdownListInput
-                            initialValue={currency}
-                            onSelect={(value) => setcurrency(value)}
+                            initialValue={quoteDetail?.currency}
+                            onSelect={(value) => { }}
                             options={['CAD', 'USD', 'EURO']} />
                     </div>
                 </div>
@@ -59,9 +61,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='flex mt-4'>
                         <div className='w-32 mr-8 font-ssp'>
                             <div className='mb-1 text-xs'>Discount Code</div>
-                            <DropdownListInput
-                                onSelect={(value) => setdiscountCode(value)}
-                                options={['Premo1', 'Premo2', 'Premo3']} />
+                            <input type='text' className='w-20 h-8 pl-1 text-xs border border-black border-solid' />
                         </div>
                         <div className='w-40 mr-8 font-ssp'>
                             <div className='mb-1 text-xs'>Installation Fee</div>
@@ -116,7 +116,14 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                 <div className='flex mt-4 font-ssp'>
                     <div className='w-1/2'>
                         <div className='text-xs'>Project Address</div>
-                        <div className='mt-1 text-sm'>123 Spring Run Ave</div>
+                        <div className='mt-1 text-sm'>
+                            {selectedProject?.projectAddress?.apt ? 'Apt.' + selectedProject?.projectAddress?.apt + ', ' : ''}{selectedProject?.projectAddress?.street ? selectedProject?.projectAddress?.street + ', ' : ''}
+                            {selectedProject?.projectAddress?.city ? selectedProject?.projectAddress?.city + ', ' : ''}
+                            {selectedProject?.projectAddress?.state ? selectedProject?.projectAddress?.state + ', ' : ''}
+                            {selectedProject?.projectAddress?.country ? selectedProject?.projectAddress?.country + ', ' : ''}
+                            {selectedProject?.projectAddress ? <br /> : ''}
+                            {selectedProject?.projectAddress?.postalCode ? selectedProject?.projectAddress?.postalCode + ', ' : ''}
+                        </div>
                     </div>
                     <div className='w-1/2'>
                         <div className='text-xs'>Phone</div>
