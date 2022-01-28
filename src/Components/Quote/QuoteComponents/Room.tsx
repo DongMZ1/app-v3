@@ -3,6 +3,7 @@ import { FurnitureInRoomRowCard } from '@fulhaus/react.ui.furniture-in-room-row-
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import produce from 'immer'
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header'
+import { CSSTransition } from 'react-transition-group';
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
@@ -24,7 +25,7 @@ type RoomType = {
     getRoomOptionList: () => Promise<void>
 }
 
-const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList, getRoomOptionList}: RoomType) => {
+const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList, getRoomOptionList }: RoomType) => {
 
     const [showAddItemDropdown, setshowAddItemDropdown] = useState(false);
     const [customItemName, setcustomItemName] = useState('');
@@ -65,21 +66,21 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     }
 
     const saveAsRoomPackage = async () => {
-         const res = await apiRequest(
-             {
-                 url:`/api/fhapp-service/package/room/${currentOrgID}`,
-                 body:{
-                     name: saveAsRoomPackageName,
-                     itemCategories: eachRoom.categories
-                 },
-                 method: 'POST'
-             }
-         )
-         if(res?.success){
-             await getRoomOptionList();
-         }else{
-             console.log('save as room package failed');
-         }
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/package/room/${currentOrgID}`,
+                body: {
+                    name: saveAsRoomPackageName,
+                    itemCategories: eachRoom.categories
+                },
+                method: 'POST'
+            }
+        )
+        if (res?.success) {
+            await getRoomOptionList();
+        } else {
+            console.log('save as room package failed');
+        }
     }
 
     const duplicateRoom = async () => {
@@ -133,12 +134,12 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const addRoomPackagesToRoom = async () => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-            for(let roomPackage of roomPackageOptionCheckedList){
-                for(let roomPackageCategory of roomPackage.categories){
+            for (let roomPackage of roomPackageOptionCheckedList) {
+                for (let roomPackageCategory of roomPackage.categories) {
                     //if Rooms.categories does not have this category, then add it
-                   if(draft.rooms[index]?.categories?.filter((each: any) => each.name === roomPackageCategory.name)?.length === 0){
-                      draft.rooms[index].categories = draft.rooms[index].categories.concat(roomPackageCategory);
-                   }
+                    if (draft.rooms[index]?.categories?.filter((each: any) => each.name === roomPackageCategory.name)?.length === 0) {
+                        draft.rooms[index].categories = draft.rooms[index].categories.concat(roomPackageCategory);
+                    }
                 }
             }
             updateCategories(draft.rooms[index].categories)
@@ -256,45 +257,47 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                     <div className='flex'>
                         <div className='relative w-32 mr-4 text-sm-important'>
                             <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                            {showAddItemDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddItemDropdown(false)}>
-                                <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                    <div className='text-sm font-semibold font-ssp'>
-                                        Custom item
+                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddItemDropdown(false)}>
+                                <CSSTransition in={showAddItemDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
+                                    <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                        <div className='text-sm font-semibold font-ssp'>
+                                            Custom item
+                                        </div>
+                                        <TextInput placeholder='Enter Custom Item' variant='box' className='mt-2' inputName='customItemName' value={customItemName} onChange={(e) => setcustomItemName((e.target as any).value)} />
+                                        <div className='mt-4 text-sm font-semibold font-ssp'>
+                                            Choose from existing Categories
+                                        </div>
+                                        <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
+                                            setitemKeyword((e.target as any).value);
+                                            setitemOptionCheckedList([]);
+                                        }}
+                                        />
+                                        <div className='w-full overflow-y-auto max-h-60'>
+                                            {roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
+                                                <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
+                                                    if (v) {
+                                                        setitemOptionCheckedList(state => [...state, each])
+                                                    } else {
+                                                        setitemOptionCheckedList(state => state.filter(e => e !== each))
+                                                    }
+                                                }} />)}
+                                        </div>
+                                        <div className='flex my-2'>
+                                            <Button onClick={() => {
+                                                setshowAddItemDropdown(false)
+                                            }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
+                                            <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
+                                                addItemToRoom();
+                                            }} variant='primary' className='w-36'>Create Items</Button>
+                                        </div>
                                     </div>
-                                    <TextInput placeholder='Enter Custom Item' variant='box' className='mt-2' inputName='customItemName' value={customItemName} onChange={(e) => setcustomItemName((e.target as any).value)} />
-                                    <div className='mt-4 text-sm font-semibold font-ssp'>
-                                        Choose from existing Categories
-                                    </div>
-                                    <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
-                                        setitemKeyword((e.target as any).value);
-                                        setitemOptionCheckedList([]);
-                                    }}
-                                    />
-                                    <div className='w-full overflow-y-auto max-h-60'>
-                                        {roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
-                                                if (v) {
-                                                    setitemOptionCheckedList(state => [...state, each])
-                                                } else {
-                                                    setitemOptionCheckedList(state => state.filter(e => e !== each))
-                                                }
-                                            }} />)}
-                                    </div>
-                                    <div className='flex my-2'>
-                                        <Button onClick={() => {
-                                            setshowAddItemDropdown(false)
-                                        }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                        <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
-                                            addItemToRoom();
-                                        }} variant='primary' className='w-36'>Create Items</Button>
-                                    </div>
-                                </div>
-                            </ClickOutsideAnElementHandler>}
+                                </CSSTransition>
+                            </ClickOutsideAnElementHandler>
                         </div>
                         <div className='relative w-40 mr-8 text-sm-important'>
                             <div onClick={() => setshowAddPackageDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                            {
-                                showAddPackageDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddPackageDropdown(false)}>
+                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddPackageDropdown(false)}>
+                                <CSSTransition in={showAddPackageDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
                                         <TextInput placeholder='Search Existing UnitPackages' variant='box' className='mt-2' inputName='add package keywords' value={roomPackageKeyword} onChange={(e) => {
                                             setroomPackageKeyword((e.target as any).value);
@@ -322,8 +325,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                             }} variant='primary' className='w-36'>Add Room Package Items</Button>
                                         </div>
                                     </div>
-                                </ClickOutsideAnElementHandler>
-                            }
+                                </CSSTransition>
+                            </ClickOutsideAnElementHandler>
                         </div>
                     </div>
                 </>
