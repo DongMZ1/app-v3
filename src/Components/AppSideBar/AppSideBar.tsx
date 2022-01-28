@@ -94,40 +94,42 @@ const AppSideBar = () => {
                         <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                         <div className='relative w-20 text-sm-important'>
                             <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                            {showAddUnitDropdown && <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
-                                <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                    <div className='text-sm font-semibold font-ssp'>
-                                        New Unit
+                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
+                                <CSSTransition in={showAddUnitDropdown} unmountOnExit timeout={300} classNames='height-800px-animation'>
+                                    <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                        <div className='text-sm font-semibold font-ssp'>
+                                            New Unit
+                                        </div>
+                                        <TextInput placeholder='Enter Unit Name' variant='box' className='mt-2' inputName='customUnitName' value={customUnitName} onChange={(e) => setcustomUnitName((e.target as any).value)} />
+                                        <div className='mt-4 text-sm font-semibold font-ssp'>
+                                            Choose an existing unit package
+                                        </div>
+                                        <TextInput placeholder='Search existing unit packages' variant='box' className='mt-2' inputName='unit package keywords' value={unitPackageKeyword} onChange={(e) => {
+                                            setunitPackageKeyword((e.target as any).value);
+                                            setunitOptionCheckedList([]);
+                                        }}
+                                        />
+                                        <div className='w-full overflow-y-auto max-h-60'>
+                                            {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
+                                                <Checkbox className='my-2' label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
+                                                    if (v) {
+                                                        setunitOptionCheckedList(state => [...state, each])
+                                                    } else {
+                                                        setunitOptionCheckedList(state => state.filter(e => e !== each))
+                                                    }
+                                                }} />)}
+                                        </div>
+                                        <div className='flex my-2'>
+                                            <Button onClick={() => {
+                                                setshowAddUnitDropdown(false)
+                                            }} className='w-32 mr-4' variant='secondary'>Cancel</Button>
+                                            <Button disabled={unitOptionCheckedList.length === 0 && customUnitName === ''} onClick={() => {
+                                                createUnits();
+                                            }} variant='primary' className='w-32'>Create Units</Button>
+                                        </div>
                                     </div>
-                                    <TextInput placeholder='Enter Unit Name' variant='box' className='mt-2' inputName='customUnitName' value={customUnitName} onChange={(e) => setcustomUnitName((e.target as any).value)} />
-                                    <div className='mt-4 text-sm font-semibold font-ssp'>
-                                        Choose an existing unit package
-                                    </div>
-                                    <TextInput placeholder='Search existing unit packages' variant='box' className='mt-2' inputName='unit package keywords' value={unitPackageKeyword} onChange={(e) => {
-                                        setunitPackageKeyword((e.target as any).value);
-                                        setunitOptionCheckedList([]);
-                                    }}
-                                    />
-                                    <div className='w-full overflow-y-auto max-h-60'>
-                                        {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
-                                            <Checkbox className='my-2' label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
-                                                if (v) {
-                                                    setunitOptionCheckedList(state => [...state, each])
-                                                } else {
-                                                    setunitOptionCheckedList(state => state.filter(e => e !== each))
-                                                }
-                                            }} />)}
-                                    </div>
-                                    <div className='flex my-2'>
-                                        <Button onClick={() => {
-                                            setshowAddUnitDropdown(false)
-                                        }} className='w-32 mr-4' variant='secondary'>Cancel</Button>
-                                        <Button disabled={unitOptionCheckedList.length === 0 && customUnitName === ''} onClick={() => {
-                                            createUnits();
-                                        }} variant='primary' className='w-32'>Create Units</Button>
-                                    </div>
-                                </div>
-                            </ClickOutsideAnElementHandler>}
+                                </CSSTransition>
+                            </ClickOutsideAnElementHandler>
                         </div>
                         {/**
                  * <div className='w-20 ml-4 text-sm-important dropdown-list-input-box-display-none'>

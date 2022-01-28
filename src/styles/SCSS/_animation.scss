@@ -1,16 +1,68 @@
-.appv3-sidebar-animation-enter {
+.appv3-sidebar-animation {
+  &-enter {
     max-width: 3rem;
-    overflow: hidden;
-}
-.appv3-sidebar-animation-enter-active {
+  }
+  &-enter-active {
     max-width: 420px;
-    transition: max-width .2s linear;
-}
-.appv3-sidebar-animation-exit {
-    max-width: 420px !important;
-}
-.appv3-sidebar-animation-exit-active {
-    max-width: 3rem !important;
-    transition: max-width 0.2s linear;
+    transition: max-width 0.2s ease-out;
     overflow: hidden;
+  }
+  &-exit {
+    max-width: 420px;
+  }
+  &-exit-active {
+    max-width: 3rem !important;
+    transition: max-width 0.2s ease-in;
+    overflow: hidden;
+  }
+}
+
+.height-800px-animation {
+  &-enter {
+    max-height: 0rem !important;
+    overflow: hidden;
+    &::-webkit-scrollbar {
+        display: none;
+      }
+  }
+  &-enter-active {
+    max-height: 800px !important;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+    &::-webkit-scrollbar {
+        display: none;
+      }
+  }
+  &-exit {
+    max-height: 800px !important;
+    overflow: hidden;
+    &::-webkit-scrollbar {
+        display: none;
+      }
+  }
+  &-exit-active {
+    max-height: 0px !important;
+    transition: max-height 0.3s ease-in;
+    overflow: hidden;
+    &::-webkit-scrollbar {
+        display: none;
+      }
+  }
+}
+
+.opacity-animation {
+  &-enter {
+    opacity: 0;
+  }
+  &-enter-active {
+    opacity: 1;
+    transition: opacity 0.2s linear;
+  }
+  &-exit {
+    opacity: 1;
+  }
+  &-exit-active {
+    opacity: 0;
+    transition: opacity 0.2s linear;
+  }
 }
