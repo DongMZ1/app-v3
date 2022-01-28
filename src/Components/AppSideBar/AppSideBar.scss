@@ -1,13 +1,27 @@
-.app-side-bar{
-    .width-52-important {
-        width: 13rem !important;
+.app-side-bar {
+  .width-52-important {
+    width: 13rem !important;
+  }
+  .text-sm-important {
+    font-size: 0.875rem !important;
+  }
+  .dropdown-list-input-box-display-none {
+    .dropdown-list-input-box {
+      display: none;
     }
-    .text-sm-important {
-        font-size: 0.875rem !important;
-    }
-    .dropdown-list-input-box-display-none {
-        .dropdown-list-input-box{
-            display: none;
-        }
-    }
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+.width-500px {
+  width: 420px;
 }

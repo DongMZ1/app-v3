@@ -3,23 +3,22 @@ import "./InvitePeople.scss";
 import produce from 'immer'
 import { ImCross } from 'react-icons/im'
 import { useSelector, useDispatch } from 'react-redux';
-import { showMessageAction } from "../../../redux/Actions";
-import { Tappstate } from "../../../redux/reducers";
+import { showMessageAction } from "../../redux/Actions";
+import { Tappstate } from "../../redux/reducers";
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { Button } from "@fulhaus/react.ui.button";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
-import apiRequest from '../../../Service/apiRequest'
-import { useGetProjectRole } from "../../../Hooks/useGetProjectRole";
+import apiRequest from '../../Service/apiRequest'
+import { useGetProjectRole } from "../../Hooks/useGetProjectRole";
 type InvitePeopleProps = {
   close: () => void;
   projectName?: string;
   projectID?: string;
+  userRole?: string | undefined
 };
-const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
+const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleProps) => {
   const [peopleKeyWord, setpeopleKeyWord] = useState('');
   const [peopleList, setpeopleList] = useState<any[]>([]);
-  const userRole = useSelector((state: Tappstate) => state).userRole;
-  const userInfo = useSelector((state: Tappstate) => state).userInfo;
   const dispatch = useDispatch();
   const OrganizationID = useSelector((state: Tappstate) => state.currentOrgID);
   //external user organization ID
@@ -109,6 +108,7 @@ const InvitePeople = ({ close, projectName, projectID }: InvitePeopleProps) => {
         </div>
         {peopleList?.map(each =>
           <InvitePeopleUserRow
+            userRole={userRole}
             peopleList={peopleList}
             setpeopleList={setpeopleList}
             projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role[0]} />
@@ -129,11 +129,18 @@ type InvitePeopleUserRowProps = {
   eachUserID: string;
   projectID?: string;
   peopleList: any;
+  userRole: string | undefined;
   setpeopleList: React.Dispatch<React.SetStateAction<any>>;
 }
-const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleList, setpeopleList }: InvitePeopleUserRowProps) => {
+const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleList, setpeopleList, userRole}: InvitePeopleUserRowProps) => {
   const state = useSelector((state: Tappstate) => state);
-  const myRole = useGetProjectRole(projectID ? projectID : '')
+  const roleOnHomePage = useGetProjectRole(projectID ? projectID : '')
+  let myRole;
+  if(userRole){
+    myRole = userRole;
+  }else{
+    myRole = roleOnHomePage;
+  }
   const dispatch = useDispatch();
   let optionList = [''];
   if (myRole === 'admin') {
@@ -237,12 +244,12 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
       <div className='hide-dropdown-list'>
         {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
           ''
-          :
+          :(role !== 'owner' &&
           <DropdownListInput
             listWrapperClassName='last-child-red'
             onSelect={v => dropdownListAction(v)}
             wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-            options={optionList} />
+            options={optionList} />)
         }
       </div>
     </div>

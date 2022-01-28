@@ -16,7 +16,7 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Popup } from '@fulhaus/react.ui.popup'
 
 import EachProjectQuoteDesignRow from './homeComponents/EachProjectQuoteDesignRow'
-import InvitePeople from "./homeComponents/InvitePeople";
+import InvitePeople from "../../Components/InvitePeople/InvitePeople";
 import RemoveThisSeason from "./homeComponents/RemoveThisSeason";
 import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDesign"
 import OrganizationSelection from './homeComponents/OrganizationSelection'

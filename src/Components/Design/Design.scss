@@ -1,3 +1,10 @@
 .design {
-    
+    .tab-css-overwrite{
+        .tab-wrapper{
+            width: 300px !important;
+        }
+        .tab-item {
+            padding: 0.1rem;
+        }
+    }
 }

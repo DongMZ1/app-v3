@@ -27,6 +27,7 @@ type EachProjectQuoteDesignRowProps = {
         }
         budget: string;
         currency: string;
+        quoteID: string;
     },
     showInvitePeople?: () => void,
     setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
@@ -46,31 +47,16 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     let optionList = [''];
     let linkURL = '';
     if (thisProject.type === 'design') {
-        if (projectRole === 'admin') {
-            optionList = ['Duplicate Design', 'Rename Design', 'Share Design'];
-        }
-        if (projectRole === 'owner') {
-            optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
-        }
-        linkURL = `/design-only?id=${thisProject._id}`
+        optionList = ['Duplicate Design', 'Rename Design', 'Share Design', 'Delete Design'];
+        linkURL = `/design-only`
     }
     if (thisProject.type === 'quote') {
-        if (projectRole === 'admin') {
-            optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote'];
-        }
-        if (projectRole === 'owner') {
-            optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
-        }
-        linkURL = `/quote-only?id=${thisProject._id}`
+        optionList = ['Duplicate Quote', 'Rename Quote', 'Share Quote', 'Delete Quote'];
+        linkURL = `/quote-only`
     }
     if (thisProject.type === 'project') {
-        if (projectRole === 'admin') {
-            optionList = ['Duplicate Project', 'Rename Project', 'Share Project'];
-        }
-        if (projectRole === 'owner') {
-            optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
-        }
-        linkURL = `/project/quote?id=${thisProject._id}`
+        optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
+        linkURL = `/project/quote`
     }
 
     const handleDropDown = (v: string) => {
@@ -79,7 +65,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             case 'Duplicate Quote':
             case 'Duplicate Design':
                 setProjectQuoteDesignInfoNeedDuplicate(thisProject);
-                setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type: 'project');
+                setStartNewProjectQuoteDesignType(thisProject.type ? thisProject.type : 'project');
                 setshowStartNewProjectQuotoDesign(true);
                 break;
             case 'Rename Project':
@@ -109,13 +95,24 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const renameThisProject = async () => {
         dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects
+            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type, thisProject.type === 'quote' ? thisProject.quoteID : undefined
         ))
         setshowRenameProject(false);
     }
 
+    const selectThisProject = () => {
+        //put selectedProject, projectRole, currentOrgID into localstorage avoid user refresh page on project page
+        localStorage.setItem('selectedProject', JSON.stringify({ ...thisProject, userRole: projectRole }));
+        localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
+        dispatch({
+            type: 'selectedProject',
+            payload: { ...thisProject, userRole: projectRole }
+        })
+        history.push(linkURL)
+    }
+
     return <> <div className='flex h-10 text-sm border border-black border-solid font-ssp'>
-        <div onClick={() => history.push(linkURL)} className='flex pl-4 cursor-pointer width-30-percent'>
+        <div onClick={() => selectThisProject()} className='flex pl-4 cursor-pointer width-30-percent'>
             {showRenameProject ?
                 <input value={renameProjectTitle} onChange={e => setrenameProjectTitle(e.target.value)} onKeyDown={e => {
                     if (e.code === 'Enter') {
@@ -126,7 +123,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 <div className='my-auto'>{thisProject.title}</div>
             }
         </div>
-        <div onClick={() => history.push(linkURL)} className='my-auto cursor-pointer width-10-percent'>
+        <div onClick={() => selectThisProject()} className='my-auto cursor-pointer width-10-percent'>
             {
                 thisProject.type === "design" && "Design Only"
             }
@@ -137,16 +134,16 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 thisProject.type === "quote" && "Quote Only"
             }
         </div>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastUpdated ? thisProject.lastUpdated : 'Unknown'}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></Link>
-        <Link to={linkURL} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></Link>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastUpdated ? thisProject.lastUpdated : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject.totalUnits ? thisProject.totalUnits : 0}</div>
-            {projectRole !== ('viewer' || 'editor') && projectRole &&
+            {(projectRole === ('owner') || (projectRole === 'admin')) && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
-                        listWrapperClassName={projectRole === 'admin w-max-content' ? '' : 'last-child-red w-max-content'}
+                        listWrapperClassName={'last-child-red w-max-content'}
                         onSelect={v => handleDropDown(v)}
                         wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden'
                         suffixIcon={<div>···</div>}
@@ -156,7 +153,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             }
         </div>
     </div>
-        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type? thisProject.type : 'Project'}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
+        <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteModal} message={`Delete ${thisProject.type ? thisProject.type : 'Project'}`} subText={`Are you sure you want to permanently delete ${thisProject.title} ?`} onCancel={() => setshowConfirmDeleteModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => {
             if (currentOrgID) {
                 dispatch(deleteSpecificProject(currentOrgID, thisProject._id, projects));
                 setshowConfirmDeleteModal(false);

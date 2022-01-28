@@ -1,10 +1,11 @@
 import produce from 'immer'
 import { showMessageAction } from '.'
 import apiRequest from '../../Service/apiRequest'
-const renameSpecificProjectAction = (renameProjectTitle: string, currentOrgID: string | undefined, projectID: string, projects: any[] | undefined) => async (dispatch: any) => {
+const renameSpecificProjectAction = (renameProjectTitle: string, currentOrgID: string | undefined, projectID: string, projects: any[] | undefined, projectType: 'design' | 'project' | 'quote', quoteID?: string) => async (dispatch: any) => {
+    //rename project based on project name
     const res = await apiRequest(
         {
-        url: `/api/fhapp-service/project/${currentOrgID}/${projectID}`,
+        url: `/api/fhapp-service/${projectType}/${currentOrgID}/${quoteID? quoteID : projectID}`,
         method:'PATCH',
         body: {
             title: renameProjectTitle

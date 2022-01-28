@@ -1,0 +1,97 @@
+@use "@fulhaus/react.ui.colors/dist/scss" as color;
+.catalogue-filter {
+  .dropdown-list-input-overwrite {
+    .dropdown-list-input-box-wrapper {
+      font-size: 14px !important;
+    }
+    .dropdown-list-input-options {
+      font-size: 14px !important;
+    }
+  }
+  .w-400px {
+    width: 400px;
+  }
+  .w-200px {
+    width: 200px;
+  }
+  .input-active-outline-none {
+    input:focus {
+        outline: none;
+      }
+  }
+  .min-price-slider {
+    background: transparent;
+    -webkit-appearance: none;
+    &::-ms-track {
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    &::-moz-range-progress {
+      height: 5px;
+      background-color: rgba(0, 0, 0);
+    }
+    &::-webkit-slider-thumb {
+      z-index: 50;
+      -webkit-appearance: none;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      border: 2px solid black;
+      background-color: white;
+      position: relative;
+      margin-top: -6px;
+    }
+    &::-webkit-slider-runnable-track {
+      height: 5px;
+      border: none;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.25);
+    }
+  }
+  .max-price-slider {
+    background: transparent;
+    -webkit-appearance: none;
+    &::-moz-range-progress{
+        height: 5px;
+        background-color:rgba(0, 0, 0);
+    }
+    &::-ms-track {
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      border: 2px solid black;
+      background-color: white;
+      position: relative;
+      margin-top: -6px;
+    }
+    &::-webkit-slider-runnable-track {
+      height: 5px;
+      border: none;
+      border-radius: 20px;
+      background: rgba(0, 0, 0);
+    }
+  }
+  .text-input-width-80p {
+    .input-variant-box {
+      width: 80px !important;
+    }
+  }
+  .text-input-width-100p {
+    .input-variant-box {
+      width: 100px !important;
+    }
+  }
+}
