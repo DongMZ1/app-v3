@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
 import { AiOutlineUnorderedList, AiOutlineLeft, AiOutlineDown } from 'react-icons/ai';
-import { SwitchTransition, CSSTransition } from 'react-transition-group'
+import { SwitchTransition, CSSTransition, Transition } from 'react-transition-group'
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
@@ -83,12 +83,14 @@ const AppSideBar = () => {
         setunitOptionCheckedList([]);
         setshowAddUnitDropdown(false);
     }
-    return (<SwitchTransition mode='out-in'>
-        <CSSTransition
-            key={showEntendSideBar ? 'yes' : 'no'}
-            timeout={300}
-            addEndListener={(node, done) => node.addEventListener("transitionend", done, false)} classNames='appv3-sidebar-animation'>
-            {showEntendSideBar ? <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
+    return (<>
+        <CSSTransition in={!showEntendSideBar} unmountOnExit timeout={300} classNames='display-none-animation'>
+            <div className='w-auto px-4 py-4 border-r border-black border-solid'>
+                <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
+            </div>
+        </CSSTransition>
+        <CSSTransition in={showEntendSideBar} timeout={300} unmountOnExit classNames={'appv3-sidebar-animation'}>
+            <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
                 {userRole !== 'viewer' && <>
                     <div className='flex px-4'>
                         <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
@@ -147,11 +149,9 @@ const AppSideBar = () => {
                         }
                     </div>
                 </>}
-            </div> : <div className='w-auto px-4 py-4 border-r border-black border-solid'>
-                <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
-            </div>}
+            </div>
         </CSSTransition>
-    </SwitchTransition>)
+    </>)
 }
 
 export default AppSideBar;

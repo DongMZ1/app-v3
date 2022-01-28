@@ -67,6 +67,21 @@
   }
 }
 
+.display-none-animation {
+  &-enter {
+    display: none;
+  }
+  &-enter-active {
+    display: none;
+  }
+  &-exit {
+    display: none;
+  }
+  &-exit-active {
+    display: none;
+  }
+}
+
 .transform-left-animation {
   &-enter {
     transform: translateX(-100%);
