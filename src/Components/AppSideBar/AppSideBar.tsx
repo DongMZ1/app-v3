@@ -86,7 +86,7 @@ const AppSideBar = () => {
     return (<SwitchTransition mode='out-in'>
         <CSSTransition
             key={showEntendSideBar ? 'yes' : 'no'}
-            timeout={200}
+            timeout={300}
             addEndListener={(node, done) => node.addEventListener("transitionend", done, false)} classNames='appv3-sidebar-animation'>
             {showEntendSideBar ? <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
                 {userRole !== 'viewer' && <>

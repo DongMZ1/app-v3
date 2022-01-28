@@ -4,7 +4,7 @@
   }
   &-enter-active {
     max-width: 420px;
-    transition: max-width 0.2s ease-out;
+    transition: max-width 0.3s ease-out;
     overflow: hidden;
   }
   &-exit {
@@ -12,7 +12,7 @@
   }
   &-exit-active {
     max-width: 3rem !important;
-    transition: max-width 0.2s ease-in;
+    transition: max-width 0.3s ease-in;
     overflow: hidden;
   }
 }
@@ -22,31 +22,31 @@
     max-height: 0rem !important;
     overflow: hidden;
     &::-webkit-scrollbar {
-        display: none;
-      }
+      display: none;
+    }
   }
   &-enter-active {
     max-height: 800px !important;
     transition: max-height 0.3s ease-out;
     overflow: hidden;
     &::-webkit-scrollbar {
-        display: none;
-      }
+      display: none;
+    }
   }
   &-exit {
     max-height: 800px !important;
     overflow: hidden;
     &::-webkit-scrollbar {
-        display: none;
-      }
+      display: none;
+    }
   }
   &-exit-active {
     max-height: 0px !important;
     transition: max-height 0.3s ease-in;
     overflow: hidden;
     &::-webkit-scrollbar {
-        display: none;
-      }
+      display: none;
+    }
   }
 }
 
@@ -56,13 +56,30 @@
   }
   &-enter-active {
     opacity: 1;
-    transition: opacity 0.2s linear;
+    transition: opacity 0.3s linear;
   }
   &-exit {
     opacity: 1;
   }
   &-exit-active {
     opacity: 0;
-    transition: opacity 0.2s linear;
+    transition: opacity 0.3s linear;
+  }
+}
+
+.transform-left-animation {
+  &-enter {
+    transform: translateX(-100%);
+  }
+  &-enter-active {
+    transform: translateX(0%);
+    transition: transform 0.3s linear;
+  }
+  &-exit {
+    transform: translateX(0%);
+  }
+  &-exit-active {
+    transform: translateX(-100%);
+    transition: transform 0.3s linear;
   }
 }

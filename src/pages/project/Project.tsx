@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import "./Project.scss";
 import { Link, useHistory } from 'react-router-dom'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
-import {Popup} from '@fulhaus/react.ui.popup'
+import { Popup } from '@fulhaus/react.ui.popup'
 import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useSelector, useDispatch } from 'react-redux'
+import { CSSTransition } from 'react-transition-group';
 import { Tappstate } from '../../redux/reducers';
 import { deleteSpecificProject, getQuoteDetail } from '../../redux/Actions'
 import InvitePeople from '../../Components/InvitePeople/InvitePeople';
@@ -38,12 +39,12 @@ const Project = () => {
 
     useEffect(() => {
         //if it is a project, then get the quote based on projectID
-        if(selectedProject?.type === 'project' && currentOrgID){
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType:'project' }))
+        if (selectedProject?.type === 'project' && currentOrgID) {
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
         }
         //get quote detail when initail rendering
         if (selectedProject?.quoteID && currentOrgID && selectedProject?.type === 'quote') {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType:'quoteID' }))
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
         }
     }, [selectedProject])
 
@@ -171,16 +172,14 @@ const Project = () => {
                 <div className={`${(window.location.href.includes('/quote-only') || window.location.href.includes('/design-only')) && 'ml-auto'} flex w-3/6`}>
                     <div className='my-auto ml-auto mr-6 text-sm font-ssp'>v0</div>
                     <div className='my-auto mr-8 text-sm font-ssp'>Never saved</div>
-                    <ShareAlt onClick={()=>setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
+                    <ShareAlt onClick={() => setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
                     <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
                     <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
                     <SaveIcon className='my-auto mr-8 cursor-pointer' />
                 </div>
             </div>
-            {showHistory && <VersionHistory close={() => setshowHistory(false)} />}
-            {
-                showProjectInfor && <ProjectInformation close={() => setshowProjectInfor(false)} />
-            }
+            <CSSTransition in={showHistory} timeout={300} unmountOnExit classNames='opacity-animation'><VersionHistory close={() => setshowHistory(false)} /></CSSTransition>
+            <CSSTransition in={showProjectInfor} timeout={300} unmountOnExit classNames='opacity-animation'><ProjectInformation close={() => setshowProjectInfor(false)} /></CSSTransition>
             <div className='flex main-content-wrapper'>
                 <AppSideBar />
                 {(window.location.href.includes('project/quote') || window.location.href.includes('/quote-only')) && <Quote />}
