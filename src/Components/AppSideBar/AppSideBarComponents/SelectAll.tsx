@@ -235,7 +235,7 @@ const SelectAll = () => {
     }
     return <div className='mt-4 select-all'>
         <Button onClick={() => setshowDropDown(true)} className='select-none bg-cream-important' variant='secondary'>Select All...</Button>
-        <CSSTransition in={showDropDown} timeout={300} unmountOnExit classNames='opacity-animation'>
+        {showDropDown &&
             <div className='fixed z-50 px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
                 {/**----------------first Mene page ------------------------------------------------------------ */}
                 {
@@ -433,7 +433,7 @@ const SelectAll = () => {
                     </>
                 }
             </div>
-        </CSSTransition>
+        }
     </div>
 }
 

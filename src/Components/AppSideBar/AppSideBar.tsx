@@ -84,21 +84,21 @@ const AppSideBar = () => {
         setshowAddUnitDropdown(false);
     }
     return (<>
-        <CSSTransition in={!showEntendSideBar} unmountOnExit timeout={300} classNames='display-none-animation'>
+        <CSSTransition in={!showEntendSideBar} mountOnEnter unmountOnExit timeout={300} classNames='display-none-animation'>
             <div className='w-auto px-4 py-4 border-r border-black border-solid'>
                 <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
             </div>
         </CSSTransition>
-        <CSSTransition in={showEntendSideBar} timeout={300} unmountOnExit classNames={'appv3-sidebar-animation'}>
+        <CSSTransition in={showEntendSideBar} timeout={300} mountOnEnter unmountOnExit classNames={'appv3-sidebar-animation'}>
             <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
                 {userRole !== 'viewer' && <>
                     <div className='flex px-4'>
                         <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                         <div className='relative w-20 text-sm-important'>
                             <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
-                                <CSSTransition in={showAddUnitDropdown} unmountOnExit timeout={300} classNames='height-800px-animation'>
-                                    <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                            <CSSTransition in={showAddUnitDropdown} mountOnEnter unmountOnExit timeout={300} classNames='height-800px-animation'>
+                                <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                    <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
                                         <div className='text-sm font-semibold font-ssp'>
                                             New Unit
                                         </div>
@@ -129,9 +129,9 @@ const AppSideBar = () => {
                                                 createUnits();
                                             }} variant='primary' className='w-32'>Create Units</Button>
                                         </div>
-                                    </div>
-                                </CSSTransition>
-                            </ClickOutsideAnElementHandler>
+                                    </ClickOutsideAnElementHandler>
+                                </div>
+                            </CSSTransition>
                         </div>
                         {/**
                  * <div className='w-20 ml-4 text-sm-important dropdown-list-input-box-display-none'>
