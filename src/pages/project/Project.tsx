@@ -171,6 +171,12 @@ const Project = () => {
                         <Link to='/project/design' role='button' className={`my-auto cursor-pointer ${window.location.href.includes('project/design') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>Design</Link>
                     </div>
                 }
+                {(window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) &&
+                    <div className='flex ml-auto'>
+                        <Link to='/quote-summary-rental' className={`my-auto ml-auto mr-8 cursor-pointer ${window.location.href.includes('/quote-summary-rental') ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Rental</Link>
+                        <Link to='/quote-summary-purchase' role='button' className={`my-auto cursor-pointer ${window.location.href.includes('/quote-summary-purchase') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>Purchase</Link>
+                    </div>
+                }
                 <div className={`${(window.location.href.includes('/quote-only') || window.location.href.includes('/design-only')) && 'ml-auto'} flex w-3/6`}>
                     <div className='my-auto ml-auto mr-6 text-sm font-ssp'>v0</div>
                     <div className='my-auto mr-8 text-sm font-ssp'>Never saved</div>
