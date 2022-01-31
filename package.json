@@ -7,7 +7,7 @@
     "@fulhaus/react.ui.action-modal": "0.0.16",
     "@fulhaus/react.ui.button": "0.0.11",
     "@fulhaus/react.ui.checkbox": "0.0.6",
-    "@fulhaus/react.ui.click-outside-an-element-handler": "0.0.4",
+    "@fulhaus/react.ui.click-outside-an-element-handler": "0.0.5",
     "@fulhaus/react.ui.color-picker": "0.0.6",
     "@fulhaus/react.ui.colors": "0.0.11",
     "@fulhaus/react.ui.dropdown-component": "0.0.20",
