@@ -8,6 +8,7 @@ const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
     const JSONquoteDetail = JSON.stringify(quoteDetail);
@@ -22,7 +23,7 @@ const ProjectFooter = () => {
                         method: 'GET'
                     }
                 )
-                if(res?.success){
+                if (res?.success) {
                     setquoteTotal(res.quoteTotal);
                 }
             }
@@ -43,25 +44,36 @@ const ProjectFooter = () => {
                         method: 'GET'
                     }
                 )
-                if(res?.success){
+                if (res?.success) {
                     setunitTotal(res.unitTotal);
                 }
             }
             const debounceGetUnitTotal = debounce(
                 getUnitTotal, 500
             )
-            if(JSONselectedQuoteUnit){
+            if (JSONselectedQuoteUnit) {
                 debounceGetUnitTotal();
             }
         }, [JSONselectedQuoteUnit]
     )
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
-        <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
-        <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
-        <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
-        <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit? `$${unitTotal.toFixed(2)}`: 'No Unit Selected'}</b></div>
-        <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal? quoteTotal.toFixed(2) : 0}</b></div>
-        <div onClick={()=>history.push('/quote-summary-rental')} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
+        {(window.location.href.includes('project/quote') || window.location.href.includes('/quote-only')) &&
+        <>
+            <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
+            <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
+            <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
+            <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit ? `$${unitTotal.toFixed(2)}` : 'No Unit Selected'}</b></div>
+            <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal ? quoteTotal.toFixed(2) : 0}</b></div>
+            <div onClick={() => history.push('/quote-summary-rental')} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
+        </>}
+        {
+            (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) &&
+            <>
+              <div className='my-auto mr-4 text-lg font-semibold'>Client Name</div>
+              <div onClick={() => history.push(selectedProject?.type === 'project'?'/project/quote':'/quote-only')} className='px-4 py-1 my-auto ml-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Exit Overall Budget</div>
+              <div onClick={() => {}} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Export PDF</div>
+            </>
+        }
     </div>
 }
 

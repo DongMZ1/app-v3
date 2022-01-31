@@ -30,8 +30,9 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [saveUnitPackageName, setsaveUnitPackageName] = useState('');
     const [showSaveAsUnitPackage, setshowSaveAsUnitPackage] = useState(false);
 
-    const debouncedUnitCount = useDebounce(unitCount, 300)
-    const viewOnly = userRole === 'viewer'
+    const debouncedUnitCount = useDebounce(unitCount, 300);
+    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase');
+    const darkMode = (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) && eachUnit?.unitID === selectedQuoteUnit?.unitID;
 
     useEffect(() => {
         //add debounce to update the count of unit
@@ -221,6 +222,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 units={unitCount}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
+                darkmod={darkMode}
             />
         </div>
     </>

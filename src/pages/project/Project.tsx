@@ -22,6 +22,8 @@ import ProjectInformation from './ProjectComponents/ProjectInformation';
 import ProjectFooter from './ProjectComponents/ProjectFooter';
 import VersionHistory from './ProjectComponents/VersionHistory';
 import AppSideBar from '../../Components/AppSideBar/AppSideBar';
+import QuoteSummaryPurchase from '../../Components/QuoteSummaryPurchase/QuoteSummaryPurchase';
+import QuoteSummaryRental from '../../Components/QuoteSummaryRental/QuoteSummaryRental';
 const Project = () => {
     const [showInvitePeople, setshowInvitePeople] = useState(false);
     const [showHistory, setshowHistory] = useState(false);
@@ -184,6 +186,8 @@ const Project = () => {
                 <AppSideBar />
                 {(window.location.href.includes('project/quote') || window.location.href.includes('/quote-only')) && <Quote />}
                 {(window.location.href.includes('project/design') || window.location.href.includes('/design-only')) && <Design />}
+                {(window.location.href.includes('/quote-summary-rental')) && <QuoteSummaryRental />}
+                {(window.location.href.includes('/quote-summary-purchase')) && <QuoteSummaryPurchase />}
             </div>
             <ProjectFooter />
         </div>
