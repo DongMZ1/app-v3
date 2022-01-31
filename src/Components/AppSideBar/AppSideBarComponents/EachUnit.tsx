@@ -150,7 +150,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             method: 'DELETE'
         })
         if (res?.success) {
-            if(eachUnit.unitID === selectedQuoteUnit.unitID){
+            if(eachUnit?.unitID === selectedQuoteUnit?.unitID){
               dispatch({
                   type:'selectedQuoteUnit',
                   payload: undefined
