@@ -9,6 +9,7 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Radio } from '@fulhaus/react.ui.radio'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
+import { CSSTransition } from 'react-transition-group';
 import { getQuoteDetail } from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
 
@@ -234,7 +235,7 @@ const SelectAll = () => {
     }
     return <div className='mt-4 select-all'>
         <Button onClick={() => setshowDropDown(true)} className='select-none bg-cream-important' variant='secondary'>Select All...</Button>
-        {showDropDown &&
+        <CSSTransition in={showDropDown} timeout={300} unmountOnExit classNames='opacity-animation' >
             <div className='fixed z-50 px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
                 {/**----------------first Mene page ------------------------------------------------------------ */}
                 {
@@ -432,7 +433,7 @@ const SelectAll = () => {
                     </>
                 }
             </div>
-        }
+        </CSSTransition>
     </div>
 }
 
