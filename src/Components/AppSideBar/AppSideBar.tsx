@@ -25,7 +25,7 @@ const AppSideBar = () => {
     const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
-    const hideAddItem = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase'));
+    const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase'));
     useEffect(() => {
         getUnitPackages()
     }, [currentOrgID])
@@ -93,7 +93,7 @@ const AppSideBar = () => {
         <CSSTransition in={showEntendSideBar} timeout={300} mountOnEnter unmountOnExit classNames={'appv3-sidebar-animation'}>
             <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
                 <div className='flex px-4'>
-                    {hideAddItem && <>
+                    {editable && <>
                         <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                         <div className='relative w-20 text-sm-important'>
                             <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
@@ -135,17 +135,24 @@ const AppSideBar = () => {
                                 </CSSTransition>
                             </ClickOutsideAnElementHandler>
                         </div>
+                        <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
+                            <AiOutlineLeft size={22} />
+                        </div>
                     </>}
-                    <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
-                        <AiOutlineLeft size={22} />
-                    </div>
                 </div>
-                {hideAddItem &&
+                {editable &&
                     <div className='px-4'>
                         <SelectAll />
                     </div>
                 }
-                <div className='px-4 mt-2 text-sm font-ssp'>Total Units: {totalUnitCount}</div>
+                <div className='flex px-4 mt-2'>
+                    <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>
+                    {!editable &&
+                        <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
+                            <AiOutlineLeft size={22} />
+                        </div>
+                    }
+                </div>
                 <div className='w-full h-full px-4 overflow-y-auto'>
                     {
                         quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
