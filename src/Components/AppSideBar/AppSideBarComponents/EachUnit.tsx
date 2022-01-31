@@ -150,7 +150,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             method: 'DELETE'
         })
         if (res?.success) {
-            if(eachUnit.unitID === selectedQuoteUnit.unitID){
+            if(eachUnit?.unitID === selectedQuoteUnit?.unitID){
               dispatch({
                   type:'selectedQuoteUnit',
                   payload: undefined
@@ -205,7 +205,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 </div>
             </div>
         </Popup>
-        <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.unitType}, ${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
+        <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
                 saveUnitAsUnitPackage={() => setshowSaveAsUnitPackage(true)}
