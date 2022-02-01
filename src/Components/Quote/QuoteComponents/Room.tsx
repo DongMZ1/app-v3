@@ -302,7 +302,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                             <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddPackageDropdown(false)}>
                                 <CSSTransition in={showAddPackageDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                        <TextInput placeholder='Search Existing UnitPackages' variant='box' className='mt-2' inputName='add package keywords' value={roomPackageKeyword} onChange={(e) => {
+                                        <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='add package keywords' value={roomPackageKeyword} onChange={(e) => {
                                             setroomPackageKeyword((e.target as any).value);
                                             setroomPackageOptionCheckedList([]);
                                         }}
