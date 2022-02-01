@@ -171,7 +171,7 @@ const Quote = () => {
                 {userRole !== 'viewer' &&
                     <div className='flex'>
                         <div className='relative w-32 mr-8 text-sm-important'>
-                            <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
                             <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
                                 <CSSTransition in={showAddRoomDropdown} noStyle timeout={300} unmountOnExit classNames='height-800px-animation'>
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>

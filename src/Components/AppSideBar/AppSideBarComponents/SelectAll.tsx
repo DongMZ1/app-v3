@@ -234,7 +234,7 @@ const SelectAll = () => {
         }
     }
     return <div className='mt-4 select-all'>
-        <Button onClick={() => setshowDropDown(true)} className='select-none bg-cream-important' variant='secondary'>Select All...</Button>
+        <div onClick={() => setshowDropDown(true)} className='flex w-24 h-8 border border-black border-solid cursor-pointer select-none hover:bg-black hover:border-transparent hover:text-white'><div className='m-auto'>Select All...</div></div>
         <CSSTransition in={showDropDown} timeout={300} unmountOnExit classNames='opacity-animation' >
             <div className='fixed z-50 px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
                 {/**----------------first Mene page ------------------------------------------------------------ */}

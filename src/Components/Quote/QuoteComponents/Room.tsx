@@ -3,7 +3,7 @@ import { FurnitureInRoomRowCard } from '@fulhaus/react.ui.furniture-in-room-row-
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import produce from 'immer'
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header'
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
@@ -244,19 +244,22 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 editable={userRole !== 'viewer'}
             >
                 <>
-                    {
-                        eachRoom.categories?.map((eachCategory: any) =>
-                            <Category
-                                eachRoom={eachRoom}
-                                eachCategory={eachCategory}
-                                updateQuoteDetail={updateQuoteDetail}
-                                updateCategories={updateCategories}
-                            />)
-                    }
+                    <TransitionGroup>
+                        {
+                            eachRoom.categories?.map((eachCategory: any) =>
+                                <CSSTransition key={eachCategory.name} timeout={300} classNames='opacity-animation'>
+                                    <Category
+                                        eachRoom={eachRoom}
+                                        eachCategory={eachCategory}
+                                        updateQuoteDetail={updateQuoteDetail}
+                                        updateCategories={updateCategories}
+                                    /></CSSTransition>)
+                        }
+                    </TransitionGroup>
                     <div className='h-1 '></div>
                     <div className='flex'>
                         <div className='relative w-32 mr-4 text-sm-important'>
-                            <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
                             <ClickOutsideAnElementHandler noStyle onClickedOutside={() => setshowAddItemDropdown(false)}>
                                 <CSSTransition in={showAddItemDropdown} timeout={300} unmountOnExit classNames='height-800px-animation' >
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
@@ -295,7 +298,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                             </ClickOutsideAnElementHandler>
                         </div>
                         <div className='relative w-40 mr-8 text-sm-important'>
-                            <div onClick={() => setshowAddPackageDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            <div onClick={() => setshowAddPackageDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
                             <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddPackageDropdown(false)}>
                                 <CSSTransition in={showAddPackageDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
