@@ -71,7 +71,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 url: `/api/fhapp-service/package/room/${currentOrgID}`,
                 body: {
                     name: saveAsRoomPackageName,
-                    itemCategories: eachRoom.categories
+                    categories: eachRoom.categories
                 },
                 method: 'POST'
             }
