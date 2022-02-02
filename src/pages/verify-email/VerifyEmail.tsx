@@ -26,7 +26,6 @@ const VerifyEmail = ({ setverifyUser }: VerifyEmailType) => {
                     }
                 }
             )
-            console.log(res)
             if (res?.success) {
                 setverifyUser(true);
                 dispatch(showMessageAction(true, 'verified !'));
