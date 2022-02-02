@@ -28,8 +28,8 @@ const VerifyEmail = ({ setverifyUser }: VerifyEmailType) => {
             )
             console.log(res)
             if (res?.success) {
-                dispatch(showMessageAction(true, 'verified !'));
                 setverifyUser(true);
+                dispatch(showMessageAction(true, 'verified !'));
                 history.push('/')
             }
 
