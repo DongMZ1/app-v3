@@ -98,3 +98,37 @@
     transition: transform 0.3s linear;
   }
 }
+
+.transform-left-origin-animation {
+  &-enter {
+    transform: translateX(100%);
+  }
+  &-enter-active {
+    transform: translateX(0%);
+    transition: transform 0.3s linear;
+  }
+  &-exit {
+    transform: translateX(0%);
+  }
+  &-exit-active {
+    transform: translateX(100%);
+    transition: transform 0.3s linear;
+  }
+}
+
+.transform-y-animation {
+  &-enter {
+    transform: translateY(-100%);
+  }
+  &-enter-active {
+    transform: translateY(0%);
+    transition: transform 0.3s linear;
+  }
+  &-exit {
+    transform: translateY(0%);
+  }
+  &-exit-active {
+    transform: translateY(-100%);
+    transition: transform 0.3s linear;
+  }
+}
