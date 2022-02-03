@@ -365,6 +365,7 @@ const SelectAll = () => {
                                 :
                                 <div onClick={() => setroomTypeCheckList(roomTypeOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                         }
+                        <div className='overflow-y-auto max-h-64'>
                         {roomTypeOptionList.map(each =>
                             <Checkbox className='my-2' label={each} checked={roomTypeCheckedList.includes(each)} onChange={(v) => {
                                 if (v) {
@@ -374,6 +375,7 @@ const SelectAll = () => {
                                 }
                             }} />)
                         }
+                        </div>
                         <div className='flex my-2'>
                             <Button onClick={() => {
                                 setshowselectPage(false);
