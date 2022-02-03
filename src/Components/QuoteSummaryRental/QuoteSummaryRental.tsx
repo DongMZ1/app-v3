@@ -8,7 +8,10 @@ const QuoteSummaryRental = () => {
         return <UnitBudget />
     }
     return  <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote-summary-rental'>
-
+          <div className='flex'>
+              <div className='text-2xl  font-moret'>Rental Summary</div>
+              <div></div>
+          </div>
     </div>
 }
 
