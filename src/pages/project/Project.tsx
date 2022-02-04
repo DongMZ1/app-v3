@@ -13,7 +13,6 @@ import apiRequest from '../../Service/apiRequest'
 import produce from 'immer'
 import { ReactComponent as RightArrowWhiteIcon } from "../../styles/images/right-arrow-white.svg";
 import { ReactComponent as ShareAlt } from "../../styles/images/share-alt.svg";
-import { ReactComponent as SaveIcon } from "../../styles/images/save.svg";
 import { ReactComponent as InformationIcon } from "../../styles/images/information.svg";
 import { ReactComponent as HistoryIcon } from "../../styles/images/history.svg";
 import Quote from '../../Components/Quote/Quote';
@@ -24,6 +23,7 @@ import VersionHistory from './ProjectComponents/VersionHistory';
 import AppSideBar from '../../Components/AppSideBar/AppSideBar';
 import QuoteSummaryPurchase from '../../Components/QuoteSummaryPurchase/QuoteSummaryPurchase';
 import QuoteSummaryRental from '../../Components/QuoteSummaryRental/QuoteSummaryRental';
+import SaveProject from './ProjectComponents/SaveProject';
 const Project = () => {
     const [showInvitePeople, setshowInvitePeople] = useState(false);
     const [showHistory, setshowHistory] = useState(false);
@@ -188,7 +188,7 @@ const Project = () => {
                     <ShareAlt onClick={() => setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
                     <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
                     <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
-                    <SaveIcon className='my-auto mr-8 cursor-pointer' />
+                    <SaveProject />
                 </div>
             </div>
             <CSSTransition in={showHistory} timeout={300} unmountOnExit classNames='opacity-animation'><VersionHistory close={() => setshowHistory(false)} /></CSSTransition>
