@@ -1,5 +1,5 @@
 import "./Home.scss";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import debounce from 'lodash.debounce'
 import { useSelector, useDispatch } from 'react-redux'
 import useIsFirstRender from "../../Hooks/useIsFirstRender";
@@ -30,7 +30,7 @@ const Home = () => {
   const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string, userRole: string | undefined }>();
   //index show number of rows on homepage displayed
   const [pageCount, setpageCount] = useState(1);
-  const [showLoadingMessage, setshowLoadingMessage] = useState(false);
+  const scrollRef = useRef<any>();
   const [orderByLastUpdated, setorderByLastUpdated] = useState(false);
 
   //copy the all of that specific project/quote/design info
@@ -63,7 +63,7 @@ const Home = () => {
   }
 
   const infiniteScrollCallback = () => {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight && state.projects) {
+    if (((scrollRef.current?.clientHeight + scrollRef.current?.scrollTop + 5) > scrollRef.current?.scrollHeight) && state.projects) {
       //dispatch fetch more
       if (state.currentOrgID) {
         dispatch(fetchMoreProject(state.currentOrgID, state.projects, {
@@ -152,7 +152,7 @@ const Home = () => {
           setSelectedProjectToInvite(undefined);
           setshowInvitePeople(false);
         }} /></Popup>
-    <div className="app-v3-home-page" id={'app-v3-home-page'} onScroll={() => infiniteScroll()}>
+    <div ref={scrollRef} className="app-v3-home-page" id={'app-v3-home-page'} onScroll={() => infiniteScroll()}>
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <OrganizationSelection clearHomePageScrollState={clearHomePageScrollState} />
