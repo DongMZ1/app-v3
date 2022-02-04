@@ -9,6 +9,7 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Radio } from '@fulhaus/react.ui.radio'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { BsArrowLeft } from 'react-icons/bs'
+import { CSSTransition } from 'react-transition-group';
 import { getQuoteDetail } from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
 
@@ -233,8 +234,8 @@ const SelectAll = () => {
         }
     }
     return <div className='mt-4 select-all'>
-        <Button onClick={() => setshowDropDown(true)} className='select-none bg-cream-important' variant='secondary'>Select All...</Button>
-        {showDropDown &&
+        <div onClick={() => setshowDropDown(true)} className='flex w-24 h-8 border border-black border-solid cursor-pointer select-none hover:bg-black hover:border-transparent hover:text-white'><div className='m-auto'>Select All...</div></div>
+        <CSSTransition in={showDropDown} timeout={300} unmountOnExit classNames='opacity-animation' >
             <div className='fixed z-50 px-2 text-sm bg-white border border-black border-solid select-none font-ssp'>
                 {/**----------------first Mene page ------------------------------------------------------------ */}
                 {
@@ -364,6 +365,7 @@ const SelectAll = () => {
                                 :
                                 <div onClick={() => setroomTypeCheckList(roomTypeOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                         }
+                        <div className='overflow-y-auto max-h-64'>
                         {roomTypeOptionList.map(each =>
                             <Checkbox className='my-2' label={each} checked={roomTypeCheckedList.includes(each)} onChange={(v) => {
                                 if (v) {
@@ -373,6 +375,7 @@ const SelectAll = () => {
                                 }
                             }} />)
                         }
+                        </div>
                         <div className='flex my-2'>
                             <Button onClick={() => {
                                 setshowselectPage(false);
@@ -432,7 +435,7 @@ const SelectAll = () => {
                     </>
                 }
             </div>
-        }
+        </CSSTransition>
     </div>
 }
 

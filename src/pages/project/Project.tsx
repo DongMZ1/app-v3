@@ -22,12 +22,15 @@ import ProjectInformation from './ProjectComponents/ProjectInformation';
 import ProjectFooter from './ProjectComponents/ProjectFooter';
 import VersionHistory from './ProjectComponents/VersionHistory';
 import AppSideBar from '../../Components/AppSideBar/AppSideBar';
+import QuoteSummaryPurchase from '../../Components/QuoteSummaryPurchase/QuoteSummaryPurchase';
+import QuoteSummaryRental from '../../Components/QuoteSummaryRental/QuoteSummaryRental';
 const Project = () => {
     const [showInvitePeople, setshowInvitePeople] = useState(false);
     const [showHistory, setshowHistory] = useState(false);
     const [showProjectInfor, setshowProjectInfor] = useState(false);
     const [showRenameProject, setshowRenameProject] = useState(false);
     const [showConfirmDeleteProjectModal, setshowConfirmDeleteProjectModal] = useState(false);
+    const [hoverProjectTitle, sethoverProjectTitle] = useState(false);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -143,16 +146,20 @@ const Project = () => {
         <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteProjectModal} message={`Delete Project`} subText={`Are you sure you want to permanently delete ${'project'} ?`} onCancel={() => setshowConfirmDeleteProjectModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteProject()} />
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
-                <div className='flex px-4 py-3 text-white bg-black font-moret'>
+                <div onMouseLeave={()=>sethoverProjectTitle(false)} className={`flex px-4 py-3 text-white bg-black font-moret ${hoverProjectTitle && selectedProject?.title?.length > 16 ? 'w-auto' : 'w-64'}`}>
                     <Link onClick={() => exitPage()} className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
-                    {showRenameProject ? <input onKeyDown={e => {
-                        if (e.code === 'Enter') {
-                            renameProject();
-                        }
-                    }} value={projectTitle} onChange={e => setprojectTitle(e.target.value)} className='w-40 px-2 my-auto mr-4 text-black' type='text' onClick={e => e.stopPropagation()} onBlur={() => renameProject()} /> :
-                        <div className='my-auto mr-4 text-lg'>{selectedProject?.title}</div>}
+                    {showRenameProject ?
+                        <input onKeyDown={e => {
+                            if (e.code === 'Enter') {
+                                renameProject();
+                            }
+                        }} value={projectTitle} onChange={e => setprojectTitle(e.target.value)} className='w-5/6 px-2 mx-auto my-auto text-black' type='text' onClick={e => e.stopPropagation()} onBlur={() => renameProject()} />
+                        :
+                        <div onMouseEnter={() => sethoverProjectTitle(true)} className='mx-auto my-auto text-lg'>
+                            {hoverProjectTitle ? selectedProject?.title : (selectedProject?.title?.length > 16 ? (selectedProject?.title as string).slice(0, 16) + '...' : selectedProject?.title)}</div>
+                    }
                     {(projectRole === 'admin' || projectRole === 'owner') &&
-                        <div className='hide-dropdown-list'>
+                        <div className='ml-4 hide-dropdown-list'>
                             <DropdownListInput
                                 listWrapperClassName={'last-child-red'}
                                 onSelect={v => projectMenuOnSelect(v)}
@@ -167,6 +174,12 @@ const Project = () => {
                     <div className='flex ml-auto'>
                         <Link to='/project/quote' className={`my-auto ml-auto mr-8 cursor-pointer ${window.location.href.includes('project/quote') ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Quote</Link>
                         <Link to='/project/design' role='button' className={`my-auto cursor-pointer ${window.location.href.includes('project/design') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>Design</Link>
+                    </div>
+                }
+                {(window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) &&
+                    <div className='flex ml-auto'>
+                        <Link to='/quote-summary-rental' className={`my-auto ml-auto mr-8 cursor-pointer ${window.location.href.includes('/quote-summary-rental') ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Rental</Link>
+                        <Link to='/quote-summary-purchase' role='button' className={`my-auto cursor-pointer ${window.location.href.includes('/quote-summary-purchase') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>Purchase</Link>
                     </div>
                 }
                 <div className={`${(window.location.href.includes('/quote-only') || window.location.href.includes('/design-only')) && 'ml-auto'} flex w-3/6`}>
@@ -184,6 +197,8 @@ const Project = () => {
                 <AppSideBar />
                 {(window.location.href.includes('project/quote') || window.location.href.includes('/quote-only')) && <Quote />}
                 {(window.location.href.includes('project/design') || window.location.href.includes('/design-only')) && <Design />}
+                {(window.location.href.includes('/quote-summary-rental')) && <QuoteSummaryRental />}
+                {(window.location.href.includes('/quote-summary-purchase')) && <QuoteSummaryPurchase />}
             </div>
             <ProjectFooter />
         </div>

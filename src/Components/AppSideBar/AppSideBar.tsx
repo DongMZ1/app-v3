@@ -25,6 +25,7 @@ const AppSideBar = () => {
     const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
+    const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase'));
     useEffect(() => {
         getUnitPackages()
     }, [currentOrgID])
@@ -91,13 +92,13 @@ const AppSideBar = () => {
         </CSSTransition>
         <CSSTransition in={showEntendSideBar} timeout={300} mountOnEnter unmountOnExit classNames={'appv3-sidebar-animation'}>
             <div className={`h-full width-500px flex flex-col app-side-bar py-4 border-black border-r border-solid border-t`}>
-                {userRole !== 'viewer' && <>
-                    <div className='flex px-4'>
+                <div className='flex px-4'>
+                    {editable && <>
                         <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                         <div className='relative w-20 text-sm-important'>
-                            <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                            {showAddUnitDropdown &&
-                                <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
+                            <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddUnitDropdown(false)}>
+                                <CSSTransition in={showAddUnitDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
 
                                         <div className='text-sm font-semibold font-ssp'>
@@ -131,24 +132,32 @@ const AppSideBar = () => {
                                             }} variant='primary' className='w-32'>Create Units</Button>
                                         </div>
                                     </div>
-                                </ClickOutsideAnElementHandler>}
+                                </CSSTransition>
+                            </ClickOutsideAnElementHandler>
                         </div>
-                        {/**
-                 * <div className='w-20 ml-4 text-sm-important dropdown-list-input-box-display-none'>
-                    <DropdownListInput prefixIcon={<div className='flex'><div className='m-auto'>Group</div></div>} wrapperClassName='cursor-pointer' listWrapperClassName='width-52-important' options={['Custom Unit', 'Studio', '1BR', '2BR', '3BR', '1BR-HOTEL']} /></div>
-                 */}
                         <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
                             <AiOutlineLeft size={22} />
                         </div>
+                    </>}
+                </div>
+                {editable &&
+                    <div className='px-4'>
+                        <SelectAll />
                     </div>
-                    <div className='px-4'><SelectAll /></div>
-                    <div className='px-4 mt-2 text-sm font-ssp'>Total Units: {totalUnitCount}</div>
-                    <div className='w-full h-full px-4 overflow-y-auto'>
-                        {
-                            quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
-                        }
-                    </div>
-                </>}
+                }
+                <div className='flex px-4 mt-2'>
+                    <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>
+                    {!editable &&
+                        <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
+                            <AiOutlineLeft size={22} />
+                        </div>
+                    }
+                </div>
+                <div className='w-full h-full px-4 overflow-y-auto'>
+                    {
+                        quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
+                    }
+                </div>
             </div>
         </CSSTransition>
     </>)

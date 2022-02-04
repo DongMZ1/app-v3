@@ -95,6 +95,14 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
       console.log('fetch organization users for specific project failed')
     }
   }
+
+  const validateEmail = (email: any) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
   return (
     <div>
       <div className="flex pb-4"><ImCross color="white" onClick={() => close()} className='ml-auto mr-4 cursor-pointer' role='button' /></div>
@@ -104,7 +112,7 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
         </div>
         <div className='flex mt-4'>
           <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
-          <div className='w-1/12'><Button disabled={peopleKeyWord === ""} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
+          <div className='w-1/12'><Button disabled={peopleKeyWord.split(', ')?.some(eachEmail => !validateEmail(eachEmail))} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
         {peopleList?.map(each =>
           <InvitePeopleUserRow
