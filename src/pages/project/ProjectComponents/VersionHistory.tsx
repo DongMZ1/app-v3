@@ -6,7 +6,7 @@ type VersionHistoryType = {
     close: () => void
 }
 const VersionHistory = ({ close }: VersionHistoryType) => {
-    const [showConfirm, setshowConfirm] = useState(true);
+    const [showConfirm, setshowConfirm] = useState(false);
     return <>
         <div className='fixed top-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
             <div className='w-2/4 h-full' onClick={() => close()}></div>
