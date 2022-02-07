@@ -24,6 +24,7 @@
     "@fulhaus/react.ui.tab": "0.0.10",
     "@fulhaus/react.ui.text-input": "0.0.11",
     "@fulhaus/react.ui.toggle": "0.0.6",
+    "@fulhaus/react.ui.tooltip": "0.0.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
