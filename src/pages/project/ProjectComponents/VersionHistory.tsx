@@ -1,12 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg';
 import { Popup } from '@fulhaus/react.ui.popup';
 import { Button } from '@fulhaus/react.ui.button';
+import { useSelector, useDispatch } from 'react-redux';
+import apiRequest from '../../../Service/apiRequest';
+import { Tappstate } from '../../../redux/reducers';
 type VersionHistoryType = {
     close: () => void
 }
 const VersionHistory = ({ close }: VersionHistoryType) => {
     const [showConfirm, setshowConfirm] = useState(false);
+    const [allversions, setallversions] = useState();
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    useEffect(
+        () => {
+            const getAllVersions = async () => {
+                const res = await apiRequest({
+                    url:`/api/fhapp-service/quote/${currentOrgID}/${quoteID}/versions`,
+                    method:'GET'
+                })
+                if(res?.success){
+
+                }
+            }
+            getAllVersions();
+        }, []
+    )
     return <>
         <div className='fixed top-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
             <div className='w-2/4 h-full' onClick={() => close()}></div>
