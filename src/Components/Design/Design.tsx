@@ -3,7 +3,7 @@ import "./Design.scss";
 import { Tab } from '@fulhaus/react.ui.tab'
 import { IoMdBook } from "react-icons/io";
 import { FaRegListAlt } from "react-icons/fa";
-import Catalogue from './DesignComponents/Catalogue'
+import Catalogue from './Catalogue/Catalogue'
 const tabs = [
   { icon: <FaRegListAlt style={{marginRight: "0.5rem"}} />, label: "Catalogue" },
   { icon: <IoMdBook style={{marginRight: "0.5rem"}} />, label: "Canvas" },
