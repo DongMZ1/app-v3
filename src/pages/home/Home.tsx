@@ -156,7 +156,7 @@ const Home = () => {
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <OrganizationSelection clearHomePageScrollState={clearHomePageScrollState} />
-        {state.currentOrgRole !== ('viewer' || 'editor') && state.currentOrgRole && <>
+        {(state.currentOrgRole !== 'viewer' && state.currentOrgRole !== 'editor') && state.currentOrgRole && <>
           <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
           <div
             onClick={() => setshowInvitePeople(true)}
@@ -172,7 +172,7 @@ const Home = () => {
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
             {/*<Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>*/}
-            {state.currentOrgRole !== ('viewer' || 'editor') && state.currentOrgRole &&
+            {(state.currentOrgRole !== 'viewer' && state.currentOrgRole !== 'editor') && state.currentOrgRole &&
               <div className='my-auto ml-auto hide-dropdown-list'>
                 <DropdownListInput
                   onSelect={v => chooseProjectQuoteDesignStart(v)}

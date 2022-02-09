@@ -33,6 +33,7 @@ const Project = () => {
     const [hoverProjectTitle, sethoverProjectTitle] = useState(false);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
     const projectRole = selectedProject?.userRole;
@@ -146,7 +147,7 @@ const Project = () => {
         <ActionModal modalClassName='font-moret' showModal={showConfirmDeleteProjectModal} message={`Delete Project`} subText={`Are you sure you want to permanently delete ${'project'} ?`} onCancel={() => setshowConfirmDeleteProjectModal(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteProject()} />
         <div className="project bg-cream">
             <div className="flex bg-white h-14">
-                <div onMouseLeave={()=>sethoverProjectTitle(false)} className={`flex px-4 py-3 text-white bg-black font-moret ${hoverProjectTitle && selectedProject?.title?.length > 16 ? 'w-auto' : 'w-64'}`}>
+                <div onMouseLeave={() => sethoverProjectTitle(false)} className={`flex px-4 py-3 text-white bg-black font-moret ${hoverProjectTitle && selectedProject?.title?.length > 16 ? 'w-auto' : 'w-64'}`}>
                     <Link onClick={() => exitPage()} className='my-auto mr-4 cursor-pointer' to={'/'}><RightArrowWhiteIcon /></Link>
                     {showRenameProject ?
                         <input onKeyDown={e => {
@@ -185,8 +186,11 @@ const Project = () => {
                 <div className={`${(window.location.href.includes('/quote-only') || window.location.href.includes('/design-only')) && 'ml-auto'} flex w-3/6`}>
                     <div className='my-auto ml-auto mr-6 text-sm font-ssp'>v0</div>
                     <div className='my-auto mr-8 text-sm font-ssp'>Never saved</div>
-                    <ShareAlt onClick={() => setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
-                    <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
+                    {userRole !== 'viewer' && userRole !== 'editor' &&
+                        <>
+                            <ShareAlt onClick={() => setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
+                            <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
+                        </>}
                     <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
                     <SaveProject />
                 </div>
