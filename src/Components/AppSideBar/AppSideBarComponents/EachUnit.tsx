@@ -87,14 +87,23 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
 
     const updateCount = async (v: number) => {
         const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
-            (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
+            if (v) {
+                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
+            }
+            else {
+                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = 0
+            }
         })
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
         const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            if(v){
             draft.count = v;
+            }else{
+                draft.count = 0
+            }
         })
         dispatch({
             type: 'selectedQuoteUnit',
@@ -104,7 +113,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
                 body: {
-                    count: v
+                    count: v ? v : 0
                 },
                 method: 'PATCH'
             }
@@ -151,11 +160,11 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             method: 'DELETE'
         })
         if (res?.success) {
-            if(eachUnit?.unitID === selectedQuoteUnit?.unitID){
-              dispatch({
-                  type:'selectedQuoteUnit',
-                  payload: undefined
-              })
+            if (eachUnit?.unitID === selectedQuoteUnit?.unitID) {
+                dispatch({
+                    type: 'selectedQuoteUnit',
+                    payload: undefined
+                })
             }
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 draftState.data = draftState?.data?.filter((each: any) => each?.unitID !== eachUnit.unitID)
@@ -180,7 +189,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         })
         if (res?.success) {
             getUnitPackages();
-        }else{
+        } else {
             console.log('saveUnitAsRoomPackage failed at EachUnit.tsx')
         }
     }
@@ -219,7 +228,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 viewOnly={viewOnly}
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
-                units={unitCount}
+                units={eachUnit?.unitID === selectedQuoteUnit?.unitID ? unitCount : unitCount? unitCount : 0}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
                 darkmod={darkMode}
