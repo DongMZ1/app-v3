@@ -29,7 +29,7 @@ const ProjectFooter = () => {
                 }
             }
             const debounceGetQuoteTotal = debounce(
-                getQuoteTotal, 500
+                getQuoteTotal, 1000
             )
             if (JSONquoteDetail) {
                 debounceGetQuoteTotal();
@@ -50,7 +50,7 @@ const ProjectFooter = () => {
                 }
             }
             const debounceGetUnitTotal = debounce(
-                getUnitTotal, 500
+                getUnitTotal, 1000
             )
             if (JSONselectedQuoteUnit) {
                 debounceGetUnitTotal();

@@ -228,6 +228,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 viewOnly={viewOnly}
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
+                //check if it is selected, if not then give it a unit count
                 units={eachUnit?.unitID === selectedQuoteUnit?.unitID ? unitCount : unitCount? unitCount : 0}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
