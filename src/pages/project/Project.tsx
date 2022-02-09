@@ -52,6 +52,7 @@ const Project = () => {
         }
     }, [selectedProject])
 
+    /*
     useEffect(() => {
         //add warning for user when leave page
         const handleUnload = (event: any) => {
@@ -61,6 +62,7 @@ const Project = () => {
         window.addEventListener("beforeunload", handleUnload);
         return () => window.removeEventListener("beforeunload", handleUnload);
     }, []);
+    */
 
     useEffect(
         //if there is no selected project, then get it from localstorage, see EachProjectQuoteDesign.tsx for logic
