@@ -5,12 +5,19 @@ import { Tappstate } from "./redux/reducers";
 import { checkUserLogined, getUserRole, showMessageAction } from './redux/Actions'
 import apiRequest from "./Service/apiRequest";
 import { Home, Project, VerifyEmail } from "./pages";
+import { useIdleTimer } from 'react-idle-timer'
 import MessageModal from "./Components/MessageModal/MessageModal";
 import "./styles/index.scss";
 const App = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state: Tappstate) => state.userRole);
   const [verifyUser, setverifyUser] = useState(false);
+  //will refresh page if user is inactive for 30min
+  useIdleTimer({
+    timeout: 1000 * 60 * 30,
+    onActive: () => window.location.reload(),
+    debounce: 500
+  })
   //get role first
   useEffect(
     () => {
