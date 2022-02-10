@@ -61,7 +61,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, 
                     </div>
                     <div className='flex mt-8 mb-2'>
                         <Button onClick={() => setshowPrice(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
-                        <Button className='w-24'>Apply</Button>
+                        <Button disabled={minPrice > maxPrice} className='w-24'>Apply</Button>
                     </div>
                 </div>
             </ClickOutsideAnElementHandler>
