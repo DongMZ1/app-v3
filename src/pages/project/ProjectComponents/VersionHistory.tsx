@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AiOutlineRight } from 'react-icons/ai'
 import apiRequest from '../../../Service/apiRequest';
 import { Tappstate } from '../../../redux/reducers';
+import getQuoteDetail from '../../../redux/Actions/getQuoteDetail'
 type VersionHistoryType = {
     close: () => void
 }
@@ -15,6 +16,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
     const [selectedVersion, setselectedVersion] = useState<any>();
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    const selectedProject = useSelector((state:Tappstate) => state.selectedProject)
     const dispatch = useDispatch();
     useEffect(
         () => {
@@ -40,9 +42,22 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                     versionID: selectedVersion._id
                 }
             })
-            if(res?.success){
-            setshowConfirm(false);
-            }else{
+            if (res?.success) {
+                setshowConfirm(false);
+                //need some backend improvement in the future, fetch quote again, not best approach
+                if (selectedProject?.type === 'project' && currentOrgID) {
+                    dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
+                }
+                if (selectedProject?.quoteID && currentOrgID && selectedProject?.type === 'quote') {
+                    dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
+                }
+                //
+                //make selected unit undefined to avoid mistake
+                dispatch({
+                    type: 'selectedQuoteUnit',
+                    payload: undefined
+                })
+            } else {
                 console.log('revert version failed at VersionHistory.tsx')
             }
         }
