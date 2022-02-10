@@ -36,12 +36,12 @@ const UnitBudget = () => {
                     const roomItemCount = eachRoom?.categories?.map((category: any) => category?.qty).reduce((a: any, b: any) => a + b, 0)
                     const roomTotalPrice = eachRoom?.categories?.map((category: any) => category?.qty * category?.budget).reduce((a: any, b: any) => a + b, 0)
                     return <div className='mt-4'>
-                        <FurnitureInRoomHeader totalPrice={roomTotalPrice} editable={false} roomName={eachRoom.name} totalItems={roomItemCount} roomNumber={eachRoom.count} />
+                        <FurnitureInRoomHeader totalPrice={roomTotalPrice} editable={false} roomName={eachRoom.name} totalItems={roomItemCount} roomNumber={eachRoom.count ? eachRoom.count : 0} />
                         <CSSTransition in={showPerItemCost} timeout={300} unmountOnExit classNames='opacity-animation'>
                             <div>
                             {
                             eachRoom?.categories?.map(
-                                (eachCategory : any) => <FurnitureInRoomRowCard furnitureName={eachCategory.name} editable={false} buyMSRP={eachCategory.budget} rentMSRP={eachCategory.budget} number={eachCategory.qty} buy={!eachCategory.rentable} 
+                                (eachCategory : any) => <FurnitureInRoomRowCard furnitureName={eachCategory.name} editable={false} buyMSRP={eachCategory.budget} rentMSRP={eachCategory.budget} number={eachCategory.qty ? eachCategory.qty : 0} buy={!eachCategory.rentable} 
                                 showImages={showImage}
                                 />
                             )}

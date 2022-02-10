@@ -12,11 +12,11 @@ type EachProjectQuoteDesignRowProps = {
         title: string
         _id: string
         type: 'design' | 'project' | 'quote'
-        lastUpdated: string | undefined;
+        updatedAt: string | undefined;
         lastEditedBy: string | undefined;
         createdAt: string;
         createdBy: string;
-        totalUnits?: number | string,
+        unitCount?: number | string,
         projectAddress: null | {
             apt: string,
             street: string,
@@ -134,12 +134,12 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 thisProject.type === "quote" && "Quote Only"
             }
         </div>
-        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastUpdated ? thisProject.lastUpdated : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.updatedAt ? thisProject.updatedAt : 'Unknown'}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
         <div className='flex width-8-percent'>
-            <div className='my-auto'>{thisProject.totalUnits ? thisProject.totalUnits : 0}</div>
+            <div className='my-auto'>{thisProject.unitCount ? thisProject.unitCount : 0}</div>
             {(projectRole === ('owner') || (projectRole === 'admin')) && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
