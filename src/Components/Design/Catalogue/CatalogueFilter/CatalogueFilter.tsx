@@ -8,7 +8,9 @@ import CatalogueFilterSource from './CatalogueFilterSource';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
 import CatalogueFilterPrice from './CatalogueFilterPrice';
 import CatalogueFilterDistance from './CatalogueFilterDistance'
+
 import { TextInput } from '@fulhaus/react.ui.text-input';
+import {GoX} from 'react-icons/go'
 
 const CatalogueFilter = () => {
 
@@ -124,6 +126,10 @@ const CatalogueFilter = () => {
                     maxPrice={maxPrice}
                     setmaxPrice={setmaxPrice}
                 />
+                {
+                   (roomsAndStyleRoom?.length > 0 || roomsAndStyleCollections?.length > 0) && 
+                   <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Rooms & Styles</div></div>
+                }
                 <div onClick={()=>resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
                 {/*<CatalogueFilterDistance />*/}
             </div>
