@@ -8,8 +8,11 @@ import CatalogueFilterSource from './CatalogueFilterSource';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
 import CatalogueFilterPrice from './CatalogueFilterPrice';
 import CatalogueFilterDistance from './CatalogueFilterDistance'
+import { TextInput } from '@fulhaus/react.ui.text-input';
 
 const CatalogueFilter = () => {
+
+    const [searchKeyword, setsearchKeyword] = useState("");
     //Rooms and Styles states => CatalogueFilterRoomAndStyle.tsx
     const [showRoomsAndStyle, setshowRoomsAndStyle] = useState(false);
     const [roomsAndStyleRoom, setroomsAndStyleRoom] = useState<string[]>([]);
@@ -39,6 +42,26 @@ const CatalogueFilter = () => {
     const [minWeight, setminWeight] = useState(0);
     const [maxWeight, setmaxWeight] = useState(150);
 
+    //vendor => CatalogueFilterVendor.tsx
+    const [showVendor, setshowVendor] = useState(false);
+    const [vendorRegions, setvendorRegions] = useState<'All regions' | 'North America' | 'Europe'>('All regions');
+    
+    const resetFilter = () => {
+        setsearchKeyword("");
+        setroomsAndStyleRoom([]);
+        setroomsAndStyleCollections([]);
+        setminPrice(0);
+        setmaxPrice(3200);
+        setitemTypes([]);
+        setlengthUnit('inch');
+        setweightUnit('Pounds');
+        setW('');
+        setL('');
+        setH('');
+        setminWeight(0);
+        setmaxWeight(150);
+        setvendorRegions('All regions')
+    }
     return (
         <div className="w-full px-4 catalogue-filter">
             <div className="flex mt-4">
@@ -70,7 +93,12 @@ const CatalogueFilter = () => {
                     maxWeight={maxWeight}
                     setmaxWeight={setmaxWeight}
                 />
-                <CatalogueFilterVendor />
+                <CatalogueFilterVendor
+                showVendor={showVendor}
+                setshowVendor={setshowVendor}
+                vendorRegions={vendorRegions}
+                setvendorRegions={setvendorRegions}
+                />
                 <CatalogueFilterColor
                     showColorMenu={showColorMenu}
                     setshowColorMenu={setshowColorMenu}
@@ -79,6 +107,7 @@ const CatalogueFilter = () => {
                 />
             </div>
             <div className="flex mt-4 dropdown-component-overwrite">
+                {/*
                 <CatalogueFilterSource
                     showSourceAvailability={showSourceAvailability}
                     setshowSourceAvailability={setshowSourceAvailability}
@@ -86,7 +115,7 @@ const CatalogueFilter = () => {
                     setsource={setsource}
                     availability={availability}
                     setavailability={setavailability}
-                />
+                />*/}
                 <CatalogueFilterPrice
                     showPrice={showPrice}
                     setshowPrice={setshowPrice}
@@ -95,8 +124,10 @@ const CatalogueFilter = () => {
                     maxPrice={maxPrice}
                     setmaxPrice={setmaxPrice}
                 />
-                <CatalogueFilterDistance />
+                <div onClick={()=>resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
+                {/*<CatalogueFilterDistance />*/}
             </div>
+            <TextInput placeholder='Search for a product name, description, category or material' className='mt-4' variant='box' inputName="filter keyword" type='search' value={searchKeyword} onChange={(e) => setsearchKeyword((e.target as any).value)} />
         </div>
     )
 }

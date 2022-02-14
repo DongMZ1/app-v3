@@ -134,9 +134,9 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                 thisProject.type === "quote" && "Quote Only"
             }
         </div>
-        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.updatedAt ? thisProject.updatedAt : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.updatedAt ? thisProject.updatedAt?.slice(0, 10) : 'Unknown'}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></div>
-        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt?.slice(0, 10)}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject.unitCount ? thisProject.unitCount : 0}</div>
