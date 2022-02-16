@@ -9,24 +9,24 @@ import apiRequest from '../../../Service/apiRequest';
 const SaveProject = () => {
     const [showConfirmSave, setshowConfirmSave] = useState(false);
     const [projectSaveName, setprojectSaveName] = useState("");
-    const currentOrgID = useSelector((state:Tappstate) => state.currentOrgID);
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
     const saveProject = async () => {
-         const res = await apiRequest(
-             {
-                 url:`/api/fhapp-service/quote/${currentOrgID}/${quoteID}/save`,
-                 method:'PATCH',
-                 body:{
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/save`,
+                method: 'PATCH',
+                body: {
                     versionName: projectSaveName
-                 }
-             }
-         )
-         if(res?.success){
-             setprojectSaveName("");
-             setshowConfirmSave(false);
-         }else{
-             console.log('save version failed at SaveProject.tsx')
-         }
+                }
+            }
+        )
+        if (res?.success) {
+            setprojectSaveName("");
+            setshowConfirmSave(false);
+        } else {
+            console.log('save version failed at SaveProject.tsx')
+        }
     }
     return <>
         <SaveIcon className='my-auto mr-8 cursor-pointer' onClick={() => setshowConfirmSave(true)} />
@@ -35,7 +35,8 @@ const SaveProject = () => {
                 <div className='mx-2 text-xl text-center font-moret'>
                     What will you describle your current version?
                 </div>
-                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={projectSaveName} onChange={(e) => setprojectSaveName((e.target as any).value)} />
+                <div className='mt-4 text-sm font-ssp'>Maximum 50 characters</div>
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={projectSaveName} onChange={(e) => { if ((e.target as any).value?.length < 51) { setprojectSaveName((e.target as any).value) } }} />
                 <div className='flex my-2'>
                     <Button onClick={() => {
                         setshowConfirmSave(false);

@@ -13,6 +13,7 @@ export type Tappstate = {
    selectedProject: undefined | any;
    quoteDetail: undefined | any;
    selectedQuoteUnit: undefined | any;
+   filterCatalogue: any
 }
 const initialState = {
    projects: undefined,
@@ -26,6 +27,7 @@ const initialState = {
    selectedProject: undefined,
    quoteDetail: undefined,
    selectedQuoteUnit: undefined,
+   filterCatalogue: {}
 }
 const ReduxReducer: TReduxReducer = (state: Tappstate = initialState, action: any) => {
 	return {

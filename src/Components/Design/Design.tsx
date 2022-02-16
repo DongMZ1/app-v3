@@ -15,7 +15,7 @@ const Design = () => {
       <div className="flex justify-center py-2 border-b border-black border-solid tab-css-overwrite">
         <Tab initialActiveTabLabel='Catalogue' onChange={(label) => settabState(label)} tabs={tabs} />
       </div>
-      {tabState === 'Catalogue' && <Catalogue /> }
+      <Catalogue tabState={tabState} />
     </div>
   );
 };
