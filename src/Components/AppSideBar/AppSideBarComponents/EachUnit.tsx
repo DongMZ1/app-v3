@@ -50,8 +50,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         )
         if (res?.success) {
             const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                const unitIndex = draft.data.findIndex((each: any) => each?.unitID === eachUnit.unitID) + 1;
-                (draft?.data as any[])?.splice(unitIndex, 0, res?.duplicatedUnit);
+                (draft?.data as any[])?.push(res?.duplicatedUnit);
             })
             dispatch({
                 type: 'quoteDetail',
