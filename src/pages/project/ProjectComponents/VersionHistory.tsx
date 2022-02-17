@@ -16,7 +16,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
     const [selectedVersion, setselectedVersion] = useState<any>();
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
-    const selectedProject = useSelector((state:Tappstate) => state.selectedProject)
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const dispatch = useDispatch();
     useEffect(
         () => {
@@ -72,12 +72,12 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                 </div>
                 {
                     allversions?.map(eachVersion =>
-                        <div className='flex px-2 py-2 text-sm border-b border-black border-solid'>
+                        <div onClick={() => {
+                            setselectedVersion(eachVersion);
+                            setshowConfirm(true);
+                        }} className='flex px-2 py-2 text-sm border-b border-black border-solid cursor-pointer'>
                             <div className='my-auto'>{eachVersion.versionName}</div>
-                            <AiOutlineRight onClick={() => {
-                                setselectedVersion(eachVersion);
-                                setshowConfirm(true);
-                            }} className='my-auto ml-auto cursor-pointer' />
+                            <AiOutlineRight className='my-auto ml-auto cursor-pointer' />
                         </div>)
                 }
             </div>
