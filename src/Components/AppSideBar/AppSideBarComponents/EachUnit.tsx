@@ -168,6 +168,11 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 draftState.data = draftState?.data?.filter((each: any) => each?.unitID !== eachUnit.unitID)
             })
+            //not best approach, but seems like redux not detect arrays change inside deep copyed state 
+            dispatch({
+                type: 'quoteDetail',
+                payload: undefined
+            })
             dispatch({
                 type: 'quoteDetail',
                 payload: newQuoteDetail
