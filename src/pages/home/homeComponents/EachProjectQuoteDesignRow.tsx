@@ -25,6 +25,7 @@ type EachProjectQuoteDesignRowProps = {
             postalCode: string,
             country: string,
         }
+        quote?: any;
         budget: string;
         currency: string;
         quoteID: string;
@@ -95,7 +96,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const renameThisProject = async () => {
         dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type, thisProject.type === 'quote' ? thisProject.quoteID : undefined
+            renameProjectTitle, currentOrgID, thisProject._id, projects
         ))
         setshowRenameProject(false);
     }
