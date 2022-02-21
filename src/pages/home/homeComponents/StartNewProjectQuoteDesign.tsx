@@ -13,8 +13,9 @@ type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
     close: () => void
     duplicateProjInfo?: any
+    searchkeyWord: string
 }
-const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProps) => {
+const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: StartNewProjectProps) => {
     const [projectTitle, setprojectTitle] = useState(duplicateProjInfo?.title ? `${duplicateProjInfo.title} (Duplicated)` : '');
     //for create project
     const [currency, setcurrency] = useState(duplicateProjInfo?.currency ? duplicateProjInfo.currency : '');
@@ -81,7 +82,9 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                 )
                 if (projectRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : ''));
+                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                       title: searchkeyWord
+                    }));
                     close();
                 }
                 if (!projectRes?.success) {
@@ -102,7 +105,9 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                 )
                 if (quoteRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : ''));
+                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                        title: searchkeyWord
+                     }));
                     close();
                 }
                 if (!quoteRes?.success) {
@@ -123,7 +128,9 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                 )
                 if (designRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : ''));
+                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                        title: searchkeyWord
+                     }));
                     close();
                 }
                 if (!designRes?.success) {

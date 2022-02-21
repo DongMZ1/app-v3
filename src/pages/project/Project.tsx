@@ -32,7 +32,6 @@ const Project = () => {
     const [showConfirmDeleteProjectModal, setshowConfirmDeleteProjectModal] = useState(false);
     const [hoverProjectTitle, sethoverProjectTitle] = useState(false);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
-    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const [projectTitle, setprojectTitle] = useState(selectedProject?.title)
@@ -42,15 +41,11 @@ const Project = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        //if it is a project, then get the quote based on projectID
-        if (selectedProject?.type === 'project' && currentOrgID) {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
+        //if it is a project or quote-only, then get the quote based on projectID
+        if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject?.quote?._id}))
         }
-        //get quote detail when initail rendering
-        if (selectedProject?.quoteID && currentOrgID && selectedProject?.type === 'quote') {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
-        }
-    }, [selectedProject])
+    }, [JSON.stringify(selectedProject)])
 
     /*
     useEffect(() => {
@@ -119,7 +114,7 @@ const Project = () => {
     const renameProject = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/${selectedProject?.type}/${currentOrgID}/${selectedProject.type === 'quote' ? selectedProject.quoteID : selectedProject?._id}`,
+                url: `/api/fhapp-service/project/${currentOrgID}/${selectedProject._id}`,
                 method: 'PATCH',
                 body: {
                     title: projectTitle

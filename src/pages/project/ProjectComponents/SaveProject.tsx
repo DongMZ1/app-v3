@@ -10,7 +10,7 @@ const SaveProject = () => {
     const [showConfirmSave, setshowConfirmSave] = useState(false);
     const [projectSaveName, setprojectSaveName] = useState("");
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const saveProject = async () => {
         const res = await apiRequest(
             {
@@ -21,6 +21,7 @@ const SaveProject = () => {
                 }
             }
         )
+        
         if (res?.success) {
             setprojectSaveName("");
             setshowConfirmSave(false);

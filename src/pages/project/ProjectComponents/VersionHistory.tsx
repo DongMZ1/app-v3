@@ -15,14 +15,15 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
     const [allversions, setallversions] = useState<any[]>();
     const [selectedVersion, setselectedVersion] = useState<any>();
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const quoteRefID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteRefID;
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const dispatch = useDispatch();
     useEffect(
         () => {
             const getAllVersions = async () => {
                 const res = await apiRequest({
-                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/versions`,
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteRefID}/versions`,
                     method: 'GET'
                 })
                 if (res?.success) {
@@ -45,11 +46,9 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
             if (res?.success) {
                 setshowConfirm(false);
                 //need some backend improvement in the future, fetch quote again, not best approach
-                if (selectedProject?.type === 'project' && currentOrgID) {
-                    dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
-                }
-                if (selectedProject?.quoteID && currentOrgID && selectedProject?.type === 'quote') {
-                    dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
+                //if it is a project or quote-only, then get the quote based on projectID
+                if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
+                    dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject?.quote?._id }))
                 }
                 //
                 //make selected unit undefined to avoid mistake

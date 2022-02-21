@@ -130,6 +130,7 @@ const Home = () => {
       show={showStartNewProjectQuotoDesign}>
       <StartNewProjectQuotoDesign
         type={StartNewProjectQuoteDesignType}
+        searchkeyWord={searchkeyWord}
         duplicateProjInfo={ProjectQuoteDesignInfoNeedDuplicate}
         close={() => {
           setshowStartNewProjectQuotoDesign(false)

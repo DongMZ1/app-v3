@@ -20,7 +20,7 @@ const ProjectFooter = () => {
             const getQuoteTotal = async () => {
                 const res = await apiRequest(
                     {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail.quoteID}/total`,
+                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/total`,
                         method: 'GET'
                     }
                 )
@@ -41,7 +41,7 @@ const ProjectFooter = () => {
             const getUnitTotal = async () => {
                 const res = await apiRequest(
                     {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail.quoteID}/${selectedQuoteUnit.unitID}/total`,
+                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/${selectedQuoteUnit.unitID}/total`,
                         method: 'GET'
                     }
                 )

@@ -20,7 +20,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [notes, setnotes] = useState(eachUnit?.notes);
     const [unitCount, setunitCount] = useState(eachUnit?.count);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)

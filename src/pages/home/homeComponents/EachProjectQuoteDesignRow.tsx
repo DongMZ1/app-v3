@@ -28,7 +28,6 @@ type EachProjectQuoteDesignRowProps = {
         quote?: any;
         budget: string;
         currency: string;
-        quoteID: string;
     },
     showInvitePeople?: () => void,
     setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
