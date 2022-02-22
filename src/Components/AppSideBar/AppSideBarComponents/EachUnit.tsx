@@ -20,7 +20,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [notes, setnotes] = useState(eachUnit?.notes);
     const [unitCount, setunitCount] = useState(eachUnit?.count);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
@@ -167,6 +167,11 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             }
             const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
                 draftState.data = draftState?.data?.filter((each: any) => each?.unitID !== eachUnit.unitID)
+            })
+            //not best approach, but seems like redux not detect arrays change inside deep copyed state 
+            dispatch({
+                type: 'quoteDetail',
+                payload: undefined
             })
             dispatch({
                 type: 'quoteDetail',

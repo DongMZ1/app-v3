@@ -10,17 +10,22 @@ import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an
 import { ImCross } from 'react-icons/im'
 import { Tooltip } from '@fulhaus/react.ui.tooltip'
 import { TextInput } from '@fulhaus/react.ui.text-input';
+import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input';
+import { Button } from '@fulhaus/react.ui.button';
+import {RiDeleteBin6Fill} from 'react-icons/ri'
 const QuoteSummaryPurchase = () => {
     const [editable, seteditable] = useState(false);
     const [showCalendar, setshowCalendar] = useState(false);
     const [discount, setdiscount] = useState('15');
     const [securityDeposit, setsecurityDeposit] = useState('10');
     const [shipping, setshipping] = useState('10000')
+    const [paymentTerms, setpaymentTerms] = useState<any[]>([]);
+    const [paymentTermsUnit, setpaymentTermsUnit] = useState('%');
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     if (selectedQuoteUnit) {
         return <UnitBudget />
     }
-    return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto text-sm quote-summary-rental font-ssp'>
+    return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto text-sm quote-summary-purchase font-ssp'>
         <div className='flex'>
             <div className='my-auto text-2xl font-moret'>Payment Terms</div>
             {
@@ -46,6 +51,55 @@ const QuoteSummaryPurchase = () => {
                     </div>
                     <ImCross className='my-auto cursor-pointer' onClick={() => seteditable(false)} />
                 </>
+            }
+        </div>
+        <div className='w-full p-4 mt-4 border border-black border-solid'>
+            {editable &&
+                < DropdownListInput wrapperClassName='w-4rem-important' initialValue={paymentTermsUnit} onSelect={(v) => setpaymentTermsUnit(v)} options={['%', '$']} />
+            }
+            {
+                paymentTerms?.map(
+                    (eachTerm, key) => <div className='flex w-full py-2 border-b border-black border-solid '>
+                        <div className='my-auto mr-4'>{key + 1}.</div>
+                        {editable ?
+                            <TextInput inputName='payment term name' variant='box' value={eachTerm?.name} onChange={
+                                (e) => {
+                                    let newPaymentTerms = [...paymentTerms]
+                                    newPaymentTerms[key].name = (e.target as any).value;
+                                    setpaymentTerms(newPaymentTerms);
+                                }
+                            } />
+                            :
+                            <div className='my-auto'>{eachTerm?.name}</div>
+                        }
+                        {
+                            editable ? <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{paymentTermsUnit}</span>} inputName='payment item amount' variant='box' value={eachTerm?.amount} onChange={(e) => {
+                                let newPaymentTerms = [...paymentTerms]
+                                newPaymentTerms[key].amount = (e.target as any).valueAsNumber;
+                                setpaymentTerms(newPaymentTerms);
+                            }} />
+                                :
+                                <div className='my-auto ml-auto mr-4'>
+                                    {eachTerm?.amount} {paymentTermsUnit}
+                                </div>
+                        }
+                        {
+                             editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
+                                let newPaymentTerms = [...paymentTerms];
+                                newPaymentTerms.splice(key, 1);
+                                setpaymentTerms(newPaymentTerms);
+                             }} />
+                        }
+                    </div>
+                )
+            }
+            {
+                editable && <Button className='mt-2' variant='primary' onClick={() => setpaymentTerms(
+                    state => [...state, {
+                        name: "",
+                        amount: null
+                    }]
+                )} >Add new Service Cost</Button>
             }
         </div>
         <div className='mt-10 text-2xl font-moret'>Deal Summary</div>
@@ -82,8 +136,8 @@ const QuoteSummaryPurchase = () => {
             </div>
             <Tooltip text='' iconColor='blue' />
             {editable ? <TextInput prefix={<span>%</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={securityDeposit} onChange={
-                    (e) => setsecurityDeposit((e.target as any).value)
-                } /> :  <div className='ml-auto'>$15981.00</div>}
+                (e) => setsecurityDeposit((e.target as any).value)
+            } /> : <div className='ml-auto'>$15981.00</div>}
         </div>
         <div className='flex mt-4'>
             <div className='my-auto mr-1'>
@@ -91,8 +145,8 @@ const QuoteSummaryPurchase = () => {
             </div>
             <Tooltip text='' iconColor='blue' />
             {editable ? <TextInput prefix={<span>$</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={shipping} onChange={
-                    (e) => setshipping((e.target as any).value)
-                } /> :  <div className='ml-auto'>${shipping}</div>}
+                (e) => setshipping((e.target as any).value)
+            } /> : <div className='ml-auto'>${shipping}</div>}
         </div>
         <div className='flex mt-4'>
             <div className='mr-1'>
@@ -112,9 +166,9 @@ const QuoteSummaryPurchase = () => {
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
         <div className='px-4 py-2 mt-4 mb-8 bg-white border border-black border-solid'>
-              <div>· Units include sofa bed in place of sofa</div>
-              <div>· Unbundled services: Assembly, Site Delivery, Install, Disposal and Photography</div>
-              <div>· Updated delivery probability due to Covid: 5 weeks</div>
+            <div>· Units include sofa bed in place of sofa</div>
+            <div>· Unbundled services: Assembly, Site Delivery, Install, Disposal and Photography</div>
+            <div>· Updated delivery probability due to Covid: 5 weeks</div>
         </div>
     </div>
 }

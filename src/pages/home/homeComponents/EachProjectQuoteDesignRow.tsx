@@ -25,9 +25,9 @@ type EachProjectQuoteDesignRowProps = {
             postalCode: string,
             country: string,
         }
+        quote?: any;
         budget: string;
         currency: string;
-        quoteID: string;
     },
     showInvitePeople?: () => void,
     setSelectedProjectToInvite?: (object: { name: string, id: string, userRole: string | undefined }) => void
@@ -95,7 +95,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const renameThisProject = async () => {
         dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects, thisProject.type, thisProject.type === 'quote' ? thisProject.quoteID : undefined
+            renameProjectTitle, currentOrgID, thisProject._id, projects
         ))
         setshowRenameProject(false);
     }
@@ -135,9 +135,9 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
             }
         </div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.updatedAt ? thisProject.updatedAt?.slice(0, 10) : 'Unknown'}</div></div>
-        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy : 'Unknown'}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.lastEditedBy ? thisProject.lastEditedBy.length > 22 ? thisProject.lastEditedBy.slice(0, 22) + '...' : thisProject.lastEditedBy : 'Unknown'}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt?.slice(0, 10)}</div></div>
-        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy}</div></div>
+        <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy ? thisProject?.createdBy?.length > 22 ? thisProject?.createdBy?.slice(0, 22) + '...' : thisProject?.createdBy : thisProject?.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject.unitCount ? thisProject.unitCount : 0}</div>
             {(projectRole === ('owner') || (projectRole === 'admin')) && projectRole &&
