@@ -6,11 +6,14 @@ import { Button } from '@fulhaus/react.ui.button';
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Tappstate } from '../../../redux/reducers';
 import apiRequest from '../../../Service/apiRequest';
+import produce from 'immer'
 const SaveProject = () => {
     const [showConfirmSave, setshowConfirmSave] = useState(false);
     const [projectSaveName, setprojectSaveName] = useState("");
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
+    const dispatch = useDispatch();
     const saveProject = async () => {
         const res = await apiRequest(
             {
@@ -21,8 +24,17 @@ const SaveProject = () => {
                 }
             }
         )
+        
         if (res?.success) {
             setprojectSaveName("");
+            const newSelectedProject = produce(selectedProject, (draft: any) => {
+                draft.quote._id = res.newQuote_id
+            })
+            localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
+            dispatch({
+                type:'selectedProject',
+                payload:newSelectedProject
+            })
             setshowConfirmSave(false);
         } else {
             console.log('save version failed at SaveProject.tsx')

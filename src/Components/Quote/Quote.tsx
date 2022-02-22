@@ -28,7 +28,7 @@ const Quote = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
-    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
     const allRentable = !(selectedQuoteUnit?.rooms as any[])?.some(eachRoom => (eachRoom?.categories as any[])?.some(eachCategory => !eachCategory.rentable))

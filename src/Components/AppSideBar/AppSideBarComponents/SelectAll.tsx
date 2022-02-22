@@ -34,7 +34,7 @@ const SelectAll = () => {
     const dispatch = useDispatch();
     const unitList = useSelector((state: Tappstate) => state.quoteDetail)?.data;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const unitOptionList = quoteDetail?.data?.map((each: any) => each.name);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
@@ -195,13 +195,9 @@ const SelectAll = () => {
     }
 
     const SyncRemoteQuote = () => {
-        //if it is a project, then get the quote based on projectID
-        if (selectedProject?.type === 'project' && currentOrgID) {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject._id, idType: 'project' }))
-        }
-        //get quote detail when initail rendering
-        if (selectedProject?.quoteID && currentOrgID && selectedProject?.type === 'quote') {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectOrQuoteID: selectedProject.quoteID, idType: 'quoteID' }))
+        //if it is a project or quote-only, then get the quote based on projectID
+        if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject?.quote?._id}))
         }
         dispatch({
             type: 'selectedQuoteUnit',

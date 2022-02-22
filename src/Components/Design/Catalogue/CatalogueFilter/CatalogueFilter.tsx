@@ -159,7 +159,7 @@ const CatalogueFilter = () => {
                 <div onClick={()=>resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
                 {/*<CatalogueFilterDistance />*/}
             </div>
-            <TextInput placeholder='Search for a product name, description, category or material' className='mt-4' variant='box' inputName="filter keyword" type='search' value={searchKeyword} onChange={(e) => setsearchKeyword((e.target as any).value)} />
+            <TextInput placeholder='Search for a product name, description, category or material' className='mt-4 position-initial-important' variant='box' inputName="filter keyword" type='search' value={searchKeyword} onChange={(e) => setsearchKeyword((e.target as any).value)} />
         </div>
     )
 }

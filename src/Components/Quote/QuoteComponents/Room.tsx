@@ -47,7 +47,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
-    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const dispatch = useDispatch();
@@ -351,7 +351,7 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories 
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
-    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?.quoteID;
+    const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const dispatch = useDispatch();
 

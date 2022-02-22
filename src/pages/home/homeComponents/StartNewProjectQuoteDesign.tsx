@@ -13,8 +13,9 @@ type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
     close: () => void
     duplicateProjInfo?: any
+    searchkeyWord: string
 }
-const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProps) => {
+const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: StartNewProjectProps) => {
     const [projectTitle, setprojectTitle] = useState(duplicateProjInfo?.title ? `${duplicateProjInfo.title} (Duplicated)` : '');
     //for create project
     const [currency, setcurrency] = useState(duplicateProjInfo?.currency ? duplicateProjInfo.currency : '');
@@ -58,6 +59,7 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                         url: `/api/fhapp-service/project/${organizationID}`,
                         method: 'POST',
                         body: {
+                            type: 'project',
                             title: projectTitle,
                             currency: currency,
                             budget: parseInt(budget),
@@ -80,7 +82,9 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
                 )
                 if (projectRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : '')); 
+                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                       title: searchkeyWord
+                    }));
                     close();
                 }
                 if (!projectRes?.success) {
@@ -90,17 +94,20 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
             case 'quote':
                 const quoteRes = await apiRequest(
                     {
-                        url:'/api/fhapp-service/quote',
-                        method:'POST',
-                        body:{
+                        url: `/api/fhapp-service/project/${organizationID}`,
+                        method: 'POST',
+                        body: {
                             title: projectTitle,
                             organization: organizationID,
+                            type: 'quote'
                         }
                     }
                 )
                 if (quoteRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : ''));
+                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                        title: searchkeyWord
+                     }));
                     close();
                 }
                 if (!quoteRes?.success) {
@@ -110,17 +117,20 @@ const StartNewProject = ({ type, close, duplicateProjInfo }: StartNewProjectProp
             case 'design':
                 const designRes = await apiRequest(
                     {
-                        url:'/api/fhapp-service/design',
-                        method:'POST',
-                        body:{
+                        url: `/api/fhapp-service/project/${organizationID}`,
+                        method: 'POST',
+                        body: {
                             title: projectTitle,
+                            type: 'design',
                             organization: organizationID,
                         }
                     }
                 )
                 if (designRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : ''));
+                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                        title: searchkeyWord
+                     }));
                     close();
                 }
                 if (!designRes?.success) {

@@ -11,12 +11,13 @@ const OrganizationSelection = ({clearHomePageScrollState}:OrganizationSelectionP
     const userRoleOrganizations = useSelector((state: Tappstate) => state?.userRole)?.organizations;
     const allOrganizations = useSelector((state: Tappstate) => state?.allOrganizations);
     const currentOrgID = useSelector((state:Tappstate) => state.currentOrgID);
+    const homePageSearchKeyword = useSelector((state: Tappstate) => state.homePageSearchKeyword);
     const dispatch = useDispatch();
     useEffect(
         () => {
             //if there is currentOrgID, which means user exit from project page so we keep the organization same as before
           if(currentOrgID){
-            dispatch(fetchProject(currentOrgID));
+            dispatch(fetchProject(currentOrgID, {title: homePageSearchKeyword?homePageSearchKeyword : undefined}));
             dispatch({type:'currentOrgID', payload: currentOrgID});
             const organizationRole = userRoleOrganizations?.filter(each => each.organization?._id === currentOrgID)[0]?.role[0];
             dispatch(

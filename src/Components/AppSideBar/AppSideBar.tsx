@@ -57,7 +57,7 @@ const AppSideBar = () => {
         for (let eachUnit of allUnitsNames) {
             const res = await apiRequest(
                 {
-                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?.quoteID}`,
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
                     body: {
                         unitName: eachUnit.name,
                         packageID: eachUnit.id
