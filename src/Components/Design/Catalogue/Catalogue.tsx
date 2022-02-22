@@ -6,7 +6,7 @@ type CatalogueProps = {
 }
 const Catalogue = ({tabState}:CatalogueProps) => {
     return <div className={`${tabState !== "Catalogue" && 'catalogue-display-none-important'} flex w-full h-full catalogue`}>
-          <div className="w-1/2 border-r border-black border-solid">
+          <div className="w-1/2 overflow-y-auto border-r border-black border-solid">
               <CatalogueFilter />
           </div>
           <div className="w-1/2"></div>

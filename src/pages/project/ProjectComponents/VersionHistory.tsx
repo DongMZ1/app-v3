@@ -40,7 +40,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/revert`,
                 method: 'PATCH',
                 body: {
-                    versionID: selectedVersion._id
+                    revert_to_quote_id: selectedVersion._id
                 }
             })
             if (res?.success) {
