@@ -41,21 +41,21 @@ const Quote = () => {
     )
     useEffect(
         () => {
-            //if item options is not provided
-            const getRoomItemOptionsList = async () => {
-                const res = await apiRequest({
-                    url: '/api/products-service/categories',
-                    method: 'GET'
-                })
-                if (res?.success) {
-                    setroomItemOptionsList(res.data.map((each: any) => { return { name: each.name, id: each._id } }))
-                }
-            }
             if (!roomItemOptionsList) {
                 getRoomItemOptionsList();
             }
         }, []
     )
+
+    const getRoomItemOptionsList = async () => {
+        const res = await apiRequest({
+            url: '/api/products-service/categories',
+            method: 'GET'
+        })
+        if (res?.success) {
+            setroomItemOptionsList(res.data.map((each: any) => { return { name: each.name, id: each._id } }))
+        }
+    }
 
     //this is for room options and add room package
     const getRoomOptionList = async () => {
