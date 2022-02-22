@@ -186,7 +186,7 @@ const Project = () => {
                     {userRole !== 'viewer' && userRole !== 'editor' &&
                         <>
                             <ShareAlt onClick={() => setshowInvitePeople(true)} className='my-auto mr-8 cursor-pointer' />
-                            {selectedProject.type !== 'design' &&
+                            {selectedProject?.type !== 'design' &&
                                 <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
                             }
                         </>}

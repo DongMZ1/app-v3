@@ -1,5 +1,5 @@
 import "./Home.scss";
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import debounce from 'lodash.debounce'
 import { useSelector, useDispatch } from 'react-redux'
 import useIsFirstRender from "../../Hooks/useIsFirstRender";
@@ -22,9 +22,10 @@ import StartNewProjectQuotoDesign from "./homeComponents/StartNewProjectQuoteDes
 import OrganizationSelection from './homeComponents/OrganizationSelection'
 import { fetchMoreProject, fetchProject } from "../../redux/Actions";
 const Home = () => {
+  const homePageSearchKeyword = useSelector((state: Tappstate) => state.homePageSearchKeyword);
   const [StartNewProjectQuoteDesignType, setStartNewProjectQuoteDesignType] = useState<'design' | 'quote' | 'project'>('project')
   const [showStartNewProjectQuotoDesign, setshowStartNewProjectQuotoDesign] = useState(false);
-  const [searchkeyWord, setsearchKeyWord] = useState("");
+  const [searchkeyWord, setsearchKeyWord] = useState(homePageSearchKeyword ? homePageSearchKeyword : '');
   const [showInvitePeople, setshowInvitePeople] = useState(false);
   const [showConfirmRemoveThisSeason, setshowConfirmRemoveThisSeason] = useState(false);
   const [SelectedProjectToInvite, setSelectedProjectToInvite] = useState<{ name: string, id: string, userRole: string | undefined }>();
@@ -58,6 +59,11 @@ const Home = () => {
       dispatch(fetchProject(state.currentOrgID, {
         title: searchkeyWord
       }))
+      //add search keyword to redux store, once user go to next page then go back, it will not get lost
+      dispatch({
+        type: 'homePageSearchKeyword',
+        payload: searchkeyWord
+      })
       setpageCount(0);
     }
   }
@@ -179,7 +185,7 @@ const Home = () => {
                   onSelect={v => chooseProjectQuoteDesignStart(v)}
                   listWrapperClassName="width-8-rem"
                   wrapperClassName='border-none cursor-pointer' labelClassName='hidden'
-                  suffixIcon={<div className='flex px-2 py-2 text-sm font-semibold text-white bg-black font-ssp'><div className='my-auto'>Start a new project</div></div>}
+                  suffixIcon={<div className='flex px-2 py-2 text-sm font-semibold text-white bg-black font-ssp'><div className='my-auto'>Start something new</div></div>}
                   listWrapperFloatDirection='left' disabled={true}
                   options={currentOrgName === 'Fulhaus' ? ['Project', 'Quote Only', 'Design Only'] : ['Project']} />
               </div>
