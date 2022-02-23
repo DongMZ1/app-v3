@@ -1,5 +1,6 @@
 import "./Home.scss";
 import React, { useState, useEffect, useRef } from "react";
+import {APP_ACCOUNTS_URL } from '../../Constant/url.constant'
 import debounce from 'lodash.debounce'
 import { useSelector, useDispatch } from 'react-redux'
 import useIsFirstRender from "../../Hooks/useIsFirstRender";
@@ -89,9 +90,7 @@ const Home = () => {
         method: 'POST'
       }
     )
-    if (!res?.success) {
-      console.log(res?.message)
-    }
+    window.location.assign(`${APP_ACCOUNTS_URL}/login?redirectURL=${window.location.href}`);
   }
 
   const chooseProjectQuoteDesignStart = (v: string) => {
