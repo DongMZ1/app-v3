@@ -85,7 +85,7 @@ const Home = () => {
   const logout = async () => {
     const res = await apiRequest(
       {
-        url: '/account/user/logout',
+        url: '/auth/logout',
         method: 'POST'
       }
     )
