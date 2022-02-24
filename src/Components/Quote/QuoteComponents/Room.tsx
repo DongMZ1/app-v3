@@ -345,7 +345,7 @@ type CategoryType = {
     eachCategory: any,
     eachRoom: any,
     updateQuoteDetail: (newselectedQuoteUnit: any) => void,
-    updateCategories: DebouncedFunc<(categories: any) => Promise<void>>,
+    updateCategories: (categories: any) => Promise<void> | undefined,
 }
 const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories }: CategoryType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
