@@ -58,26 +58,48 @@ const QuoteSummaryRental = () => {
         </div>
         <div className='flex mt-4'>
             <div className='flex w-1/4 ml-auto mr-16'><div className='m-auto'>Year 1</div></div>
-            <div className='flex w-1/4 mr-4'><div className='m-auto'>Year 2</div></div>
+            <div className='flex w-1/4 mr-4'><div className='m-auto'>Year 2(40% off)</div></div>
         </div>
         <div className='flex'>
             <div className='w-1/4 h-2 ml-auto mr-16 border-t border-l border-r border-black border-dashed'></div>
             <div className='w-1/4 h-2 mr-4 border-t border-l border-r border-black border-dashed'></div>
         </div>
-        <div className='flex mt-4'>
-            <div className='w-1/3'>Unit Type</div>
-            <div className='w-1/12'>Qty</div>
+        <div className='flex mt-4 mb-1'>
+            <div className='w-4/12'>Unit Type</div>
+            <div className='w-2/12'>Qty</div>
+            <div className='width-12-percent'>Per Month</div>
+            <div className='w-1/12'>Total</div>
+            <div className='ml-auto width-12-percent'>Per Month</div>
+            <div className='w-1/12'>Total</div>
+        </div>
+        {
+            quoteDetail?.data.map((eachUnit: any) => <div className='flex pt-1 pb-1 border-t border-black border-solid'>
+                <div className='w-4/12'>{eachUnit?.name}</div>
+                <div className='w-2/12'>{eachUnit?.count}</div>
+                <div className='width-12-percent'>${eachUnit?.rentalPricePerMonthYear1}</div>
+                <div className='w-1/12'>Total</div>
+                <div className='ml-auto width-12-percent'>${eachUnit?.rentalPricePerMonthYear2}</div>
+                <div className='w-1/12'>Total</div>
+            </div>)
+        }
+        <div className='flex pt-2 border-t border-black border-solid'>
+            <div className='w-4/12'>Totals</div>
+            <div className='w-2/12'>{quoteDetail?.unitCount ? quoteDetail.unitCount : 0}</div>
+            <div className='width-12-percent'></div>
+            <div className='w-1/12'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1 : 0}</div>
+            <div className='ml-auto width-12-percent'></div>
+            <div className='w-1/12'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
         </div>
         <div className='w-full px-4 py-2 mt-4 text-sm border border-black border-solid font-ssp'>
             <div className='flex'>
                 <div className='mr-1'>Buy Back After Year 1</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>$159481.00</div>
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1 : 0}</div>
             </div>
             <div className='flex mt-2'>
                 <div className='mr-1'>Buy Back After Year 2</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>$6666.00</div>
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
             </div>
         </div>
         <div className='mt-10 text-2xl font-moret'>Deal Summary</div>
