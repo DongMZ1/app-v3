@@ -17,6 +17,7 @@ const QuoteSummaryRental = () => {
     const [securityDeposit, setsecurityDeposit] = useState('10');
     const [shipping, setshipping] = useState('10000')
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     if (selectedQuoteUnit) {
         return <UnitBudget />
     }
@@ -54,6 +55,18 @@ const QuoteSummaryRental = () => {
             <div className='flex w-1/3 text-base font-ssp'><div className='mx-auto'>Average Per Unit</div></div>
             <div className='flex w-1/3 text-base font-ssp'><div className='mx-auto'>Year 1, $666/mo</div></div>
             <div className='flex w-1/3 text-base font-ssp'><div className='mx-auto'>Year 2, $200/mo</div></div>
+        </div>
+        <div className='flex mt-4'>
+            <div className='flex w-1/4 ml-auto mr-16'><div className='m-auto'>Year 1</div></div>
+            <div className='flex w-1/4 mr-4'><div className='m-auto'>Year 2</div></div>
+        </div>
+        <div className='flex'>
+            <div className='w-1/4 h-2 ml-auto mr-16 border-t border-l border-r border-black border-dashed'></div>
+            <div className='w-1/4 h-2 mr-4 border-t border-l border-r border-black border-dashed'></div>
+        </div>
+        <div className='flex mt-4'>
+            <div className='w-1/3'>Unit Type</div>
+            <div className='w-1/12'>Qty</div>
         </div>
         <div className='w-full px-4 py-2 mt-4 text-sm border border-black border-solid font-ssp'>
             <div className='flex'>
@@ -101,8 +114,8 @@ const QuoteSummaryRental = () => {
             </div>
             <Tooltip text='' iconColor='blue' />
             {editable ? <TextInput prefix={<span>%</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={securityDeposit} onChange={
-                    (e) => setsecurityDeposit((e.target as any).value)
-                } /> :  <div className='ml-auto'>$15981.00</div>}
+                (e) => setsecurityDeposit((e.target as any).value)
+            } /> : <div className='ml-auto'>$15981.00</div>}
         </div>
         <div className='flex mt-4'>
             <div className='my-auto mr-1'>
@@ -110,8 +123,8 @@ const QuoteSummaryRental = () => {
             </div>
             <Tooltip text='' iconColor='blue' />
             {editable ? <TextInput prefix={<span>$</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={shipping} onChange={
-                    (e) => setshipping((e.target as any).value)
-                } /> :  <div className='ml-auto'>${shipping}</div>}
+                (e) => setshipping((e.target as any).value)
+            } /> : <div className='ml-auto'>${shipping}</div>}
         </div>
         <div className='flex mt-4'>
             <div className='mr-1'>
@@ -131,9 +144,9 @@ const QuoteSummaryRental = () => {
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
         <div className='px-4 py-2 mt-4 mb-8 bg-white border border-black border-solid'>
-              <div>· Units include sofa bed in place of sofa</div>
-              <div>· Unbundled services: Assembly, Site Delivery, Install, Disposal and Photography</div>
-              <div>· Updated delivery probability due to Covid: 5 weeks</div>
+            <div>· Units include sofa bed in place of sofa</div>
+            <div>· Unbundled services: Assembly, Site Delivery, Install, Disposal and Photography</div>
+            <div>· Updated delivery probability due to Covid: 5 weeks</div>
         </div>
     </div>
 }

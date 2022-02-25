@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import apiRequest from '../../../Service/apiRequest';
 import debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
+import { getQuoteDetail } from '../../../redux/Actions';
 const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
@@ -70,6 +71,10 @@ const ProjectFooter = () => {
                     type:'selectedQuoteUnit',
                     payload: undefined
                 })
+                dispatch(getQuoteDetail({
+                    organizationID: currentOrgID? currentOrgID : '',
+                    quoteID: quoteDetail?._id
+                }))
                 history.push('/quote-summary-rental')}} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
         </>}
         {
