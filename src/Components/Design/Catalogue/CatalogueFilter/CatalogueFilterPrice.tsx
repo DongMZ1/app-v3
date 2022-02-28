@@ -26,7 +26,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPricePr
         setshowPrice(false);
     }
     return  <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
-                <div className='absolute z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
+                <div className='absolute right-0 z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
                     <div className='text-sm font-semibold font-ssp'>Price</div>
                     <div className='relative w-full mt-4'>
                         <input

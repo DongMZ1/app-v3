@@ -8,6 +8,8 @@ import CatalogueFilterRoomAndStyle from './CatalogueFilterRoomAndStyle';
 import CatelogueFilterItemType from './CatelogueFilterItemType';
 import { CatalogueFilterColorPageOne, CatalogueFilterColorPageTwo } from './CatalogueFilterColor';
 import { CSSTransition } from 'react-transition-group'
+import useDebounce from '../../../../Hooks/useDebounce';
+import useIsFirstRender from '../../../../Hooks/useIsFirstRender';
 import apiRequest from '../../../../Service/apiRequest';
 import CatalogueFilterSource from './CatalogueFilterSource';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
@@ -24,6 +26,8 @@ const CatalogueFilter = () => {
     const [searchKeyword, setsearchKeyword] = useState("");
     //Rooms and Styles states => CatalogueFilterRoomAndStyle.tsx
     const [showRoomsAndStyle, setshowRoomsAndStyle] = useState(false);
+    const debouncedSearchKeyword = useDebounce(searchKeyword, 1000);
+    const isFirstRendering = useIsFirstRender();
     //Source & Availability state => CatalogueFilterSource.tsx
     const [showSourceAvailability, setshowSourceAvailability] = useState(false);
     const [source, setsource] = useState<string[]>([]);
@@ -59,29 +63,42 @@ const CatalogueFilter = () => {
 
         const fetchCatagories = async () => {
             const res = await apiRequest({
-                url:'/api/products-service/categories',
-                method:'GET'
+                url: '/api/products-service/categories',
+                method: 'GET'
             })
-            if(res?.success){
+            if (res?.success) {
                 setcatagoriesOption(res?.data)
             }
         }
 
         const fetchVendors = async () => {
-             const res = await apiRequest({
-                 url:'/api/products-service/vendors',
-                 method:'GET'
-             })
-             if(res?.success){
+            const res = await apiRequest({
+                url: '/api/products-service/vendors',
+                method: 'GET'
+            })
+            if (res?.success) {
 
-             }
+            }
         }
         fetchTags();
         fetchCatagories();
         fetchVendors();
     }, [])
 
+    useEffect(() => {
+        if (!isFirstRendering) {
+            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                draft.nameOrSKU = debouncedSearchKeyword;
+            })
+            dispatch({
+                type: 'filterCatalogue',
+                payload: newFilterCatalogue
+            })
+        }
+    }, [debouncedSearchKeyword])
+
     const resetFilter = () => {
+        setsearchKeyword('');
         dispatch({
             type: 'filterCatalogue',
             payload: {}
@@ -135,6 +152,15 @@ const CatalogueFilter = () => {
                         />
                     </CSSTransition>
                 </div>
+                <div className='relative w-1/6 mr-4'>
+                    <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
+                    <CSSTransition in={showPrice} timeout={300} unmountOnExit classNames='opacity-animation'>
+                        <CatalogueFilterPrice
+                            showPrice={showPrice}
+                            setshowPrice={setshowPrice}
+                        />
+                    </CSSTransition>
+                </div>
             </div>
             <div className="flex mt-4 dropdown-component-overwrite">
                 {/*
@@ -146,15 +172,6 @@ const CatalogueFilter = () => {
                     availability={availability}
                     setavailability={setavailability}
                 />*/}
-                <div className='w-1/6 mr-4'>
-                    <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
-                    <CSSTransition in={showPrice} timeout={300} unmountOnExit classNames='opacity-animation'>
-                        <CatalogueFilterPrice
-                            showPrice={showPrice}
-                            setshowPrice={setshowPrice}
-                        />
-                    </CSSTransition>
-                </div>
                 {
                     (filterCatalogue?.roomsAndStyleRoom?.length > 0 || filterCatalogue?.roomsAndStyleCollections?.length > 0) &&
                     <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
@@ -190,6 +207,50 @@ const CatalogueFilter = () => {
                             })
                         }}
                     ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Item type</div></div>
+                }
+                {
+                    (filterCatalogue?.color) &&
+                    <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
+                        onClick={() => {
+                            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                                draft.color = undefined;
+                            })
+                            dispatch({
+                                type: 'filterCatalogue',
+                                payload: newFilterCatalogue
+                            })
+                        }}
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>{filterCatalogue?.color}</div></div>
+                }
+                {
+                    (filterCatalogue?.minPrice || filterCatalogue?.maxPrice) &&
+                    <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
+                        onClick={() => {
+                            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                                draft.minPrice = undefined;
+                                draft.maxPrice = undefined;
+                            })
+                            dispatch({
+                                type: 'filterCatalogue',
+                                payload: newFilterCatalogue
+                            })
+                        }}
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Price</div></div>
+                }
+                {
+                    (filterCatalogue?.nameOrSKU) &&
+                    <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
+                        onClick={() => {
+                            setsearchKeyword("");
+                            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                                draft.nameOrSKU = undefined;
+                            })
+                            dispatch({
+                                type: 'filterCatalogue',
+                                payload: newFilterCatalogue
+                            })
+                        }}
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Search</div></div>
                 }
                 <div onClick={() => resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
                 {/*<CatalogueFilterDistance />*/}
