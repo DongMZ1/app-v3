@@ -1,21 +1,15 @@
+import {useState} from 'react'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler'
 import { Button } from '@fulhaus/react.ui.button'
-import { BsChevronDown } from 'react-icons/bs'
-import { CSSTransition } from 'react-transition-group'
 
 type CatalogueFilterPriceProps = {
     showPrice: boolean,
     setshowPrice: React.Dispatch<React.SetStateAction<boolean>>,
-    minPrice: number,
-    setminPrice: React.Dispatch<React.SetStateAction<number>>,
-    maxPrice: number,
-    setmaxPrice: React.Dispatch<React.SetStateAction<number>>
 }
-const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, maxPrice, setmaxPrice }: CatalogueFilterPriceProps) => {
-    return <div className='w-1/6 mr-4'>
-        <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
-        <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
-            <CSSTransition in={showPrice} timeout={300} unmountOnExit classNames='opacity-animation'>
+const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPriceProps) => {
+    const [minPrice, setminPrice] = useState(0);
+    const [maxPrice, setmaxPrice] = useState(3200);
+    return  <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
                 <div className='absolute z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
                     <div className='text-sm font-semibold font-ssp'>Price</div>
                     <div className='relative w-full mt-4'>
@@ -65,10 +59,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, 
                         <Button disabled={minPrice > maxPrice} className='w-24'>Apply</Button>
                     </div>
                 </div>
-            </CSSTransition>
         </ClickOutsideAnElementHandler>
-
-    </div>
 }
 
 export default CatalogueFilterPrice;
