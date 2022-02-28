@@ -8,6 +8,7 @@ import CatalogueFilterRoomAndStyle from './CatalogueFilterRoomAndStyle';
 import CatelogueFilterItemType from './CatelogueFilterItemType';
 import { CatalogueFilterColorPageOne, CatalogueFilterColorPageTwo } from './CatalogueFilterColor';
 import { CSSTransition } from 'react-transition-group'
+import apiRequest from '../../../../Service/apiRequest';
 import CatalogueFilterSource from './CatalogueFilterSource';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
 import CatalogueFilterPrice from './CatalogueFilterPrice';
@@ -41,6 +42,22 @@ const CatalogueFilter = () => {
     //vendor => CatalogueFilterVendor.tsx
     const [showVendor, setshowVendor] = useState(false);
 
+    //tags options
+    const [tags, settags] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchTags = async () => {
+            const res = await apiRequest({
+                url: '/api/products-service/tags',
+                method: 'GET'
+            })
+            if (res.success) {
+                settags(res.data.tags);
+            }
+        }
+        fetchTags();
+    }, [])
+
     const resetFilter = () => {
         dispatch({
             type: 'filterCatalogue',
@@ -53,7 +70,7 @@ const CatalogueFilter = () => {
                 <div className='relative w-32 mr-4' >
                     <div onClick={() => setshowRoomsAndStyle(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Rooms & Styles</div><BsChevronDown className='my-auto' /></div>
                     <CSSTransition in={showRoomsAndStyle} timeout={300} unmountOnExit classNames='opacity-animation'>
-                        <CatalogueFilterRoomAndStyle setshowRoomsAndStyle={setshowRoomsAndStyle} />
+                        <CatalogueFilterRoomAndStyle tags={tags} setshowRoomsAndStyle={setshowRoomsAndStyle} />
                     </CSSTransition>
                 </div>
                 <div className='w-24 mr-4'>
@@ -63,7 +80,7 @@ const CatalogueFilter = () => {
                     </div>
                     <CSSTransition in={showItemType} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatelogueFilterItemType
-                            setshowItemType={setshowItemType}
+                            setshowItemType={setshowItemType} tags={tags}
                         />
                     </CSSTransition>
                 </div>
@@ -129,6 +146,27 @@ const CatalogueFilter = () => {
                             })
                         }}
                     ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Rooms & Styles</div></div>
+                }
+                {
+                    (filterCatalogue?.hausInBoxOptions?.length > 0 || filterCatalogue?.lengthUnit || filterCatalogue?.weightUnit || filterCatalogue?.W || filterCatalogue?.L || filterCatalogue?.H || filterCatalogue?.minWeight || filterCatalogue?.maxWeight) &&
+                    <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
+                        onClick={() => {
+                            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                                draft.hausInBoxOptions = undefined;
+                                draft.lengthUnit = undefined;
+                                draft.weightUnit = undefined;
+                                draft.W = undefined;
+                                draft.L = undefined;
+                                draft.H = undefined;
+                                draft.minWeight = undefined;
+                                draft.maxWeight = undefined;
+                            })
+                            dispatch({
+                                type: 'filterCatalogue',
+                                payload: newFilterCatalogue
+                            })
+                        }}
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Item type</div></div>
                 }
                 <div onClick={() => resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
                 {/*<CatalogueFilterDistance />*/}

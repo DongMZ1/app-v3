@@ -5,29 +5,31 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { Tappstate } from '../../../../redux/reducers'
-import {useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import produce from 'immer'
 type CatelogueFilterItemTypeProps = {
     setshowItemType: React.Dispatch<React.SetStateAction<boolean>>
+    tags: any[]
 }
-const itemTypeOptions = ['Dining Chair', 'Office Chair', 'End Table', 'Office Table', 'Console Table', 'Couch', 'Loveseat']
 const CatelogueFilterItemType = ({
-    setshowItemType
+    setshowItemType,
+    tags
 }: CatelogueFilterItemTypeProps) => {
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
+    const hausInBoxOptions = tags?.filter(each => each?.category === 'Haus-in-a-Box')
     const dispatch = useDispatch();
-    const [itemTypes, setitemTypes] = useState<string[]>([]);
-    const [lengthUnit, setlengthUnit] = useState('inch');
-    const [weightUnit, setweightUnit] = useState('Pounds');
-    const [W, setW] = useState('');
-    const [L, setL] = useState('');
-    const [H, setH] = useState('');
-    const [minWeight, setminWeight] = useState(0);
-    const [maxWeight, setmaxWeight] = useState(150);
+    const [hausInBoxTypes, sethausInBoxTypes] = useState<any[]>(filterCatalogue?.hausInBoxOptions ? filterCatalogue?.hausInBoxOptions : []);
+    const [lengthUnit, setlengthUnit] = useState(filterCatalogue?.lengthUnit ? filterCatalogue?.lengthUnit : 'in');
+    const [weightUnit, setweightUnit] = useState(filterCatalogue?.weightUnit ? filterCatalogue?.weightUnit : 'lbs');
+    const [W, setW] = useState(filterCatalogue?.W ? filterCatalogue?.W : '');
+    const [L, setL] = useState(filterCatalogue?.L ? filterCatalogue?.L : '');
+    const [H, setH] = useState(filterCatalogue?.H ? filterCatalogue?.H : '');
+    const [minWeight, setminWeight] = useState(filterCatalogue?.minWeight ? filterCatalogue?.minWeight : 0);
+    const [maxWeight, setmaxWeight] = useState(filterCatalogue?.maxWeight ? filterCatalogue?.maxWeight : 150);
 
     const apply = () => {
         const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
-            draft.itemTypes = itemTypes;
+            draft.hausInBoxOptions = hausInBoxTypes;
             draft.lengthUnit = lengthUnit;
             draft.weightUnit = weightUnit;
             draft.W = W;
@@ -47,27 +49,27 @@ const CatelogueFilterItemType = ({
             <div className='flex w-full'>
                 <div className='w-2/5 '>
                     <div className='text-sm font-semibold font-ssp'>Item Type</div>
-                    {itemTypeOptions.every(each => itemTypes.includes(each)) ?
-                        <div onClick={() => setitemTypes([])} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
+                    {hausInBoxOptions.every(each => hausInBoxTypes.includes(each)) ?
+                        <div onClick={() => sethausInBoxTypes([])} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
                             Unselect All
                         </div>
                         :
-                        <div onClick={() => setitemTypes(itemTypeOptions)} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
+                        <div onClick={() => sethausInBoxTypes(hausInBoxOptions)} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
                             Select All
                         </div>}
-                    {itemTypeOptions.map(eachType => <Checkbox label={eachType} className='mt-4 text-sm text-secondary' checked={itemTypes.includes(eachType)} onChange={(checked) => {
+                    {hausInBoxOptions.map(eachType => <Checkbox label={eachType?.name} className='mt-4 text-sm text-secondary' checked={hausInBoxTypes.includes(eachType)} onChange={(checked) => {
                         if (checked) {
-                            setitemTypes(state => state.concat(eachType))
+                            sethausInBoxTypes(state => state.concat(eachType))
                         } else {
-                            setitemTypes(state => state.filter(each => each !== eachType))
+                            sethausInBoxTypes(state => state.filter(each => each !== eachType))
                         }
                     }} />)}
                 </div>
                 <div className='w-3/5 '>
                     <div className='text-sm font-semibold font-ssp'>Dimension</div>
                     <div className='flex mt-4'>
-                        <DropdownListInput listWrapperClassName='z-99-important' wrapperClassName='mr-4' initialValue={lengthUnit} options={['inch', 'cm']} />
-                        <DropdownListInput listWrapperClassName='z-99-important' wrapperClassName='' initialValue={weightUnit} options={['Pounds', 'kg']} />
+                        <DropdownListInput listWrapperClassName='z-99-important' onSelect={(v) => setlengthUnit(v)} wrapperClassName='mr-4' initialValue={lengthUnit} options={["in", "cm", "mm", "ft", "m"]} />
+                        <DropdownListInput onSelect={(v) => setweightUnit(v)} listWrapperClassName='z-99-important' wrapperClassName='' initialValue={weightUnit} options={["lbs", "kg", "gr", "oz"]} />
                     </div>
                     <div className='flex justify-between mt-4'>
                         <div className='w-16 text-input-width-80p'>
@@ -148,7 +150,7 @@ const CatelogueFilterItemType = ({
                                 }}
                                 inputName='widthInput'
                                 type='number'
-                                suffix={<small>Lbs</small>}
+                                suffix={<small>{weightUnit}</small>}
                             />
                         </div>
                         <div className='w-1/2 text-input-width-100p'>
@@ -161,7 +163,7 @@ const CatelogueFilterItemType = ({
                                 }}
                                 inputName='widthInput'
                                 type='number'
-                                suffix={<small>Lbs</small>}
+                                suffix={<small>{weightUnit}</small>}
                             />
                         </div>
                     </div>

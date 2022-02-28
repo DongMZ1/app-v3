@@ -15,11 +15,25 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
     const dispatch = useDispatch();
     const currency = useSelector((state: Tappstate) => state.quoteDetail?.currency);
     const products = useSelector((state: Tappstate) => state.products);
+    const scrollRef = useRef<any>();
     useEffect(() => {
         fetchProducts();
-    }, [currency])
-    const fetchMoreProducts = debouncePromise(async () => {
+    }, [currency]);
 
+    const fetchMoreProducts = debouncePromise(async () => {
+          if((scrollRef.current?.clientHeight + scrollRef.current?.scrollTop + 5) > scrollRef.current?.scrollHeight){
+            const res = await apiRequest({
+                url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=${calaloguePage}&limit=20`,
+                method: 'GET'
+            })
+            if(res?.success){
+                dispatch({
+                    type: 'products',
+                    payload: [...products ,...res?.data?.products] 
+                })
+                setcalaloguePage(state => state + 1)
+            }
+          }
     }, 1000, { leading: true });
     const fetchProducts = async () => {
         const res = await apiRequest({
@@ -37,10 +51,10 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
     return <div className={`${tabState !== "Catalogue" && 'catalogue-display-none-important'} flex h-full catalogue`}>
         <div className="flex flex-col w-1/2 overflow-hidden border-r border-black border-solid">
             <CatalogueFilter />
-            <div className='flex flex-wrap h-full overflow-auto'>
-            {
-                products?.map(each => <Product eachProduct={each} />)
-            }
+            <div ref={scrollRef} className='flex flex-wrap h-full overflow-auto' onScroll={()=>fetchMoreProducts()}>
+                {
+                    products?.map(each => <Product eachProduct={each} />)
+                }
             </div>
         </div>
         <div className="w-1/2"></div>
