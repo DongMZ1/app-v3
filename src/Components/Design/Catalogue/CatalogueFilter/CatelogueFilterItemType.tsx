@@ -9,16 +9,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import produce from 'immer'
 type CatelogueFilterItemTypeProps = {
     setshowItemType: React.Dispatch<React.SetStateAction<boolean>>
-    tags: any[]
+    catagoriesOption: any[]
 }
 const CatelogueFilterItemType = ({
     setshowItemType,
-    tags
+    catagoriesOption
 }: CatelogueFilterItemTypeProps) => {
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
-    const hausInBoxOptions = tags?.filter(each => each?.category === 'Haus-in-a-Box')
     const dispatch = useDispatch();
-    const [hausInBoxTypes, sethausInBoxTypes] = useState<any[]>(filterCatalogue?.hausInBoxOptions ? filterCatalogue?.hausInBoxOptions : []);
+    const [itemTypes, setitemTypes] = useState<any[]>(filterCatalogue?.itemTypes ? filterCatalogue?.itemTypes : []);
     const [lengthUnit, setlengthUnit] = useState(filterCatalogue?.lengthUnit ? filterCatalogue?.lengthUnit : 'in');
     const [weightUnit, setweightUnit] = useState(filterCatalogue?.weightUnit ? filterCatalogue?.weightUnit : 'lbs');
     const [W, setW] = useState(filterCatalogue?.W ? filterCatalogue?.W : '');
@@ -29,7 +28,7 @@ const CatelogueFilterItemType = ({
 
     const apply = () => {
         const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
-            draft.hausInBoxOptions = hausInBoxTypes;
+            draft.itemTypes = itemTypes;
             draft.lengthUnit = lengthUnit;
             draft.weightUnit = weightUnit;
             draft.W = W;
@@ -45,25 +44,27 @@ const CatelogueFilterItemType = ({
         setshowItemType(false)
     }
     return <ClickOutsideAnElementHandler onClickedOutside={() => setshowItemType(false)}>
-        <div className='absolute z-50 py-6 pl-4 pr-8 border border-black border-solid w-400px bg-cream'>
+        <div className='absolute z-50 py-6 pl-4 pr-8 border border-black border-solid w-500px bg-cream'>
             <div className='flex w-full'>
-                <div className='w-2/5 '>
+                <div className='w-2/5 mr-4'>
                     <div className='text-sm font-semibold font-ssp'>Item Type</div>
-                    {hausInBoxOptions.every(each => hausInBoxTypes.includes(each)) ?
-                        <div onClick={() => sethausInBoxTypes([])} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
+                    {catagoriesOption.every(each => itemTypes.includes(each)) ?
+                        <div onClick={() => setitemTypes([])} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
                             Unselect All
                         </div>
                         :
-                        <div onClick={() => sethausInBoxTypes(hausInBoxOptions)} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
+                        <div onClick={() => setitemTypes(catagoriesOption)} className='mt-2 text-sm cursor-pointer select-none font-ssp text-link w-max'>
                             Select All
                         </div>}
-                    {hausInBoxOptions.map(eachType => <Checkbox label={eachType?.name} className='mt-4 text-sm text-secondary' checked={hausInBoxTypes.includes(eachType)} onChange={(checked) => {
-                        if (checked) {
-                            sethausInBoxTypes(state => state.concat(eachType))
-                        } else {
-                            sethausInBoxTypes(state => state.filter(each => each !== eachType))
-                        }
-                    }} />)}
+                    <div className='overflow-auto max-h-60'>
+                        {catagoriesOption.map(eachType => <Checkbox label={eachType?.name} className='mt-4 text-sm text-secondary' checked={itemTypes.includes(eachType)} onChange={(checked) => {
+                            if (checked) {
+                                setitemTypes(state => state.concat(eachType))
+                            } else {
+                                setitemTypes(state => state.filter(each => each !== eachType))
+                            }
+                        }} />)}
+                    </div>
                 </div>
                 <div className='w-3/5 '>
                     <div className='text-sm font-semibold font-ssp'>Dimension</div>

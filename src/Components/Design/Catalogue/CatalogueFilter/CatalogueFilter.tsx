@@ -44,18 +44,41 @@ const CatalogueFilter = () => {
 
     //tags options
     const [tags, settags] = useState<any[]>([]);
-
+    const [catagoriesOption, setcatagoriesOption] = useState<any[]>([]);
+    const [vendorOptions, setvendorOptions] = useState<any[]>([]);
     useEffect(() => {
         const fetchTags = async () => {
             const res = await apiRequest({
                 url: '/api/products-service/tags',
                 method: 'GET'
             })
-            if (res.success) {
+            if (res?.success) {
                 settags(res.data.tags);
             }
         }
+
+        const fetchCatagories = async () => {
+            const res = await apiRequest({
+                url:'/api/products-service/categories',
+                method:'GET'
+            })
+            if(res?.success){
+                setcatagoriesOption(res?.data)
+            }
+        }
+
+        const fetchVendors = async () => {
+             const res = await apiRequest({
+                 url:'/api/products-service/vendors',
+                 method:'GET'
+             })
+             if(res?.success){
+
+             }
+        }
         fetchTags();
+        fetchCatagories();
+        fetchVendors();
     }, [])
 
     const resetFilter = () => {
@@ -80,7 +103,7 @@ const CatalogueFilter = () => {
                     </div>
                     <CSSTransition in={showItemType} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatelogueFilterItemType
-                            setshowItemType={setshowItemType} tags={tags}
+                            setshowItemType={setshowItemType} catagoriesOption={catagoriesOption}
                         />
                     </CSSTransition>
                 </div>
@@ -148,11 +171,11 @@ const CatalogueFilter = () => {
                     ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Rooms & Styles</div></div>
                 }
                 {
-                    (filterCatalogue?.hausInBoxOptions?.length > 0 || filterCatalogue?.lengthUnit || filterCatalogue?.weightUnit || filterCatalogue?.W || filterCatalogue?.L || filterCatalogue?.H || filterCatalogue?.minWeight || filterCatalogue?.maxWeight) &&
+                    (filterCatalogue?.itemTypes?.length > 0 || filterCatalogue?.lengthUnit || filterCatalogue?.weightUnit || filterCatalogue?.W || filterCatalogue?.L || filterCatalogue?.H || filterCatalogue?.minWeight || filterCatalogue?.maxWeight) &&
                     <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
                         onClick={() => {
                             const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
-                                draft.hausInBoxOptions = undefined;
+                                draft.itemTypes = undefined;
                                 draft.lengthUnit = undefined;
                                 draft.weightUnit = undefined;
                                 draft.W = undefined;
