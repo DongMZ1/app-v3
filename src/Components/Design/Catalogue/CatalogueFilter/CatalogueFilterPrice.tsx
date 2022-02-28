@@ -1,14 +1,30 @@
 import {useState} from 'react'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler'
 import { Button } from '@fulhaus/react.ui.button'
-
+import { Tappstate } from '../../../../redux/reducers'
+import {useSelector, useDispatch} from 'react-redux'
+import produce from 'immer'
 type CatalogueFilterPriceProps = {
     showPrice: boolean,
     setshowPrice: React.Dispatch<React.SetStateAction<boolean>>,
 }
 const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPriceProps) => {
+    const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
+    const dispatch = useDispatch();
     const [minPrice, setminPrice] = useState(0);
     const [maxPrice, setmaxPrice] = useState(3200);
+
+    const apply = () => {
+        const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+            draft.minPrice = minPrice;
+            draft.maxPrice = maxPrice;
+        })
+        dispatch({
+            type: 'filterCatalogue',
+            payload: newFilterCatalogue
+        });
+        setshowPrice(false);
+    }
     return  <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
                 <div className='absolute z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
                     <div className='text-sm font-semibold font-ssp'>Price</div>
@@ -56,7 +72,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPricePr
                     </div>
                     <div className='flex mt-8 mb-2'>
                         <Button onClick={() => setshowPrice(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
-                        <Button disabled={minPrice > maxPrice} className='w-24'>Apply</Button>
+                        <Button disabled={minPrice > maxPrice} onClick={() => apply()} className='w-24'>Apply</Button>
                     </div>
                 </div>
         </ClickOutsideAnElementHandler>

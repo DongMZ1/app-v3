@@ -19,6 +19,7 @@
     "@fulhaus/react.ui.group-unit": "0.0.12",
     "@fulhaus/react.ui.loader": "0.0.11",
     "@fulhaus/react.ui.popup": "0.0.13",
+    "@fulhaus/react.ui.product-card-app": "0.0.1",
     "@fulhaus/react.ui.radio": "0.0.5",
     "@fulhaus/react.ui.responsive-link": "0.0.17",
     "@fulhaus/react.ui.tab": "0.0.10",

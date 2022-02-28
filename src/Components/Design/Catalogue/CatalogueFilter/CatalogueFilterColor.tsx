@@ -33,7 +33,6 @@ export const CatalogueFilterColorPageOne = ({ showColorMenu, setshowColorMenu, s
             </div>
         </div>
     </ClickOutsideAnElementHandler>
-
 }
 
 export const CatalogueFilterColorPageTwo = ({ showColorMenu, setshowColorMenu, showOtherColorMenu, setshowOtherColorMenu }: CatalogueFilterColorProps) => {

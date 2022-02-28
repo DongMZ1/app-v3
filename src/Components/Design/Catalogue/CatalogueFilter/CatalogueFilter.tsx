@@ -30,8 +30,6 @@ const CatalogueFilter = () => {
 
     //Price state
     const [showPrice, setshowPrice] = useState(false);
-    const [minPrice, setminPrice] = useState(0);
-    const [maxPrice, setmaxPrice] = useState(3200);
 
     //Colour => CatalogueFilterColor.tsx
     const [showColorMenu, setshowColorMenu] = useState(false);
@@ -48,10 +46,6 @@ const CatalogueFilter = () => {
             type: 'filterCatalogue',
             payload: {}
         })
-    }
-
-    const fetchItems = () => {
-
     }
     return (
         <div className="w-full px-4 catalogue-filter">
@@ -118,10 +112,6 @@ const CatalogueFilter = () => {
                         <CatalogueFilterPrice
                             showPrice={showPrice}
                             setshowPrice={setshowPrice}
-                            minPrice={minPrice}
-                            setminPrice={setminPrice}
-                            maxPrice={maxPrice}
-                            setmaxPrice={setmaxPrice}
                         />
                     </CSSTransition>
                 </div>
