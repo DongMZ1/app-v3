@@ -35,9 +35,9 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
         }
     }
     return <div className={`${tabState !== "Catalogue" && 'catalogue-display-none-important'} flex h-full catalogue`}>
-        <div className="w-1/2 overflow-auto border-r border-black border-solid">
+        <div className="flex flex-col w-1/2 overflow-hidden border-r border-black border-solid">
             <CatalogueFilter />
-            <div className='flex flex-wrap overflow-auto h-2/3'>
+            <div className='flex flex-wrap h-full overflow-auto'>
             {
                 products?.map(each => <Product eachProduct={each} />)
             }

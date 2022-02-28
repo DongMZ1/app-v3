@@ -11,8 +11,8 @@ const tabs = [
 const Design = () => {
   const [tabState, settabState] = useState("Catalogue");
   return (
-    <div className="flex flex-col w-full design">
-      <div className="flex justify-center py-2 border-b border-black border-solid h-14 tab-css-overwrite">
+    <div className="w-full design">
+      <div className="flex justify-center py-2 border-b border-black border-solid justify-items-center h-14 tab-css-overwrite">
         <Tab initialActiveTabLabel='Catalogue' onChange={(label) => settabState(label)} tabs={tabs} />
       </div>
       <Catalogue tabState={tabState} />
