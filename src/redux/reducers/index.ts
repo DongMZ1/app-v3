@@ -15,6 +15,7 @@ export type Tappstate = {
   quoteDetail: undefined | any;
   selectedQuoteUnit: undefined | any;
   filterCatalogue: any;
+  products: any[];
 };
 const initialState = {
   homePageSearchKeyword: "",
@@ -30,6 +31,7 @@ const initialState = {
   quoteDetail: undefined,
   selectedQuoteUnit: undefined,
   filterCatalogue: {},
+  products: []
 };
 const ReduxReducer: TReduxReducer = (
   state: Tappstate = initialState,
