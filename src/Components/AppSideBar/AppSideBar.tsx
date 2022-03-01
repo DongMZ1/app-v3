@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './AppSideBar.scss'
 import SelectAll from './AppSideBarComponents/SelectAll';
-import EachUnit from './AppSideBarComponents/EachUnit';
+import EachUnitQuote from './AppSideBarComponents/EachUnitQuote';
 import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
@@ -155,7 +155,7 @@ const AppSideBar = () => {
                 </div>
                 <div className='w-full h-full px-4 overflow-y-auto'>
                     {
-                        quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
+                        quoteDetail?.data?.map((each: any) => <EachUnitQuote getUnitPackages={getUnitPackages} eachUnit={each} />)
                     }
                 </div>
             </div>

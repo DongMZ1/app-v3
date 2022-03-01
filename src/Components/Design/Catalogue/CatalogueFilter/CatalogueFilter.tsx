@@ -77,7 +77,7 @@ const CatalogueFilter = () => {
                 method: 'GET'
             })
             if (res?.success) {
-
+                setvendorOptions(res.data);
             }
         }
         fetchTags();
