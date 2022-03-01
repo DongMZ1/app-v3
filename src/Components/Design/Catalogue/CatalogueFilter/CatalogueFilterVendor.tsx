@@ -58,7 +58,7 @@ const CatalogueFilterVendor = ({ showVendor, setshowVendor, vendorOptions }: Cat
             </div>
             <TextInput className='mt-4 display-block-important' variant='box' type='search' inputName='vendor search' value={vendorKeyword} onChange={(e) => setvendorKeyword((e.target as any).value)} />
             <div className='overflow-auto max-h-60'>
-                {Array.from(new Set([...vendorOptions, ...selectedVendors])).filter((each: any) => each?._id?.includes(vendorKeyword)).map(eachVendor => <Checkbox label={eachVendor?._id} className='mt-4 text-sm text-secondary' checked={selectedVendors.includes(eachVendor)} onChange={(checked) => {
+                {Array.from(new Set([...vendorOptions, ...selectedVendors])).filter((each: any) => each?._id?.includes(vendorKeyword)).map(eachVendor => <Checkbox label={eachVendor?.name} className='mt-4 text-sm text-secondary' checked={selectedVendors.includes(eachVendor)} onChange={(checked) => {
                     if (checked) {
                         setselectedVendors(state => state.concat(eachVendor))
                     } else {

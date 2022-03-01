@@ -18,6 +18,7 @@ export type Tappstate = {
   products: any[];
   selectedProductDetail: any;
   showselectedProductDetail: boolean;
+  draggedProduct: any;
 };
 const initialState = {
   homePageSearchKeyword: "",
@@ -36,6 +37,7 @@ const initialState = {
   products: [],
   selectedProductDetail: undefined,
   showselectedProductDetail: false,
+  draggedProduct: undefined,
 };
 const ReduxReducer: TReduxReducer = (
   state: Tappstate = initialState,
