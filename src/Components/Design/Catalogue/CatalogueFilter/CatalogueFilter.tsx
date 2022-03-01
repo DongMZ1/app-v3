@@ -128,6 +128,7 @@ const CatalogueFilter = () => {
                     <div onClick={() => setshowVendor(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Vendors</div><BsChevronDown className='my-auto' /></div>
                     <CSSTransition in={showVendor} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatalogueFilterVendor
+                            vendorOptions={vendorOptions}
                             showVendor={showVendor}
                             setshowVendor={setshowVendor}
                         />
@@ -221,6 +222,20 @@ const CatalogueFilter = () => {
                             })
                         }}
                     ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>{filterCatalogue?.color}</div></div>
+                }
+                {
+                    (filterCatalogue?.vendors?.length > 0) && 
+                    <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
+                        onClick={() => {
+                            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                                draft.vendors = undefined;
+                            })
+                            dispatch({
+                                type: 'filterCatalogue',
+                                payload: newFilterCatalogue
+                            })
+                        }}
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Vendors</div></div>
                 }
                 {
                     (filterCatalogue?.minPrice || filterCatalogue?.maxPrice) &&

@@ -81,6 +81,7 @@ const CatelogueFilterItemType = ({
                                 inputName='widthInput'
                                 type='number'
                                 prefix={<small>W</small>}
+                                suffix={<small>{lengthUnit}</small>}
                             />
                         </div>
                         <div className='w-16 text-input-width-80p'>
@@ -91,6 +92,7 @@ const CatelogueFilterItemType = ({
                                 inputName='widthInput'
                                 type='number'
                                 prefix={<small>L</small>}
+                                suffix={<small>{lengthUnit}</small>}
                             />
                         </div>
                         <div className='w-16 text-input-width-80p'>
@@ -101,6 +103,7 @@ const CatelogueFilterItemType = ({
                                 inputName='widthInput'
                                 type='number'
                                 prefix={<small>H</small>}
+                                suffix={<small>{lengthUnit}</small>}
                             />
                         </div>
                     </div>
