@@ -27,8 +27,11 @@ const Product = ({ eachProduct }: ProductProp) => {
         })}}>
             <AppV3FurnitureCard
                 imageURLs={eachProduct?.imageURLs}
-                inStock
+                inStock={eachProduct?.stockQty > 0}
+                stocks={eachProduct?.stockQty}
                 informationCallback={() => openProductDetail()}
+                hoverTag='Currently Out Of Stock'
+                lastChecked={eachProduct?.stockDate?.slice(0, 10)}
             />
         </div>
         <div className='ml-1.5 text-xs font-ssp font-semibold'>${eachProduct?.retailPrice}</div>

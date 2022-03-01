@@ -30,7 +30,7 @@ export const CatalogueFilterColorPageOne = ({ showColorMenu, setshowColorMenu, s
     return <ClickOutsideAnElementHandler onClickedOutside={() => setshowColorMenu(false)}>
         <div className='absolute z-50 px-4 bg-white border border-black border-solid w-200px'>
             {
-                ['red', 'blue', 'orange', 'black', 'grey'].map(each =>
+                ['red', 'blue', 'orange', 'black', 'Grey'].map(each =>
                     <div className='flex px-1 py-2 cursor-pointer' onClick={() => applyColor(each)}>
                         <div style={{ borderRadius: '50%', backgroundColor: each }} className='w-2 h-2 my-auto mr-4'></div>
                         <div className='my-auto text-sm font-ssp text-secondary'>{each}</div>

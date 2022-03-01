@@ -24,7 +24,7 @@ const CatelogueFilterItemType = ({
     const [L, setL] = useState(filterCatalogue?.L ? filterCatalogue?.L : '');
     const [H, setH] = useState(filterCatalogue?.H ? filterCatalogue?.H : '');
     const [minWeight, setminWeight] = useState(filterCatalogue?.minWeight ? filterCatalogue?.minWeight : 0);
-    const [maxWeight, setmaxWeight] = useState(filterCatalogue?.maxWeight ? filterCatalogue?.maxWeight : 150);
+    const [maxWeight, setmaxWeight] = useState(filterCatalogue?.maxWeight ? filterCatalogue?.maxWeight : 10000);
 
     const apply = () => {
         const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
@@ -119,7 +119,7 @@ const CatelogueFilterItemType = ({
                                 }
                             }
                             min="0"
-                            max="150"
+                            max="10000"
                             className="absolute w-full min-price-slider"
                         />
                         <input
@@ -131,13 +131,13 @@ const CatelogueFilterItemType = ({
                                 }
                             }}
                             min="0"
-                            max="150"
+                            max="10000"
                             className="absolute w-full max-price-slider"
                         />
                     </div>
                     <div className='relative flex w-full mt-6'>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${minWeight * 100 / (150 + minWeight / 10)}%` }}>{minWeight}</div>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${maxWeight * 100 / (150 + maxWeight / 10)}%` }}>{maxWeight}</div>
+                        <div className='absolute text-sm font-ssp' style={{ left: `${minWeight * 100 / (10000 + minWeight / 10)}%` }}>{minWeight}</div>
+                        <div className='absolute text-sm font-ssp' style={{ left: `${maxWeight * 100 / (10000 + maxWeight / 10)}%` }}>{maxWeight}</div>
                     </div>
                     <div className='flex mt-8'>
                         <div className='w-1/2 text-xs font-ssp'>Minimum</div>
@@ -149,7 +149,7 @@ const CatelogueFilterItemType = ({
                                 variant='box'
                                 value={minWeight?.toString()}
                                 onChange={(v) => {
-                                    if (((v.target as any).value <= 150 && (v.target as any).value < maxWeight) || !(v.target as any).value)
+                                    if (((v.target as any).value <= 10000 && (v.target as any).value < maxWeight) || !(v.target as any).value)
                                         setminWeight((v.target as any).value)
                                 }}
                                 inputName='widthInput'
@@ -162,7 +162,7 @@ const CatelogueFilterItemType = ({
                                 variant='box'
                                 value={maxWeight?.toString()}
                                 onChange={(v) => {
-                                    if (((v.target as any).value <= 150 && (v.target as any).value > minWeight) || !(v.target as any).value)
+                                    if (((v.target as any).value <= 10000 && (v.target as any).value > minWeight) || !(v.target as any).value)
                                         setmaxWeight((v.target as any).value)
                                 }}
                                 inputName='widthInput'
