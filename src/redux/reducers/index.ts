@@ -2,6 +2,7 @@ import { Reducer } from "redux";
 type TReduxReducer = Reducer;
 
 export type Tappstate = {
+  homePageLoader: boolean;
   homePageSearchKeyword: string;
   projects: undefined | any[];
   userInfo: any;
@@ -21,6 +22,7 @@ export type Tappstate = {
   draggedProduct: any;
 };
 const initialState = {
+  homePageLoader: false,
   homePageSearchKeyword: "",
   projects: undefined,
   userInfo: undefined,
