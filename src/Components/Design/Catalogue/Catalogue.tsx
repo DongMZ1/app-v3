@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Tappstate } from '../../../redux/reducers';
 import SelectedProductDetail from './CatalogueComponents/SelectedProductDetail';
 import Product from '../Catalogue/CatalogueComponents/Product'
+import { Loader } from "@fulhaus/react.ui.loader";
 type CatalogueProps = {
     tabState: string
 }
@@ -18,6 +19,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
     const products = useSelector((state: Tappstate) => state.products);
     const scrollRef = useRef<any>();
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
+    const [loading, setloading] = useState(false);
     useEffect(() => {
         if (quoteDetail) {
             fetchProducts();
@@ -26,6 +28,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
 
     const fetchMoreProducts = debouncePromise(async () => {
         if ((scrollRef.current?.clientHeight + scrollRef.current?.scrollTop + 5) > scrollRef.current?.scrollHeight) {
+            setloading(true);
             const res = await apiRequest({
                 url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=${calaloguePage}&limit=20${filterCatalogue?.minPrice !== undefined ? `&priceMin=${Number(filterCatalogue?.minPrice)}` : ``}${filterCatalogue?.maxPrice ? `&priceMax=${Number(filterCatalogue?.maxPrice)}` : ''}${filterCatalogue?.nameOrSKU ? `&nameOrSKU=${filterCatalogue?.nameOrSKU}` : ''}${filterCatalogue?.color ? `&colorName=${filterCatalogue?.color}` : ''}${filterCatalogue?.maxWeight ? `&weight=${filterCatalogue?.maxWeight}` : ''}${filterCatalogue?.weightUnit ? `&weightUnit=${filterCatalogue?.weightUnit}` : ''}${filterCatalogue?.lengthUnit ? `&dimensionUnit=${filterCatalogue?.lengthUnit}` : ''}${filterCatalogue?.L ? `&length=${filterCatalogue?.L}` : ''}${filterCatalogue?.W ? `&width=${filterCatalogue?.W}` : ''}${filterCatalogue?.H ? `&height=${filterCatalogue?.H}` : ''}`,
                 method: 'GET'
@@ -37,9 +40,11 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
                 })
                 setcalaloguePage(state => state + 1)
             }
+            setloading(false);
         }
     }, 1000, { leading: true });
     const fetchProducts = async () => {
+        setloading(true);
         const res = await apiRequest({
             url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=0&limit=20${filterCatalogue?.minPrice !== undefined ? `&priceMin=${Number(filterCatalogue?.minPrice)}` : ``}${filterCatalogue?.maxPrice ? `&priceMax=${Number(filterCatalogue?.maxPrice)}` : ''}${filterCatalogue?.nameOrSKU ? `&nameOrSKU=${filterCatalogue?.nameOrSKU}` : ''}${filterCatalogue?.color ? `&colorName=${filterCatalogue?.color}` : ''}${filterCatalogue?.maxWeight ? `&weight=${filterCatalogue?.maxWeight}` : ''}${filterCatalogue?.weightUnit ? `&weightUnit=${filterCatalogue?.weightUnit}` : ''}${filterCatalogue?.lengthUnit ? `&dimensionUnit=${filterCatalogue?.lengthUnit}` : ''}${filterCatalogue?.L ? `&length=${filterCatalogue?.L}` : ''}${filterCatalogue?.W ? `&width=${filterCatalogue?.W}` : ''}${filterCatalogue?.H ? `&height=${filterCatalogue?.H}` : ''}`,
             method: 'GET'
@@ -52,6 +57,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
             })
         }
         document.getElementById('catalogue-product-ref')?.animate({ scrollTop: 0 });
+        setloading(false);
     }
     return <>
         <SelectedProductDetail />
@@ -61,6 +67,9 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
                 <div ref={scrollRef} id='catalogue-product-ref' className='flex flex-wrap h-full overflow-auto' onScroll={() => fetchMoreProducts()}>
                     {
                         products?.map(each => <Product eachProduct={each} />)
+                    }
+                    {
+                        loading && <div className='m-auto'><Loader /></div>
                     }
                 </div>
             </div>

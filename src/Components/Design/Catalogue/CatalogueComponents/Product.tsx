@@ -31,7 +31,7 @@ const Product = ({ eachProduct }: ProductProp) => {
                 informationCallback={() => openProductDetail()}
             />
         </div>
-        <div className='ml-1.5 text-xs font-ssp font-semibold'>${eachProduct?.msrp}</div>
+        <div className='ml-1.5 text-xs font-ssp font-semibold'>${eachProduct?.retailPrice}</div>
         <div className='ml-1.5 text-xs font-ssp font-semibold'>{eachProduct?.dimension}</div>
     </div>
 }

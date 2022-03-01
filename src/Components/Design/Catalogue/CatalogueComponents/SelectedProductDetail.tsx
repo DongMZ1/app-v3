@@ -22,6 +22,11 @@ const SelectedProductDetail = () => {
                 })
             }} />
             <div className="flex py-2 text-xl font-moret"><div className="m-auto">{selectedProductDetail?.fulhausProductName}</div></div>
+            <div className="flex text-sm font-semibold font-ssp">
+                <div className="w-1/3 ">${selectedProductDetail?.retailPrice}</div>
+                <div className="w-1/3 ">Stock: ${}</div>
+                <div className="w-1/3 "></div>
+            </div>
         </div>
     </Popup>
 }

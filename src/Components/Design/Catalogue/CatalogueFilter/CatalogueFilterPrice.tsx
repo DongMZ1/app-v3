@@ -12,7 +12,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPricePr
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
     const dispatch = useDispatch();
     const [minPrice, setminPrice] = useState(filterCatalogue?.minPrice ? filterCatalogue?.minPrice : 0);
-    const [maxPrice, setmaxPrice] = useState(filterCatalogue?.maxPrice ? filterCatalogue?.maxPrice : 3200);
+    const [maxPrice, setmaxPrice] = useState(filterCatalogue?.maxPrice ? filterCatalogue?.maxPrice : 50000);
 
     const apply = () => {
         const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
@@ -40,7 +40,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPricePr
                                 }
                             }
                             min="0"
-                            max="3200"
+                            max="50000"
                             className="absolute w-full min-price-slider"
                         />
                         <input
@@ -52,13 +52,13 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPricePr
                                 }
                             }}
                             min="0"
-                            max="3200"
+                            max="50000"
                             className="absolute w-full max-price-slider"
                         />
                     </div>
                     <div className='relative flex w-full mt-6'>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${minPrice * 100 / (3200 + minPrice / 10)}%` }}>{minPrice}</div>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${maxPrice * 100 / (3200 + maxPrice / 10)}%` }}>{maxPrice}</div>
+                        <div className='absolute text-sm font-ssp' style={{ left: `${minPrice * 100 / (50000 + minPrice / 10)}%` }}>{minPrice}</div>
+                        <div className='absolute text-sm font-ssp' style={{ left: `${maxPrice * 100 / (50000 + maxPrice / 10)}%` }}>{maxPrice}</div>
                     </div>
                     <div className='flex mt-8'>
                         <div className='w-1/2 text-xs font-ssp'>Minimum</div>
