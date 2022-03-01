@@ -11,8 +11,8 @@ type CatalogueFilterPriceProps = {
 const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPriceProps) => {
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
     const dispatch = useDispatch();
-    const [minPrice, setminPrice] = useState(0);
-    const [maxPrice, setmaxPrice] = useState(3200);
+    const [minPrice, setminPrice] = useState(filterCatalogue?.minPrice ? filterCatalogue?.minPrice : 0);
+    const [maxPrice, setmaxPrice] = useState(filterCatalogue?.maxPrice ? filterCatalogue?.maxPrice : 3200);
 
     const apply = () => {
         const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
