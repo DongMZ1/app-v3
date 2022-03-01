@@ -11,10 +11,9 @@ import { CSSTransition } from 'react-transition-group'
 import useDebounce from '../../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../../Hooks/useIsFirstRender';
 import apiRequest from '../../../../Service/apiRequest';
-import CatalogueFilterSource from './CatalogueFilterSource';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
 import CatalogueFilterPrice from './CatalogueFilterPrice';
-import CatalogueFilterDistance from './CatalogueFilterDistance'
+import {BiExpand} from 'react-icons/bi'
 
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { GoX } from 'react-icons/go'
@@ -162,6 +161,7 @@ const CatalogueFilter = () => {
                         />
                     </CSSTransition>
                 </div>
+                <BiExpand className='my-auto ml-auto cursor-pointer' />
             </div>
             <div className="flex mt-2 dropdown-component-overwrite">
                 {/*
