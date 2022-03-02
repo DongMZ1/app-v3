@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import "./Design.scss";
 import { Tab } from '@fulhaus/react.ui.tab'
 import { IoMdBook } from "react-icons/io";

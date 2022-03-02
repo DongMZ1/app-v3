@@ -10,11 +10,15 @@ import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an
 import { ImCross } from 'react-icons/im'
 import { Tooltip } from '@fulhaus/react.ui.tooltip'
 import { TextInput } from '@fulhaus/react.ui.text-input';
+import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
+import { Button } from '@fulhaus/react.ui.button';
+import { RiDeleteBin6Fill } from 'react-icons/ri'
 const QuoteSummaryRental = () => {
     const [editable, seteditable] = useState(false);
     const [showCalendar, setshowCalendar] = useState(false);
     const [discount, setdiscount] = useState('15');
     const [securityDeposit, setsecurityDeposit] = useState('10');
+    const [serviceCosts, setserviceCosts] = useState<any[]>([]);
     const [shipping, setshipping] = useState('10000')
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
@@ -73,7 +77,7 @@ const QuoteSummaryRental = () => {
             <div className='w-1/12'>Total</div>
         </div>
         {
-            quoteDetail?.data.map((eachUnit: any) => <div className='flex pt-1 pb-1 border-t border-black border-solid'>
+            quoteDetail?.data.map((eachUnit: any) => <div className='flex py-2 border-t border-black border-solid'>
                 <div className='w-4/12'>{eachUnit?.name}</div>
                 <div className='w-2/12'>{eachUnit?.count}</div>
                 <div className='width-12-percent'>${eachUnit?.rentalPricePerMonthYear1?.toFixed(2)}</div>
@@ -122,6 +126,64 @@ const QuoteSummaryRental = () => {
                 <Tooltip text='' iconColor='blue' />
                 <div className='ml-auto'>$15981.00</div>
             </div>
+            <div className='flex mt-2'>
+                <div className='my-auto mr-1'>
+                    Shipping
+                </div>
+                <Tooltip text='' iconColor='blue' />
+                {editable ?
+                    <>
+                        <DropdownListInput
+                            wrapperClassName=' w-6rem-important h-2-5-rem-important ml-auto'
+                            options={['CAD', 'USD', 'EURO']} />
+                        <TextInput prefix={<span>$</span>} className='w-24 h-10' variant='box' inputName='security deposit' value={shipping} onChange={
+                            (e) => setshipping((e.target as any).value)
+                        } /></> : <div className='ml-auto'>${shipping}</div>}
+            </div>
+            {
+                serviceCosts?.map(
+                    (eachCost, key) => 
+                    <div key={key} className='flex w-full py-2 border-b border-black border-solid '>
+                        {editable ?
+                            <TextInput inputName='payment term name' variant='box' value={eachCost?.name} onChange={
+                                (e) => {
+                                    let newserviceCosts = [...serviceCosts]
+                                    newserviceCosts[key].name = (e.target as any).value;
+                                    setserviceCosts(newserviceCosts);
+                                }
+                            } />
+                            :
+                            <div className='my-auto'>{eachCost?.name}</div>
+                        }
+                        {
+                            editable ? <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{serviceCosts}</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
+                                let newserviceCosts = [...serviceCosts]
+                                newserviceCosts[key].amount = (e.target as any).valueAsNumber;
+                                setserviceCosts(newserviceCosts);
+                            }} />
+                                :
+                                <div className='my-auto ml-auto mr-4'>
+                                    {eachCost?.amount}
+                                </div>
+                        }
+                        {
+                            editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
+                                let newserviceCosts = [...serviceCosts];
+                                newserviceCosts.splice(key, 1);
+                                setserviceCosts(newserviceCosts);
+                            }} />
+                        }
+                    </div>
+                )
+            }
+            {
+                editable && <Button className='mt-2' variant='primary' onClick={() => setserviceCosts(
+                    state => [...state, {
+                        name: "",
+                        amount: null
+                    }]
+                )} >Add new Service Cost</Button>
+            }
         </div>
         <div className='w-full pt-4 mt-4 border-t border-black border-solid'>Discount(%)</div>
         <div className='flex mt-4'>
@@ -136,15 +198,6 @@ const QuoteSummaryRental = () => {
             <div className='ml-auto'>$9999.00</div>
         </div>
         <div className='flex mt-4'>
-            <div className='my-auto mr-1'>
-                Shipping
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            {editable ? <TextInput prefix={<span>$</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={shipping} onChange={
-                (e) => setshipping((e.target as any).value)
-            } /> : <div className='ml-auto'>${shipping}</div>}
-        </div>
-        <div className='flex mt-4'>
             <div className='mr-1'>
                 Tax(15%)
             </div>
@@ -152,11 +205,11 @@ const QuoteSummaryRental = () => {
             <div className='ml-auto'>$19481.00</div>
         </div>
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>
-            <div className='font-semibold '>Contract Start Fee</div>
+            <div className='font-semibold '>Estimated Amount Due Today</div>
             <div className='ml-auto font-semibold'>$9000</div>
         </div>
         <div className='flex px-4 py-2 mt-4 border border-black border-solid'>
-            <div className='mr-1'>Total Contract Cost</div>
+            <div className='mr-1'>Total Quote Value Before Tax</div>
             <Tooltip text='' iconColor='blue' />
             <div className='ml-auto'>$9000</div>
         </div>
