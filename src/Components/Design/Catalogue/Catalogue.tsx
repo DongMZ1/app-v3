@@ -45,8 +45,18 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
     }, 1000, { leading: true });
     const fetchProducts = async () => {
         setloading(true);
+        let tags:any = [];
+        if(filterCatalogue?.roomsAndStyleRoom?.map((eachRoom: any) => eachRoom?._id)){
+          tags = filterCatalogue?.roomsAndStyleRoom?.map((eachRoom: any) => eachRoom?._id);
+        }
+        if(filterCatalogue?.roomsAndStyleCollections?.map((eachRoom: any) => eachRoom?._id)){
+            tags = [...tags, filterCatalogue?.roomsAndStyleCollections?.map((eachRoom: any) => eachRoom?._id)]
+        }
+
+        let categoryIDs = filterCatalogue?.itemTypes?.map((eachCategory: any) => eachCategory._id);
+
         const res = await apiRequest({
-            url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=0&limit=20${filterCatalogue?.minPrice !== undefined ? `&priceMin=${Number(filterCatalogue?.minPrice)}` : ``}${filterCatalogue?.maxPrice ? `&priceMax=${Number(filterCatalogue?.maxPrice)}` : ''}${filterCatalogue?.nameOrSKU ? `&nameOrSKU=${filterCatalogue?.nameOrSKU}` : ''}${filterCatalogue?.color ? `&colorName=${filterCatalogue?.color}` : ''}${filterCatalogue?.maxWeight ? `&weight=${filterCatalogue?.maxWeight}` : ''}${filterCatalogue?.weightUnit ? `&weightUnit=${filterCatalogue?.weightUnit}` : ''}${filterCatalogue?.lengthUnit ? `&dimensionUnit=${filterCatalogue?.lengthUnit}` : ''}${filterCatalogue?.L ? `&length=${filterCatalogue?.L}` : ''}${filterCatalogue?.W ? `&width=${filterCatalogue?.W}` : ''}${filterCatalogue?.H ? `&height=${filterCatalogue?.H}` : ''}`,
+            url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=0&limit=20${filterCatalogue?.minPrice !== undefined ? `&priceMin=${Number(filterCatalogue?.minPrice)}` : ``}${filterCatalogue?.maxPrice ? `&priceMax=${Number(filterCatalogue?.maxPrice)}` : ''}${filterCatalogue?.nameOrSKU ? `&nameOrSKU=${filterCatalogue?.nameOrSKU}` : ''}${filterCatalogue?.color ? `&colorName=${filterCatalogue?.color}` : ''}${filterCatalogue?.maxWeight ? `&weight=${filterCatalogue?.maxWeight}` : ''}${filterCatalogue?.weightUnit ? `&weightUnit=${filterCatalogue?.weightUnit}` : ''}${filterCatalogue?.lengthUnit ? `&dimensionUnit=${filterCatalogue?.lengthUnit}` : ''}${filterCatalogue?.L ? `&length=${filterCatalogue?.L}` : ''}${filterCatalogue?.W ? `&width=${filterCatalogue?.W}` : ''}${filterCatalogue?.H ? `&height=${filterCatalogue?.H}` : ''}${tags?.length > 0 ? `&tagIDs=[${tags?.join()}]` : ''}${categoryIDs?.length > 0 ? `&categoryIDs=[${categoryIDs?.join()}]` : ''}`,
             method: 'GET'
         })
         if (res.success) {

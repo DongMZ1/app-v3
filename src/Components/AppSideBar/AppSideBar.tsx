@@ -146,7 +146,7 @@ const AppSideBar = () => {
                     </div>
                 }
                 <div className='flex px-4 mt-2'>
-                    <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>
+                    {(!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>}
                     {!editable &&
                         <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
                             <AiOutlineLeft size={22} />
@@ -155,7 +155,7 @@ const AppSideBar = () => {
                 </div>
                 <div className='w-full h-full px-4 overflow-y-auto'>
                     {
-                        quoteDetail?.data?.map((each: any) => <EachUnitQuote getUnitPackages={getUnitPackages} eachUnit={each} />)
+                        (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && quoteDetail?.data?.map((each: any) => <EachUnitQuote getUnitPackages={getUnitPackages} eachUnit={each} />)
                     }
                 </div>
             </div>

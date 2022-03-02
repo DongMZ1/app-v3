@@ -76,10 +76,10 @@ const QuoteSummaryRental = () => {
             quoteDetail?.data.map((eachUnit: any) => <div className='flex pt-1 pb-1 border-t border-black border-solid'>
                 <div className='w-4/12'>{eachUnit?.name}</div>
                 <div className='w-2/12'>{eachUnit?.count}</div>
-                <div className='width-12-percent'>${eachUnit?.rentalPricePerMonthYear1}</div>
-                <div className='w-1/12'>Total</div>
-                <div className='ml-auto width-12-percent'>${eachUnit?.rentalPricePerMonthYear2}</div>
-                <div className='w-1/12'>Total</div>
+                <div className='width-12-percent'>${eachUnit?.rentalPricePerMonthYear1?.toFixed(2)}</div>
+                <div className='w-1/12'>{eachUnit?.totalAmount?.toFixed(2)}</div>
+                <div className='ml-auto width-12-percent'>${eachUnit?.rentalPricePerMonthYear2?.toFixed(2)}</div>
+                <div className='w-1/12'>{eachUnit?.totalAmountYear2?.toFixed(2)}</div>
             </div>)
         }
         <div className='flex pt-2 border-t border-black border-solid'>
@@ -90,26 +90,38 @@ const QuoteSummaryRental = () => {
             <div className='ml-auto width-12-percent'></div>
             <div className='w-1/12'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
         </div>
-        <div className='w-full px-4 py-2 mt-4 text-sm border border-black border-solid font-ssp'>
-            <div className='flex'>
-                <div className='mr-1'>Buy Back After Year 1</div>
-                <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1 : 0}</div>
-            </div>
-            <div className='flex mt-2'>
-                <div className='mr-1'>Buy Back After Year 2</div>
-                <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
-            </div>
-        </div>
-        <div className='mt-10 text-2xl font-moret'>Deal Summary</div>
+        <div className='mt-10 text-2xl font-moret'>Order Summary</div>
         <div className='flex mt-4 text-sm font-ssp'>
             <div>Item</div>
             <div className='ml-auto'>Rate</div>
         </div>
-        <div className='flex mt-4'>
-            <div>Service Costs (individual line items can only be viewed by you)</div>
-            <div className='ml-auto'>$99999.00</div>
+        <div className='px-4 py-6 mt-2 border border-black border-solid'>
+            <div className='flex'>
+                <div className='mr-1'>Service Costs</div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>$99999.00</div>
+            </div>
+            <div className='flex mt-2'>
+                <div className='mr-1'>
+                    Non rentable
+                </div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>$15941.00</div>
+            </div>
+            <div className='flex mt-2'>
+                <div className='mr-1'>
+                    First Month Rent On Product
+                </div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>$15941.00</div>
+            </div>
+            <div className='flex mt-2'>
+                <div className='my-auto mr-1'>
+                    Security Deposit
+                </div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>$15981.00</div>
+            </div>
         </div>
         <div className='w-full pt-4 mt-4 border-t border-black border-solid'>Discount(%)</div>
         <div className='flex mt-4'>
@@ -122,22 +134,6 @@ const QuoteSummaryRental = () => {
         <div className='flex pb-4 mt-4 border-b border-black border-solid'>
             <div>Subtotal</div>
             <div className='ml-auto'>$9999.00</div>
-        </div>
-        <div className='flex mt-4'>
-            <div className='mr-1'>
-                Non rentable
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>$15941.00</div>
-        </div>
-        <div className='flex mt-4'>
-            <div className='my-auto mr-1'>
-                Security Deposit
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            {editable ? <TextInput prefix={<span>%</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={securityDeposit} onChange={
-                (e) => setsecurityDeposit((e.target as any).value)
-            } /> : <div className='ml-auto'>$15981.00</div>}
         </div>
         <div className='flex mt-4'>
             <div className='my-auto mr-1'>
@@ -163,6 +159,19 @@ const QuoteSummaryRental = () => {
             <div className='mr-1'>Total Contract Cost</div>
             <Tooltip text='' iconColor='blue' />
             <div className='ml-auto'>$9000</div>
+        </div>
+        <div className='w-full px-4 py-2 mt-4 text-sm border border-black border-solid font-ssp'>
+            <div className='my-auto text-xl font-moret'>End Of Lease Option</div>
+            <div className='flex mt-2'>
+                <div className='mr-1'>Buy Back After Year 1</div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1 : 0}</div>
+            </div>
+            <div className='flex mt-2'>
+                <div className='mr-1'>Buy Back After Year 2</div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
+            </div>
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
         <div className='px-4 py-2 mt-4 mb-8 bg-white border border-black border-solid'>
