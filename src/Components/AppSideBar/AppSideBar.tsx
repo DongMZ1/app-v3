@@ -25,7 +25,7 @@ const AppSideBar = () => {
     const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
-    const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase'));
+    const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase')) && (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only'));
     useEffect(() => {
         getUnitPackages()
     }, [currentOrgID])

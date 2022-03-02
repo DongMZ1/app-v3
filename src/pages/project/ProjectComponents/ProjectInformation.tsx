@@ -35,7 +35,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
                 </div>
                 <div className='flex mt-2'>
-                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {quoteDetail._id ? quoteDetail._id : ''}</div>
+                    <div className='my-auto mr-8 text-sm font-ssp'>Quote ID: {quoteDetail?._id ? quoteDetail._id : ''}</div>
                     {CopiedQuoteID ? <div className='my-auto mr-4 text-sm font-semibold font-ssp'>Copied!</div> : <CopyIcon onClick={() => {
                         navigator.clipboard.writeText(quoteDetail?._id);
                         setCopiedQuoteID(true);

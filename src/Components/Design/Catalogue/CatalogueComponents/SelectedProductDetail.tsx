@@ -40,8 +40,11 @@ const SelectedProductDetail = () => {
             </div>
             <div className='flex flex-wrap'>
                 {selectedProductDetail?.imageURLs?.map((eachURL: string) => <div className='h-full py-1 pr-1'>
-                    <img onClick={() => setselectedImage(eachURL)} alt='small-img-selected-product-detail' src={eachURL} className='h-20 cursor-pointer' />
+                    <img onClick={() => setselectedImage(eachURL)} alt='small-img-selected-product-detail' src={eachURL} className='h-16 cursor-pointer' />
                 </div>)}
+            </div>
+            <div className='text-sm font-ssp'>
+                {selectedProductDetail?.description}
             </div>
         </div>
     </Popup>
