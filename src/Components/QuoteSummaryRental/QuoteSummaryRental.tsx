@@ -17,7 +17,6 @@ const QuoteSummaryRental = () => {
     const [editable, seteditable] = useState(false);
     const [showCalendar, setshowCalendar] = useState(false);
     const [discount, setdiscount] = useState('15');
-    const [securityDeposit, setsecurityDeposit] = useState('10');
     const [serviceCosts, setserviceCosts] = useState<any[]>([]);
     const [shipping, setshipping] = useState('10000')
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
@@ -68,13 +67,13 @@ const QuoteSummaryRental = () => {
             <div className='w-1/4 h-2 ml-auto mr-16 border-t border-l border-r border-black border-dashed'></div>
             <div className='w-1/4 h-2 mr-4 border-t border-l border-r border-black border-dashed'></div>
         </div>
-        <div className='flex mt-4 mb-1'>
+        <div className='flex mt-4 mb-2'>
             <div className='w-4/12'>Unit Type</div>
             <div className='w-2/12'>Qty</div>
-            <div className='width-12-percent'>Per Month</div>
-            <div className='w-1/12'>Total</div>
-            <div className='ml-auto width-12-percent'>Per Month</div>
-            <div className='w-1/12'>Total</div>
+            <div className='width-12-percent'>Per Month Per Unit</div>
+            <div className='w-1/12'>Total Per Unit</div>
+            <div className='ml-auto width-12-percent'>Per Month Per Unit</div>
+            <div className='w-1/12'>Total Per Unit</div>
         </div>
         {
             quoteDetail?.data.map((eachUnit: any) => <div className='flex py-2 border-t border-black border-solid'>
@@ -99,34 +98,34 @@ const QuoteSummaryRental = () => {
             <div>Item</div>
             <div className='ml-auto'>Rate</div>
         </div>
-        <div className='px-4 py-6 mt-2 border border-black border-solid'>
+        <div className={`mt-2 ${editable ? 'border px-4 py-6' : 'border-b pb-4'} border-black border-solid`}>
             <div className='flex'>
                 <div className='mr-1'>Service Costs</div>
                 <Tooltip text='' iconColor='blue' />
                 <div className='ml-auto'>$99999.00</div>
             </div>
-            <div className='flex mt-2'>
+            <div className='flex mt-3'>
                 <div className='mr-1'>
                     Non rentable
                 </div>
                 <Tooltip text='' iconColor='blue' />
                 <div className='ml-auto'>$15941.00</div>
             </div>
-            <div className='flex mt-2'>
+            <div className='flex mt-3'>
                 <div className='mr-1'>
                     First Month Rent On Product
                 </div>
                 <Tooltip text='' iconColor='blue' />
                 <div className='ml-auto'>$15941.00</div>
             </div>
-            <div className='flex mt-2'>
+            <div className='flex mt-3'>
                 <div className='my-auto mr-1'>
                     Security Deposit
                 </div>
                 <Tooltip text='' iconColor='blue' />
                 <div className='ml-auto'>$15981.00</div>
             </div>
-            <div className='flex mt-2'>
+            <div className='flex mt-3'>
                 <div className='my-auto mr-1'>
                     Shipping
                 </div>
@@ -142,57 +141,72 @@ const QuoteSummaryRental = () => {
             </div>
             {
                 serviceCosts?.map(
-                    (eachCost, key) => 
-                    <div key={key} className='flex w-full py-2 border-b border-black border-solid '>
-                        {editable ?
-                            <TextInput inputName='payment term name' variant='box' value={eachCost?.name} onChange={
-                                (e) => {
-                                    let newserviceCosts = [...serviceCosts]
-                                    newserviceCosts[key].name = (e.target as any).value;
-                                    setserviceCosts(newserviceCosts);
-                                }
-                            } />
-                            :
-                            <div className='my-auto'>{eachCost?.name}</div>
-                        }
-                        {
-                            editable ? <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{serviceCosts}</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
-                                let newserviceCosts = [...serviceCosts]
-                                newserviceCosts[key].amount = (e.target as any).valueAsNumber;
-                                setserviceCosts(newserviceCosts);
-                            }} />
+                    (eachCost, key) =>
+                        <div key={key} className='flex w-full py-2 '>
+                            {editable ?
+                                <TextInput inputName='payment term name' variant='box' value={eachCost?.name} onChange={
+                                    (e) => {
+                                        let newserviceCosts = [...serviceCosts]
+                                        newserviceCosts[key].name = (e.target as any).value;
+                                        setserviceCosts(newserviceCosts);
+                                    }
+                                } />
                                 :
-                                <div className='my-auto ml-auto mr-4'>
-                                    {eachCost?.amount}
-                                </div>
-                        }
-                        {
-                            editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
-                                let newserviceCosts = [...serviceCosts];
-                                newserviceCosts.splice(key, 1);
-                                setserviceCosts(newserviceCosts);
-                            }} />
-                        }
-                    </div>
+                                <div className='my-auto'>{eachCost?.name}</div>
+                            }
+                            {
+                                editable ? <>
+                                    <DropdownListInput
+                                        initialValue={eachCost?.unit}
+                                        wrapperClassName='ml-auto  w-6rem-important h-2-5-rem-important ml-auto'
+                                        onSelect={(v) => {
+                                            let newserviceCosts = [...serviceCosts]
+                                            newserviceCosts[key].unit = v;
+                                            setserviceCosts(newserviceCosts);
+                                        }}
+                                        options={['$', '%']} />
+                                    <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{eachCost?.unit}</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
+                                        let newserviceCosts = [...serviceCosts]
+                                        newserviceCosts[key].amount = (e.target as any).valueAsNumber;
+                                        setserviceCosts(newserviceCosts);
+                                    }} />
+                                </>
+                                    :
+                                    <div className='my-auto ml-auto mr-4'>
+                                        {eachCost?.amount}
+                                    </div>
+                            }
+                            {
+                                editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
+                                    let newserviceCosts = [...serviceCosts];
+                                    newserviceCosts.splice(key, 1);
+                                    setserviceCosts(newserviceCosts);
+                                }} />
+                            }
+                        </div>
                 )
             }
             {
                 editable && <Button className='mt-2' variant='primary' onClick={() => setserviceCosts(
                     state => [...state, {
                         name: "",
-                        amount: null
+                        amount: null,
+                        unit: "$"
                     }]
                 )} >Add new Service Cost</Button>
             }
         </div>
-        <div className='w-full pt-4 mt-4 border-t border-black border-solid'>Discount(%)</div>
-        <div className='flex mt-4'>
-            {editable ?
-                <TextInput prefix={<span>%</span>} className='w-24' variant='box' inputName='percentage discount' value={discount} onChange={
-                    (e) => setdiscount((e.target as any).value)
-                } /> : <div>{discount}% </div>}
-            <div className='ml-auto'>-$15999.00</div>
-        </div>
+        {editable ?
+            <div>
+
+
+            </div> :
+            <div className='flex mt-4'>
+                <div>
+                    <div>Additional Discount</div>
+                </div>
+            </div>
+        }
         <div className='flex pb-4 mt-4 border-b border-black border-solid'>
             <div>Subtotal</div>
             <div className='ml-auto'>$9999.00</div>
