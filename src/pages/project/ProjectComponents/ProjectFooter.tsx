@@ -59,7 +59,7 @@ const ProjectFooter = () => {
         }, [JSONselectedQuoteUnit]
     )
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
-        {(window.location.href.includes('project/quote') || window.location.href.includes('/quote-only') || window.location.href.includes('/design-only') || window.location.href.includes('/project/design')) &&
+        {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
         <>
             <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
             <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
