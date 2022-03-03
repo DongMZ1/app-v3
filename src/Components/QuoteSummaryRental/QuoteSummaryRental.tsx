@@ -18,7 +18,9 @@ const QuoteSummaryRental = () => {
     const [showCalendar, setshowCalendar] = useState(false);
     const [discount, setdiscount] = useState('15');
     const [serviceCosts, setserviceCosts] = useState<any[]>([]);
-    const [shipping, setshipping] = useState('10000')
+    const [shipping, setshipping] = useState('10000');
+    const [additionalDiscount, setadditionalDiscount] = useState('5');
+    const [rationale, setrationale] = useState('');
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     if (selectedQuoteUnit) {
@@ -92,6 +94,15 @@ const QuoteSummaryRental = () => {
             <div className='w-1/12'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1 : 0}</div>
             <div className='ml-auto width-12-percent'></div>
             <div className='w-1/12'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
+        </div>
+        <div className='flex mt-4'>
+            <div>
+                <div className='text-sm font-ssp'>
+                    Volume Discount
+                </div>
+                <DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' />
+            </div>
+            <div className='my-auto ml-auto'>- 9999.00$</div>
         </div>
         <div className='mt-10 text-2xl font-moret'>Order Summary</div>
         <div className='flex mt-4 text-sm font-ssp'>
@@ -203,22 +214,36 @@ const QuoteSummaryRental = () => {
         </div>
         {editable ?
             <div className='flex '>
-
-
+                <div className='w-1/12 mr-4'>
+                    <div>Additional Discount</div>
+                    <TextInput className='w-full' variant='box' inputName='additional discount' value={additionalDiscount} onChange={(e) => setadditionalDiscount((e.target as any).value)} suffix={<small>%</small>} />
+                </div>
+                <div className='w-2/3 mr-4'>
+                    <div>Rationale</div>
+                    <TextInput className='w-full' variant='box' inputName='rationale' value={rationale} onChange={(e) => setrationale((e.target as any).value)} />
+                </div>
+                <div className='my-auto ml-auto'>-3578$</div>
             </div> :
             <div className='flex'>
-                <div>
-                    <div>Additional Discount</div>
+                <div className='w-1/3'>
+                    <div>Additional Discount : {additionalDiscount}%</div>
+                    <div className='text-xs'>{rationale}</div>
                 </div>
+                <div className='my-auto ml-auto'>-3578$</div>
             </div>
         }
-        <div className='flex mt-4'>
-            <div className='mr-1'>
-                Tax(15%)
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>$19481.00</div>
-        </div>
+        {
+            editable ? <div></div>
+                :
+                <div className='flex mt-4'>
+                    <div>
+                        <div>Estimated tax on sales </div>
+                        <div className='flex'>
+                            <div className='mr-1'><i>Approximation, adjusted at checkout</i></div><Tooltip text='' iconColor='blue' />
+                        </div>
+                    </div>
+                </div>
+        }
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>
             <div className='font-semibold '>Estimated Amount Due Today</div>
             <div className='ml-auto font-semibold'>$9000</div>
