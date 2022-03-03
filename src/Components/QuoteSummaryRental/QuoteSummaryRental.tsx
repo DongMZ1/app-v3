@@ -98,9 +98,9 @@ const QuoteSummaryRental = () => {
             <div>Item</div>
             <div className='ml-auto'>Rate</div>
         </div>
-        <div className={`mt-2 ${editable ? 'border px-4 py-6' : 'border-b pb-4'} border-black border-solid`}>
+        <div className={`mt-2 ${editable ? 'border mb-6 px-4 py-6' : 'mb-6'} border-black border-solid`}>
             <div className='flex'>
-                <div className='mr-1'>Service Costs</div>
+                <div className='mr-1'>Setup Fee</div>
                 <Tooltip text='' iconColor='blue' />
                 <div className='ml-auto'>$99999.00</div>
             </div>
@@ -196,21 +196,22 @@ const QuoteSummaryRental = () => {
                 )} >Add new Service Cost</Button>
             }
         </div>
+        <div className='flex pt-4 pb-4 mt-4 border-t border-black border-solid'>
+            <div className='mr-1 font-semibold font-ssp'>Subtotal</div>
+            <Tooltip text='' iconColor='blue' />
+            <div className='ml-auto'>$9999.00</div>
+        </div>
         {editable ?
-            <div>
+            <div className='flex '>
 
 
             </div> :
-            <div className='flex mt-4'>
+            <div className='flex'>
                 <div>
                     <div>Additional Discount</div>
                 </div>
             </div>
         }
-        <div className='flex pb-4 mt-4 border-b border-black border-solid'>
-            <div>Subtotal</div>
-            <div className='ml-auto'>$9999.00</div>
-        </div>
         <div className='flex mt-4'>
             <div className='mr-1'>
                 Tax(15%)

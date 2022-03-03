@@ -56,10 +56,6 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPricePr
                             className="absolute w-full max-price-slider"
                         />
                     </div>
-                    <div className='relative flex w-full mt-6'>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${minPrice * 100 / (50000 + minPrice / 10)}%` }}>{minPrice}</div>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${maxPrice * 100 / (50000 + maxPrice / 10)}%` }}>{maxPrice}</div>
-                    </div>
                     <div className='flex mt-8'>
                         <div className='w-1/2 text-xs font-ssp'>Minimum</div>
                         <div className='w-1/2 text-xs font-ssp'>Maximum</div>
