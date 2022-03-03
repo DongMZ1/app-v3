@@ -16,7 +16,7 @@ const Product = ({ eachProduct }: ProductProp) => {
         })
     }
     return <div className='w-1/3 px-2'>
-        <div draggable onDragStart={()=>{
+        <div draggable onDragStart={(e)=>{
             dispatch({
                 type:'draggedProduct',
                 payload:eachProduct

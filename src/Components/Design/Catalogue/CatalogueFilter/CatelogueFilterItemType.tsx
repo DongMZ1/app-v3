@@ -18,13 +18,13 @@ const CatelogueFilterItemType = ({
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
     const dispatch = useDispatch();
     const [itemTypes, setitemTypes] = useState<any[]>(filterCatalogue?.itemTypes ? filterCatalogue?.itemTypes : []);
-    const [lengthUnit, setlengthUnit] = useState(filterCatalogue?.lengthUnit ? filterCatalogue?.lengthUnit : 'in');
+    const [lengthUnit, setlengthUnit] = useState(filterCatalogue?.lengthUnit ? filterCatalogue?.lengthUnit : '');
     const [weightUnit, setweightUnit] = useState(filterCatalogue?.weightUnit ? filterCatalogue?.weightUnit : 'lbs');
     const [W, setW] = useState(filterCatalogue?.W ? filterCatalogue?.W : '');
     const [L, setL] = useState(filterCatalogue?.L ? filterCatalogue?.L : '');
     const [H, setH] = useState(filterCatalogue?.H ? filterCatalogue?.H : '');
     const [minWeight, setminWeight] = useState(filterCatalogue?.minWeight ? filterCatalogue?.minWeight : 0);
-    const [maxWeight, setmaxWeight] = useState(filterCatalogue?.maxWeight ? filterCatalogue?.maxWeight : 10000);
+    const [maxWeight, setmaxWeight] = useState(filterCatalogue?.maxWeight ? filterCatalogue?.maxWeight : 50000);
 
     const apply = () => {
         const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
@@ -119,7 +119,7 @@ const CatelogueFilterItemType = ({
                                 }
                             }
                             min="0"
-                            max="10000"
+                            max="50000"
                             className="absolute w-full min-price-slider"
                         />
                         <input
@@ -131,13 +131,9 @@ const CatelogueFilterItemType = ({
                                 }
                             }}
                             min="0"
-                            max="10000"
+                            max="50000"
                             className="absolute w-full max-price-slider"
                         />
-                    </div>
-                    <div className='relative flex w-full mt-6'>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${minWeight * 100 / (10000 + minWeight / 10)}%` }}>{minWeight}</div>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${maxWeight * 100 / (10000 + maxWeight / 10)}%` }}>{maxWeight}</div>
                     </div>
                     <div className='flex mt-8'>
                         <div className='w-1/2 text-xs font-ssp'>Minimum</div>
@@ -149,7 +145,7 @@ const CatelogueFilterItemType = ({
                                 variant='box'
                                 value={minWeight?.toString()}
                                 onChange={(v) => {
-                                    if (((v.target as any).value <= 10000 && (v.target as any).value < maxWeight) || !(v.target as any).value)
+                                    if (((v.target as any).value <= 50000 && (v.target as any).value < maxWeight) || !(v.target as any).value)
                                         setminWeight((v.target as any).value)
                                 }}
                                 inputName='widthInput'
@@ -162,7 +158,7 @@ const CatelogueFilterItemType = ({
                                 variant='box'
                                 value={maxWeight?.toString()}
                                 onChange={(v) => {
-                                    if (((v.target as any).value <= 10000 && (v.target as any).value > minWeight) || !(v.target as any).value)
+                                    if (((v.target as any).value <= 50000 && (v.target as any).value > minWeight) || !(v.target as any).value)
                                         setmaxWeight((v.target as any).value)
                                 }}
                                 inputName='widthInput'
