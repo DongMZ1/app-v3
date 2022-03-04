@@ -79,7 +79,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                                 <DropdownListInput
                                     initialValue={shippingUnit}
                                     onSelect={(value) => setshippingUnit(value)}
-                                    options={['CAD', 'USD', 'EURO']} />
+                                    options={['$', '%']} />
                                 <div className='flex bg-white border-t border-b border-black border-solid'><div className='my-auto'>$</div></div>
                                 <input type='number' value={shippingValue} onChange={(e) => setshippingValue(e.target.valueAsNumber)} className='w-20 text-xs border-t border-b border-r border-black border-solid' />
                             </div>

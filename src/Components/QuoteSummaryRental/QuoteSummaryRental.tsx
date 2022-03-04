@@ -95,12 +95,15 @@ const QuoteSummaryRental = () => {
             <div className='ml-auto width-12-percent'></div>
             <div className='w-1/12'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
         </div>
-        <div className='flex mt-4'>
+        <div className='flex mt-4 font-ssp'>
             <div>
                 <div className='text-sm font-ssp'>
                     Volume Discount
                 </div>
-                <DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' />
+                {editable ?<DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' /> : 
+                <div>
+                    Tier 1
+                </div>}
             </div>
             <div className='my-auto ml-auto'>- 9999.00$</div>
         </div>

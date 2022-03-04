@@ -13,12 +13,18 @@ import useIsFirstRender from '../../../../Hooks/useIsFirstRender';
 import apiRequest from '../../../../Service/apiRequest';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
 import CatalogueFilterPrice from './CatalogueFilterPrice';
-import {BiExpand} from 'react-icons/bi'
+import { BiExpand } from 'react-icons/bi'
+import { BiCollapse } from 'react-icons/bi'
 
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { GoX } from 'react-icons/go'
 
-const CatalogueFilter = () => {
+type CatalogueFilterType = {
+    setisExpand: React.Dispatch<React.SetStateAction<boolean>>
+    setdraggableWidth: React.Dispatch<React.SetStateAction<number | undefined>>
+    isExpand: boolean
+}
+const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand}: CatalogueFilterType) => {
 
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
     const dispatch = useDispatch();
@@ -133,7 +139,7 @@ const CatalogueFilter = () => {
                         />
                     </CSSTransition>
                 </div>
-                <div className='w-1/6 mr-4'>
+                <div className='w-24 mr-4'>
                     <div onClick={() => setshowColorMenu(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Colour</div><BsChevronDown className='my-auto' /></div>
                     <CSSTransition in={showColorMenu} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatalogueFilterColorPageOne
@@ -152,7 +158,7 @@ const CatalogueFilter = () => {
                         />
                     </CSSTransition>
                 </div>
-                <div className='relative w-1/6 mr-4'>
+                <div className='relative w-24 mr-4'>
                     <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
                     <CSSTransition in={showPrice} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatalogueFilterPrice
@@ -161,7 +167,10 @@ const CatalogueFilter = () => {
                         />
                     </CSSTransition>
                 </div>
-                <BiExpand className='my-auto ml-auto cursor-pointer' />
+                {isExpand ?
+                    <BiCollapse onClick={() => { setdraggableWidth(undefined); setisExpand(false) }} className='my-auto ml-auto cursor-pointer' /> :
+                    <BiExpand onClick={() => { setdraggableWidth(undefined); setisExpand(true) }} className='my-auto ml-auto cursor-pointer' />
+                }
             </div>
             <div className="flex mt-2 dropdown-component-overwrite">
                 {/*
@@ -224,7 +233,7 @@ const CatalogueFilter = () => {
                     ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>{filterCatalogue?.color}</div></div>
                 }
                 {
-                    (filterCatalogue?.vendors?.length > 0) && 
+                    (filterCatalogue?.vendors?.length > 0) &&
                     <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
                         onClick={() => {
                             const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
