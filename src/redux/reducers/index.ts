@@ -20,6 +20,7 @@ export type Tappstate = {
   selectedProductDetail: any;
   showselectedProductDetail: boolean;
   draggedProduct: any;
+  designDetail: any;
 };
 const initialState = {
   homePageLoader: false,
@@ -40,6 +41,7 @@ const initialState = {
   selectedProductDetail: undefined,
   showselectedProductDetail: false,
   draggedProduct: undefined,
+  designDetail: undefined
 };
 const ReduxReducer: TReduxReducer = (
   state: Tappstate = initialState,
