@@ -13,6 +13,7 @@ import { TextInput } from '@fulhaus/react.ui.text-input';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Button } from '@fulhaus/react.ui.button';
 import { RiDeleteBin6Fill } from 'react-icons/ri'
+import { Checkbox } from '@fulhaus/react.ui.checkbox';
 const QuoteSummaryRental = () => {
     const [editable, seteditable] = useState(false);
     const [showCalendar, setshowCalendar] = useState(false);
@@ -21,6 +22,8 @@ const QuoteSummaryRental = () => {
     const [shipping, setshipping] = useState('10000');
     const [additionalDiscount, setadditionalDiscount] = useState('5');
     const [rationale, setrationale] = useState('');
+    const [checkedTax, setcheckedTax] = useState(false);
+    const [taxOnSale, settaxOnSale] = useState('0')
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     if (selectedQuoteUnit) {
@@ -100,10 +103,10 @@ const QuoteSummaryRental = () => {
                 <div className='text-sm font-ssp'>
                     Volume Discount
                 </div>
-                {editable ?<DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' /> : 
-                <div>
-                    Tier 1
-                </div>}
+                {editable ? <DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' /> :
+                    <div>
+                        Tier 1
+                    </div>}
             </div>
             <div className='my-auto ml-auto'>- 9999.00$</div>
         </div>
@@ -236,7 +239,25 @@ const QuoteSummaryRental = () => {
             </div>
         }
         {
-            editable ? <div></div>
+            editable ? <div className='flex mt-4'>
+                <div>
+                    <div >
+                        <div className='flex'><Checkbox checked={checkedTax} onChange={(v) => setcheckedTax(v)} /><div>Estimated tax on sales </div></div>
+                        <div className='flex'>
+                            <div className='mr-1'><i>Approximation, adjusted at checkout</i></div><Tooltip text='' iconColor='blue' />
+                        </div>
+                    </div>
+                </div>
+                <div className='flex my-auto ml-auto'>
+                    <DropdownListInput
+                        initialValue={'$'}
+                        wrapperClassName='w-6rem-important h-2-5-rem-important ml-auto'
+                        options={['$', '%']} />
+                    <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{"$"}</span>} inputName='tax on sale input' variant='box' value={taxOnSale} onChange={(e) => {
+                        settaxOnSale((e.target as any).value)
+                    }} />
+                </div>
+            </div>
                 :
                 <div className='flex mt-4'>
                     <div>
