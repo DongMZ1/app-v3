@@ -1,3 +1,11 @@
 .catalogue-display-none-important {
-    display: none !important;
+  display: none !important;
+}
+.catalogue {
+  .cursor-width {
+    cursor: w-resize;
+  }
+  .w-full-important {
+      width: 100% !important;
+  }
 }

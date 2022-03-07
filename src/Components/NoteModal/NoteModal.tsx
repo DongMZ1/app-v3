@@ -14,7 +14,7 @@ type NoteModalProps = {
 const NoteModal = ({ text, onChange, close, save, show, unitName }: NoteModalProps) => {
     return <Popup boxShadow={false} show={show} onClose={close}>
         <div className='border border-black border-solid w-96 bg-cream note-modal'>
-            <div className='flex'>
+            <div className='flex px-6'>
                 <div className='mx-auto my-6 text-2xl font-moret'>Note: {unitName}</div>
             </div>
             <div className='px-4'>

@@ -2,6 +2,7 @@ import { Reducer } from "redux";
 type TReduxReducer = Reducer;
 
 export type Tappstate = {
+  homePageLoader: boolean;
   homePageSearchKeyword: string;
   projects: undefined | any[];
   userInfo: any;
@@ -15,8 +16,14 @@ export type Tappstate = {
   quoteDetail: undefined | any;
   selectedQuoteUnit: undefined | any;
   filterCatalogue: any;
+  products: any[];
+  selectedProductDetail: any;
+  showselectedProductDetail: boolean;
+  draggedProduct: any;
+  designDetail: any;
 };
 const initialState = {
+  homePageLoader: false,
   homePageSearchKeyword: "",
   projects: undefined,
   userInfo: undefined,
@@ -30,6 +37,11 @@ const initialState = {
   quoteDetail: undefined,
   selectedQuoteUnit: undefined,
   filterCatalogue: {},
+  products: [],
+  selectedProductDetail: undefined,
+  showselectedProductDetail: false,
+  draggedProduct: undefined,
+  designDetail: undefined
 };
 const ReduxReducer: TReduxReducer = (
   state: Tappstate = initialState,

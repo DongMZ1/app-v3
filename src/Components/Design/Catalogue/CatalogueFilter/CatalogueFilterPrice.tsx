@@ -1,22 +1,32 @@
+import {useState} from 'react'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler'
 import { Button } from '@fulhaus/react.ui.button'
-import { BsChevronDown } from 'react-icons/bs'
-import { CSSTransition } from 'react-transition-group'
-
+import { Tappstate } from '../../../../redux/reducers'
+import {useSelector, useDispatch} from 'react-redux'
+import produce from 'immer'
 type CatalogueFilterPriceProps = {
     showPrice: boolean,
     setshowPrice: React.Dispatch<React.SetStateAction<boolean>>,
-    minPrice: number,
-    setminPrice: React.Dispatch<React.SetStateAction<number>>,
-    maxPrice: number,
-    setmaxPrice: React.Dispatch<React.SetStateAction<number>>
 }
-const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, maxPrice, setmaxPrice }: CatalogueFilterPriceProps) => {
-    return <div className='w-1/6 mr-4'>
-        <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
-        <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
-            <CSSTransition in={showPrice} timeout={300} unmountOnExit classNames='opacity-animation'>
-                <div className='absolute z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
+const CatalogueFilterPrice = ({ showPrice, setshowPrice}: CatalogueFilterPriceProps) => {
+    const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
+    const dispatch = useDispatch();
+    const [minPrice, setminPrice] = useState(filterCatalogue?.minPrice ? filterCatalogue?.minPrice : 0);
+    const [maxPrice, setmaxPrice] = useState(filterCatalogue?.maxPrice ? filterCatalogue?.maxPrice : 50000);
+
+    const apply = () => {
+        const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+            draft.minPrice = minPrice;
+            draft.maxPrice = maxPrice;
+        })
+        dispatch({
+            type: 'filterCatalogue',
+            payload: newFilterCatalogue
+        });
+        setshowPrice(false);
+    }
+    return  <ClickOutsideAnElementHandler onClickedOutside={() => setshowPrice(false)}>
+                <div className='absolute right-0 z-50 px-4 py-6 border border-black border-solid w-400px bg-cream'>
                     <div className='text-sm font-semibold font-ssp'>Price</div>
                     <div className='relative w-full mt-4'>
                         <input
@@ -30,7 +40,7 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, 
                                 }
                             }
                             min="0"
-                            max="3200"
+                            max="50000"
                             className="absolute w-full min-price-slider"
                         />
                         <input
@@ -42,13 +52,9 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, 
                                 }
                             }}
                             min="0"
-                            max="3200"
+                            max="50000"
                             className="absolute w-full max-price-slider"
                         />
-                    </div>
-                    <div className='relative flex w-full mt-6'>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${minPrice * 100 / (3200 + minPrice / 10)}%` }}>{minPrice}</div>
-                        <div className='absolute text-sm font-ssp' style={{ left: `${maxPrice * 100 / (3200 + maxPrice / 10)}%` }}>{maxPrice}</div>
                     </div>
                     <div className='flex mt-8'>
                         <div className='w-1/2 text-xs font-ssp'>Minimum</div>
@@ -62,13 +68,10 @@ const CatalogueFilterPrice = ({ showPrice, setshowPrice, minPrice, setminPrice, 
                     </div>
                     <div className='flex mt-8 mb-2'>
                         <Button onClick={() => setshowPrice(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
-                        <Button disabled={minPrice > maxPrice} className='w-24'>Apply</Button>
+                        <Button disabled={minPrice > maxPrice} onClick={() => apply()} className='w-24'>Apply</Button>
                     </div>
                 </div>
-            </CSSTransition>
         </ClickOutsideAnElementHandler>
-
-    </div>
 }
 
 export default CatalogueFilterPrice;
