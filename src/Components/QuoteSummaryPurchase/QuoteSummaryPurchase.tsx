@@ -24,6 +24,7 @@ const QuoteSummaryPurchase = () => {
     const [paymentTermsUnit, setpaymentTermsUnit] = useState('%');
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
+    const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
     if (selectedQuoteUnit) {
         return <UnitBudget />
     }
@@ -33,7 +34,7 @@ const QuoteSummaryPurchase = () => {
             {
                 !editable && <>
                     <div className='my-auto ml-auto mr-8 text-sm font-ssp'>Start Date: May 1, 2021</div>
-                    <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />
+                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />}
                 </>
             }
             {
@@ -74,8 +75,24 @@ const QuoteSummaryPurchase = () => {
             <div className='w-1/2'>{quoteDetail?.unitCount}</div>
             <div className='w-1/4'>Need to implement</div>
         </div>
+        <div className='flex mt-2 font-ssp'>
+            <div>
+                <div className='text-sm font-ssp'>
+                    Volume Discount
+                </div>
+                {editable ? <DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' /> :
+                    <div>
+                        Tier 1
+                    </div>}
+            </div>
+            <div className='my-auto ml-auto'>- 9999.00$</div>
+        </div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
-
+            <div className='flex'>
+                <div className='mr-1'>Setup Fee</div>
+                <Tooltip text='' iconColor='blue' />
+                <div className='ml-auto'>Included</div>
+            </div>
         </div>
         <div className='my-2 text-2xl font-moret'>Payment Terms</div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>

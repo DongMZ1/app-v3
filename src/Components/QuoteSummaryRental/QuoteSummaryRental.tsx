@@ -26,6 +26,7 @@ const QuoteSummaryRental = () => {
     const [taxOnSale, settaxOnSale] = useState('0')
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
+    const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
     if (selectedQuoteUnit) {
         return <UnitBudget />
     }
@@ -35,7 +36,7 @@ const QuoteSummaryRental = () => {
             {
                 !editable && <>
                     <div className='my-auto ml-auto mr-8 text-sm font-ssp'>Start Date: May 1, 2021</div>
-                    <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />
+                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />}
                 </>
             }
             {
@@ -55,7 +56,7 @@ const QuoteSummaryRental = () => {
                                 </div>
                             </ClickOutsideAnElementHandler>}
                     </div>
-                    <ImCross className='my-auto cursor-pointer' onClick={() => seteditable(false)} />
+                    {userRole !== 'viewer' && <ImCross className='my-auto cursor-pointer' onClick={() => seteditable(false)} />}
                 </>
             }
         </div>
