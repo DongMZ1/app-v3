@@ -23,12 +23,13 @@ const QuoteSummaryPurchase = () => {
     const [paymentTerms, setpaymentTerms] = useState<any[]>([]);
     const [paymentTermsUnit, setpaymentTermsUnit] = useState('%');
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     if (selectedQuoteUnit) {
         return <UnitBudget />
     }
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto text-sm quote-summary-purchase font-ssp'>
         <div className='flex'>
-            <div className='my-auto text-2xl font-moret'>Payment Terms</div>
+            <div className='my-auto text-2xl font-moret'>Order Summary</div>
             {
                 !editable && <>
                     <div className='my-auto ml-auto mr-8 text-sm font-ssp'>Start Date: May 1, 2021</div>
@@ -54,9 +55,29 @@ const QuoteSummaryPurchase = () => {
                 </>
             }
         </div>
+        <div className='flex py-2 mt-4 border-b border-black border-solid'>
+            <div className='w-1/4 '>Unit Type</div>
+            <div className='w-1/4'>Qty</div>
+            <div className='w-1/4'>Price Per Unit</div>
+            <div className='w-1/4'>Price Of All Units</div>
+        </div>
+        {
+            quoteDetail?.data?.map((eachUnit: any) => <div className='flex py-2 border-b border-black border-solid'>
+                <div className='w-1/4 '>{eachUnit?.name}</div>
+                <div className='w-1/4'>{eachUnit?.count}</div>
+                <div className='w-1/4'>Need to implement</div>
+                <div className='w-1/4'>Need to implement</div>
+            </div>)
+        }
+        <div className='flex py-2'>
+            <div className='w-1/4 '>Totals</div>
+            <div className='w-1/2'>{quoteDetail?.unitCount}</div>
+            <div className='w-1/4'>Need to implement</div>
+        </div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
 
         </div>
+        <div className='my-2 text-2xl font-moret'>Payment Terms</div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
             <div className='flex'>
                 <div className='my-auto text-xs font-ssp'>
@@ -64,8 +85,8 @@ const QuoteSummaryPurchase = () => {
                 </div>
                 {editable &&
                     <>
-                    <Radio className='ml-auto mr-12' label='%' checked={paymentTermsUnit === '%'} onChange={() => {setpaymentTermsUnit('%')}} />
-                    <Radio className='mr-12' label='$' checked={paymentTermsUnit === '$'} onChange={() => {setpaymentTermsUnit('$')}} />
+                        <Radio className='ml-auto mr-12' label='%' checked={paymentTermsUnit === '%'} onChange={() => { setpaymentTermsUnit('%') }} />
+                        <Radio className='mr-12' label='$' checked={paymentTermsUnit === '$'} onChange={() => { setpaymentTermsUnit('$') }} />
                     </>
                 }
             </div>
@@ -87,16 +108,16 @@ const QuoteSummaryPurchase = () => {
                         }
                         {
                             editable ? <>
-                            <TextInput type='number' disabled={paymentTermsUnit !== '$'} className={`${paymentTermsUnit !== '$' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachTerm?.amount} onChange={(e) => {
-                                let newPaymentTerms = [...paymentTerms]
-                                newPaymentTerms[key].amount = (e.target as any).valueAsNumber;
-                                setpaymentTerms(newPaymentTerms);
-                            }} />
-                            <TextInput type='number' disabled={paymentTermsUnit !== '%'} className={`${paymentTermsUnit !== '%' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={eachTerm?.percent} onChange={(e) => {
-                                let newPaymentTerms = [...paymentTerms]
-                                newPaymentTerms[key].percent = (e.target as any).valueAsNumber;
-                                setpaymentTerms(newPaymentTerms);
-                            }} />
+                                <TextInput type='number' disabled={paymentTermsUnit !== '$'} className={`${paymentTermsUnit !== '$' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachTerm?.amount} onChange={(e) => {
+                                    let newPaymentTerms = [...paymentTerms]
+                                    newPaymentTerms[key].amount = (e.target as any).valueAsNumber;
+                                    setpaymentTerms(newPaymentTerms);
+                                }} />
+                                <TextInput type='number' disabled={paymentTermsUnit !== '%'} className={`${paymentTermsUnit !== '%' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={eachTerm?.percent} onChange={(e) => {
+                                    let newPaymentTerms = [...paymentTerms]
+                                    newPaymentTerms[key].percent = (e.target as any).valueAsNumber;
+                                    setpaymentTerms(newPaymentTerms);
+                                }} />
                             </>
                                 :
                                 <div className='my-auto ml-auto mr-4'>
