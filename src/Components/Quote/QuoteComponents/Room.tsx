@@ -13,6 +13,7 @@ import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
 import { Popup } from '@fulhaus/react.ui.popup';
 import debounce from 'lodash.debounce';
+import debouncePromise from 'debounce-promise';
 
 type RoomType = {
     eachRoom: any,
@@ -53,7 +54,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const dispatch = useDispatch();
 
-    const updateCategories = debounce(async(categories: any) => {
+    const updateCategories = debouncePromise(async(categories: any) => {
         const res = await apiRequest({
             url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
             body: {
@@ -64,7 +65,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         if (!res?.success) {
             console.log('updateCategories failed at line 33 Room.tsx')
         }
-    }, 500)
+    }, 500, {leading: true})
 
     const saveAsRoomPackage = async () => {
         const res = await apiRequest(
@@ -345,7 +346,7 @@ type CategoryType = {
     eachCategory: any,
     eachRoom: any,
     updateQuoteDetail: (newselectedQuoteUnit: any) => void,
-    updateCategories: (categories: any) => Promise<void> | undefined,
+    updateCategories: (categories: any) => Promise<void>,
 }
 const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories }: CategoryType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;

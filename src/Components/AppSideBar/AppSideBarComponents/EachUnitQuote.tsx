@@ -14,7 +14,7 @@ type eachUnitType = {
     eachUnit: any,
     getUnitPackages: () => Promise<void>
 }
-const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
+const EachUnitQuote = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
@@ -242,4 +242,4 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     </>
 }
 
-export default EachUnit;
+export default EachUnitQuote;
