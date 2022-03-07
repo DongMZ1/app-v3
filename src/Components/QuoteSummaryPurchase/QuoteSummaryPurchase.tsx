@@ -12,7 +12,8 @@ import { Tooltip } from '@fulhaus/react.ui.tooltip'
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input';
 import { Button } from '@fulhaus/react.ui.button';
-import {RiDeleteBin6Fill} from 'react-icons/ri'
+import { RiDeleteBin6Fill } from 'react-icons/ri'
+import { Radio } from '@fulhaus/react.ui.radio';
 const QuoteSummaryPurchase = () => {
     const [editable, seteditable] = useState(false);
     const [showCalendar, setshowCalendar] = useState(false);
@@ -54,9 +55,21 @@ const QuoteSummaryPurchase = () => {
             }
         </div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
-            {editable &&
-                < DropdownListInput wrapperClassName='w-4rem-important' initialValue={paymentTermsUnit} onSelect={(v) => setpaymentTermsUnit(v)} options={['%', '$']} />
-            }
+
+        </div>
+        <div className='w-full p-4 mt-4 border border-black border-solid'>
+            <div className='flex'>
+                <div className='my-auto text-xs font-ssp'>
+                    TOTAL QUOTE BUDGET : $100000
+                </div>
+                {editable &&
+                    <>
+                    <Radio className='ml-auto mr-12' label='%' checked={paymentTermsUnit === '%'} onChange={() => {setpaymentTermsUnit('%')}} />
+                    <Radio className='mr-12' label='$' checked={paymentTermsUnit === '$'} onChange={() => {setpaymentTermsUnit('$')}} />
+                    </>
+                }
+            </div>
+            <div className='my-1 text-sm font-ssp'><i>Tax Not Included</i></div>
             {
                 paymentTerms?.map(
                     (eachTerm, key) => <div className='flex w-full py-2 border-b border-black border-solid '>
@@ -73,22 +86,29 @@ const QuoteSummaryPurchase = () => {
                             <div className='my-auto'>{eachTerm?.name}</div>
                         }
                         {
-                            editable ? <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{paymentTermsUnit}</span>} inputName='payment item amount' variant='box' value={eachTerm?.amount} onChange={(e) => {
+                            editable ? <>
+                            <TextInput type='number' disabled={paymentTermsUnit !== '$'} className={`${paymentTermsUnit !== '$' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachTerm?.amount} onChange={(e) => {
                                 let newPaymentTerms = [...paymentTerms]
                                 newPaymentTerms[key].amount = (e.target as any).valueAsNumber;
                                 setpaymentTerms(newPaymentTerms);
                             }} />
+                            <TextInput type='number' disabled={paymentTermsUnit !== '%'} className={`${paymentTermsUnit !== '%' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={eachTerm?.percent} onChange={(e) => {
+                                let newPaymentTerms = [...paymentTerms]
+                                newPaymentTerms[key].percent = (e.target as any).valueAsNumber;
+                                setpaymentTerms(newPaymentTerms);
+                            }} />
+                            </>
                                 :
                                 <div className='my-auto ml-auto mr-4'>
                                     {eachTerm?.amount} {paymentTermsUnit}
                                 </div>
                         }
                         {
-                             editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
+                            editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
                                 let newPaymentTerms = [...paymentTerms];
                                 newPaymentTerms.splice(key, 1);
                                 setpaymentTerms(newPaymentTerms);
-                             }} />
+                            }} />
                         }
                     </div>
                 )
@@ -102,67 +122,9 @@ const QuoteSummaryPurchase = () => {
                 )} >Add new Service Cost</Button>
             }
         </div>
-        <div className='mt-10 text-2xl font-moret'>Deal Summary</div>
-        <div className='flex mt-4 text-sm font-ssp'>
-            <div>Item</div>
-            <div className='ml-auto'>Rate</div>
-        </div>
-        <div className='flex mt-4'>
-            <div>Service Costs (individual line items can only be viewed by you)</div>
-            <div className='ml-auto'>$99999.00</div>
-        </div>
-        <div className='w-full pt-4 mt-4 border-t border-black border-solid'>Discount(%)</div>
-        <div className='flex mt-4'>
-            {editable ?
-                <TextInput prefix={<span>%</span>} className='w-24' variant='box' inputName='percentage discount' value={discount} onChange={
-                    (e) => setdiscount((e.target as any).value)
-                } /> : <div>{discount}% </div>}
-            <div className='ml-auto'>-$15999.00</div>
-        </div>
-        <div className='flex pb-4 mt-4 border-b border-black border-solid'>
-            <div>Subtotal</div>
-            <div className='ml-auto'>$9999.00</div>
-        </div>
-        <div className='flex mt-4'>
-            <div className='mr-1'>
-                Non rentable
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>$15941.00</div>
-        </div>
-        <div className='flex mt-4'>
-            <div className='my-auto mr-1'>
-                Security Deposit
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            {editable ? <TextInput prefix={<span>%</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={securityDeposit} onChange={
-                (e) => setsecurityDeposit((e.target as any).value)
-            } /> : <div className='ml-auto'>$15981.00</div>}
-        </div>
-        <div className='flex mt-4'>
-            <div className='my-auto mr-1'>
-                Shipping
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            {editable ? <TextInput prefix={<span>$</span>} className='w-24 ml-auto' variant='box' inputName='security deposit' value={shipping} onChange={
-                (e) => setshipping((e.target as any).value)
-            } /> : <div className='ml-auto'>${shipping}</div>}
-        </div>
-        <div className='flex mt-4'>
-            <div className='mr-1'>
-                Tax(15%)
-            </div>
-            <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>$19481.00</div>
-        </div>
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>
-            <div className='font-semibold '>Contract Start Fee</div>
-            <div className='ml-auto font-semibold'>$9000</div>
-        </div>
-        <div className='flex px-4 py-2 mt-4 border border-black border-solid'>
-            <div className='mr-1'>Total Contract Cost</div>
-            <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>$9000</div>
+            <div className='font-semibold '>Estimated Amount Due Today</div>
+            <div className='ml-auto font-semibold'>$9000.00</div>
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
         <div className='px-4 py-2 mt-4 mb-8 bg-white border border-black border-solid'>
