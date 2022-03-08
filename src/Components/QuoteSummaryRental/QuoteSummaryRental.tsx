@@ -116,7 +116,7 @@ const QuoteSummaryRental = () => {
             <div>Item</div>
             <div className='ml-auto'>Rate</div>
         </div>
-        <div className={`mt-2 ${editable ? 'border mb-6 px-4 py-6' : 'mb-6'} border-black border-solid`}>
+        <div className={`mt-2 ${editable ? 'border mb-6 px-4 py-6' : 'mb-6 border px-4 py-4'} border-black border-solid`}>
             <div className='flex'>
                 <div className='mr-1'>Setup Fee</div>
                 <Tooltip text='' iconColor='blue' />
