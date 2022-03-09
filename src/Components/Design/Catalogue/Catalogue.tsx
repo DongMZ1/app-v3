@@ -19,7 +19,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
     const products = useSelector((state: Tappstate) => state.products);
     const scrollRef = useRef<any>();
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
-    const [loading, setloading] = useState(false);
+    const [loading, setloading] = useState(true);
     const [draggableWidth, setdraggableWidth] = useState<number>();
     const [isExpand, setisExpand] = useState(false);
     useEffect(() => {
