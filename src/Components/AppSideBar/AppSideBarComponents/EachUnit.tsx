@@ -14,7 +14,7 @@ type eachUnitType = {
     eachUnit: any,
     getUnitPackages: () => Promise<void>
 }
-const EachUnitQuote = ({ eachUnit, getUnitPackages }: eachUnitType) => {
+const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
@@ -31,8 +31,8 @@ const EachUnitQuote = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [showSaveAsUnitPackage, setshowSaveAsUnitPackage] = useState(false);
 
     const debouncedUnitCount = useDebounce(unitCount, 300);
-    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase');
-    const darkMode = (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) && eachUnit?.unitID === selectedQuoteUnit?.unitID;
+    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only');
+    const darkMode = (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only')) && eachUnit?.unitID === selectedQuoteUnit?.unitID;
 
     useEffect(() => {
         //add debounce to update the count of unit
@@ -98,9 +98,9 @@ const EachUnitQuote = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             payload: newQuoteDetail
         })
         const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            if(v){
-            draft.count = v;
-            }else{
+            if (v) {
+                draft.count = v;
+            } else {
                 draft.count = 0
             }
         })
@@ -233,7 +233,7 @@ const EachUnitQuote = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
                 //check if it is selected, if not then give it a unit count
-                units={eachUnit?.unitID === selectedQuoteUnit?.unitID ? unitCount : unitCount? unitCount : 0}
+                units={eachUnit?.unitID === selectedQuoteUnit?.unitID ? unitCount : unitCount ? unitCount : 0}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
                 darkmod={darkMode}
@@ -242,4 +242,4 @@ const EachUnitQuote = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     </>
 }
 
-export default EachUnitQuote;
+export default EachUnit;
