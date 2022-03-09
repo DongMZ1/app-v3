@@ -36,26 +36,12 @@ const QuoteSummaryPurchase = () => {
             <div className='my-auto text-2xl font-moret'>Order Summary</div>
             {
                 !editable && <>
-                    <div className='my-auto ml-auto mr-8 text-sm font-ssp'>Start Date: May 1, 2021</div>
-                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />}
+                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto ml-auto cursor-pointer' />}
                 </>
             }
             {
                 editable && <>
-                    <div className='flex h-full px-4 ml-auto text-sm border border-black border-solid'><div className='m-auto'>Start Date</div></div>
-                    <div className='relative flex px-4 mr-8 text-sm bg-white border border-black border-solid'>
-                        <div className='my-auto mr-4'>May 1, 2021</div>
-                        <FaRegCalendarAlt onClick={() => setshowCalendar(true)} className='my-auto cursor-pointer' />
-                        {showCalendar &&
-                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowCalendar(false)}>
-                                <div className='absolute right-0 z-50 p-4 bg-white border border-black border-solid top-full w-80'>
-                                    <DatePicker onSelectDate={(selectedDate) =>
-                                        setshowCalendar(false)
-                                    } />
-                                </div>
-                            </ClickOutsideAnElementHandler>}
-                    </div>
-                    <ImCross className='my-auto cursor-pointer' onClick={() => seteditable(false)} />
+                    <ImCross className='my-auto ml-auto cursor-pointer' onClick={() => seteditable(false)} />
                 </>
             }
         </div>
