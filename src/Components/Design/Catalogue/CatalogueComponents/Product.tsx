@@ -1,7 +1,8 @@
 import { AppV3FurnitureCard } from '@fulhaus/react.ui.product-card-app'
 import './Product.scss'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRef, useMemo } from 'react'
+import { Tappstate } from '../../../../redux/reducers'
 type ProductProp = {
     eachProduct: any;
     draggableWidth?: number
@@ -10,7 +11,8 @@ type ProductProp = {
 const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     const dispatch = useDispatch();
     const productRef = useRef(null);
-    const dragGhost = useMemo(() => (productRef.current as any)?.cloneNode(true), [productRef]);
+    const dragGhost = (productRef.current as any)?.cloneNode(true);
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const openProductDetail = () => {
         dispatch({
             type: 'showselectedProductDetail',
@@ -27,17 +29,19 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                 type: 'draggedProduct',
                 payload: eachProduct
             });
-            dragGhost?.classList?.add('scale-wdith-150px');
+            if(dragGhost){
+            dragGhost?.classList?.add('scale-width-150px');
             // Place it into the DOM tree
             document.body.appendChild(dragGhost);
             // Set the new stylized "drag image" of the dragged element
             e.dataTransfer.setDragImage(dragGhost, 0, 0);
+            }
         }} onDragEnd={(e) => {
             dispatch({
                 type: 'draggedProduct',
                 payload: undefined
             });
-            dragGhost?.classList?.remove('scale-wdith-150px');
+            dragGhost?.classList?.remove('scale-width-150px');
             dragGhost?.parentNode?.removeChild(dragGhost);
         }}>
             <AppV3FurnitureCard
@@ -48,10 +52,12 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                 hoverTag='Currently Out Of Stock'
                 lastChecked={eachProduct?.stockDate?.slice(0, 10)}
                 addRoomOptions={
-                    [{
-                        name: 'Room 1',
-                        id: '123456'
-                    }]
+                    selectedQuoteUnit?.rooms?.map((eachRoom: any) => {
+                        return {
+                            name: eachRoom?.name,
+                            id: eachRoom?.roomID
+                        }
+                    })
                 }
             />
         </div>

@@ -6,7 +6,7 @@ import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-heade
 import { FurnitureInRoomRowCard } from '@fulhaus/react.ui.furniture-in-room-row-card';
 const SelectedUnitMapProducts = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
-    const selectedProduct = useSelector((state: Tappstate) => state.selectedProject);
+    const draggedProduct = useSelector((state: Tappstate) => state.draggedProduct);
     if (!selectedQuoteUnit) {
         return <div className='m-auto'>
             <AddUnitIcon />
@@ -15,7 +15,7 @@ const SelectedUnitMapProducts = () => {
     }
     const ondrop = (e: React.DragEvent<HTMLDivElement>, eachRoom: any, eachCategory:any) => {
         console.log('droped ' + eachRoom?.name + ' ' + eachCategory?.name);
-        console.log(selectedProduct)
+        console.log(draggedProduct)
     }
     return <div className='flex-1 p-4 overflow-auto'>
         {
