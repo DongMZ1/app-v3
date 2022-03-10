@@ -13,18 +13,20 @@ import useIsFirstRender from '../../../../Hooks/useIsFirstRender';
 import apiRequest from '../../../../Service/apiRequest';
 import CatalogueFilterVendor from './CatalogueFilterVendor';
 import CatalogueFilterPrice from './CatalogueFilterPrice';
+import CatalogueFilterSort from './CatalogueFilterSort'
 import { BiExpand } from 'react-icons/bi'
 import { BiCollapse } from 'react-icons/bi'
 
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { GoX } from 'react-icons/go'
+import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input';
 
 type CatalogueFilterType = {
     setisExpand: React.Dispatch<React.SetStateAction<boolean>>
     setdraggableWidth: React.Dispatch<React.SetStateAction<number | undefined>>
     isExpand: boolean
 }
-const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand}: CatalogueFilterType) => {
+const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand }: CatalogueFilterType) => {
 
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
     const dispatch = useDispatch();
@@ -55,6 +57,9 @@ const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand}: CatalogueF
     const [tags, settags] = useState<any[]>([]);
     const [catagoriesOption, setcatagoriesOption] = useState<any[]>([]);
     const [vendorOptions, setvendorOptions] = useState<any[]>([]);
+
+    //sort
+    const [showSort, setshowSort] = useState(false);
     useEffect(() => {
         const fetchTags = async () => {
             const res = await apiRequest({
@@ -139,7 +144,7 @@ const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand}: CatalogueF
                         />
                     </CSSTransition>
                 </div>
-                <div className='w-24 mr-4'>
+                <div className='w-20 mr-4'>
                     <div onClick={() => setshowColorMenu(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Colour</div><BsChevronDown className='my-auto' /></div>
                     <CSSTransition in={showColorMenu} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatalogueFilterColorPageOne
@@ -158,12 +163,21 @@ const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand}: CatalogueF
                         />
                     </CSSTransition>
                 </div>
-                <div className='relative w-24 mr-4'>
+                <div className='relative w-20 mr-4'>
                     <div onClick={() => setshowPrice(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Price</div><BsChevronDown className='my-auto' /></div>
                     <CSSTransition in={showPrice} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <CatalogueFilterPrice
                             showPrice={showPrice}
                             setshowPrice={setshowPrice}
+                        />
+                    </CSSTransition>
+                </div>
+                <div className='relative w-20 mr-4'>
+                    <div onClick={() => setshowSort(true)} className='flex justify-between w-full px-1 text-sm border border-black border-solid cursor-pointer select-none'><div className='my-1'>Sort</div><BsChevronDown className='my-auto' /></div>
+                    <CSSTransition in={showSort} timeout={300} unmountOnExit classNames='opacity-animation'>
+                        <CatalogueFilterSort
+                            showSort={showSort}
+                            setshowSort={setshowSort}
                         />
                     </CSSTransition>
                 </div>
@@ -275,6 +289,20 @@ const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand}: CatalogueF
                             })
                         }}
                     ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Search</div></div>
+                }
+                {
+                    (filterCatalogue?.sort) &&
+                    <div className='flex mr-4 text-sm font-semibold border-b border-black border-solid cursor-pointer font-ssp'
+                        onClick={() => {
+                            const newFilterCatalogue = produce(filterCatalogue, (draft: any) => {
+                                draft.sort = undefined;
+                            })
+                            dispatch({
+                                type: 'filterCatalogue',
+                                payload: newFilterCatalogue
+                            })
+                        }}
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>{filterCatalogue?.sort}</div></div>
                 }
                 <div onClick={() => resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
                 {/*<CatalogueFilterDistance />*/}

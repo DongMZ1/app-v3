@@ -30,7 +30,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
           e.currentTarget.innerHTML = e.currentTarget.innerHTML + ' (added!) '
           e.currentTarget.style.fontWeight = '700';
     }
-    return <div className={`${isExpand ? 'w-1/6' : 'w-1/3'} ${draggableWidth ? draggableWidth > 1100 ? 'w-1/5' : (draggableWidth > 900 ? 'w-1/4' : '') : ''} px-2`}>
+    return <div className={`${isExpand ? 'w-1/6' : 'w-1/3'} ${draggableWidth ? draggableWidth > 1100 ? 'w-1/5' : (draggableWidth > 900 ? 'w-1/4' : '') : ''} px-4`}>
         <div ref={productRef} draggable onDragStart={(e) => {
             dispatch({
                 type: 'draggedProduct',
