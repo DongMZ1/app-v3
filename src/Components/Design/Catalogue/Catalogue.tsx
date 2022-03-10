@@ -8,6 +8,7 @@ import { Tappstate } from '../../../redux/reducers';
 import SelectedProductDetail from './CatalogueComponents/SelectedProductDetail';
 import Product from '../Catalogue/CatalogueComponents/Product'
 import { Loader } from "@fulhaus/react.ui.loader";
+import SelectedUnitMapProduct from './CatalogueComponents/SelectedUnitMapProducts'
 type CatalogueProps = {
     tabState: string
 }
@@ -103,11 +104,8 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
             </div>
             {!isExpand && <>
                 <div draggable onDrag={(e) => dragMiddleLine(e)} onDragOver={(e) => e.preventDefault()} className='box-border w-1 h-full bg-black border-l-2 border-r-2 border-solid border-cream cursor-width'>
-
                 </div>
-                <div className="flex-1 ">
-
-                </div>
+                <SelectedUnitMapProduct />
             </>
             }
         </div>

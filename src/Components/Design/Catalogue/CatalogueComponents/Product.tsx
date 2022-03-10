@@ -1,4 +1,5 @@
 import { AppV3FurnitureCard } from '@fulhaus/react.ui.product-card-app'
+import './Product.scss'
 import { useDispatch } from 'react-redux'
 type ProductProp = {
     eachProduct: any;
@@ -23,7 +24,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                 type: 'draggedProduct',
                 payload: eachProduct
             });
-        }} onDragEnd={() => {
+        }} onDragEnd={(e) => {
             dispatch({
                 type: 'draggedProduct',
                 payload: undefined
