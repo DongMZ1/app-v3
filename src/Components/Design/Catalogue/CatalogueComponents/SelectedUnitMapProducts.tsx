@@ -24,7 +24,7 @@ const SelectedUnitMapProducts = () => {
                     <>
                     {
                         eachRoom?.categories?.map(
-                            (eachCategory: any) => <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard isDesign currentFurnitureNumber={1} furnitureName={eachCategory?.name} number={eachCategory?.qty} editable buy={eachCategory?.rentable} buyMSRP={eachCategory?.budget} rentMSRP={eachCategory?.budget}  /></div>
+                            (eachCategory: any) => <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard isDesign currentFurnitureNumber={1} furnitureName={eachCategory?.name} number={eachCategory?.qty} editable buy={eachCategory?.rentable} buyMSRP={eachCategory?.budget} rentMSRP={eachCategory?.budget} /></div>
                         )
                     }
                     </>
