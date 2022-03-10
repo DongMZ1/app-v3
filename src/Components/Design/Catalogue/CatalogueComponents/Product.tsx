@@ -26,8 +26,9 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
         })
     }
 
-    const addCatagory = (eachCategory: any) => {
-
+    const addCatagory = async (eachCategory: any, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          e.currentTarget.innerHTML = e.currentTarget.innerHTML + ' (added!) '
+          e.currentTarget.style.fontWeight = '700';
     }
     return <div className={`${isExpand ? 'w-1/6' : 'w-1/3'} ${draggableWidth ? draggableWidth > 1100 ? 'w-1/5' : (draggableWidth > 900 ? 'w-1/4' : '') : ''} px-2`}>
         <div ref={productRef} draggable onDragStart={(e) => {
@@ -70,7 +71,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                                         <ExitIcon className='my-auto ml-auto cursor-pointer' onClick={() => setselectedRoom(undefined)} />
                                     </div>
                                     {
-                                        selectedRoom?.categories?.map((eachCategory: any) => <div className='w-full px-4 py-2 text-xs cursor-pointer hover:bg-gray-200' onClick={() => addCatagory(eachCategory)}>
+                                        selectedRoom?.categories?.map((eachCategory: any) => <div className='w-full px-4 py-2 text-xs cursor-pointer hover:bg-gray-200' onClick={(e) => addCatagory(eachCategory, e)}>
                                             {
                                                 eachCategory?.name
                                             }
