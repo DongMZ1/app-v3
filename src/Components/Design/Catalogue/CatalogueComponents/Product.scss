@@ -1,15 +1,9 @@
-@keyframes drag_scale_half {
-    0% {transform: scale(0.5);}
-    99% {transform: scale(0.5);}
-    100% {transform: scale(1);}
-}
 
-.product-drag-scale-down-half {
-    &:active {
-        animation: drag_scale_half 0.1s;
-    }
-}
 
-.scale-half {
-    transform: scale(0.5);
+.scale-wdith-150px {
+  height: auto;
+  width: 150px;
+  border: 1px solid black;
+  position: absolute;
+  top: -500px;
 }

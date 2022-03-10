@@ -1,6 +1,7 @@
 import { AppV3FurnitureCard } from '@fulhaus/react.ui.product-card-app'
 import './Product.scss'
 import { useDispatch } from 'react-redux'
+import { useRef, useMemo } from 'react'
 type ProductProp = {
     eachProduct: any;
     draggableWidth?: number
@@ -8,6 +9,8 @@ type ProductProp = {
 }
 const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     const dispatch = useDispatch();
+    const productRef = useRef(null);
+    const dragGhost = useMemo(() => (productRef.current as any)?.cloneNode(true), [productRef]);
     const openProductDetail = () => {
         dispatch({
             type: 'showselectedProductDetail',
@@ -19,16 +22,23 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
         })
     }
     return <div className={`${isExpand ? 'w-1/6' : 'w-1/3'} ${draggableWidth ? draggableWidth > 1100 ? 'w-1/5' : (draggableWidth > 900 ? 'w-1/4' : '') : ''} px-2`}>
-        <div draggable onDragStart={(e) => {
+        <div ref={productRef} draggable onDragStart={(e) => {
             dispatch({
                 type: 'draggedProduct',
                 payload: eachProduct
             });
+            dragGhost?.classList?.add('scale-wdith-150px');
+            // Place it into the DOM tree
+            document.body.appendChild(dragGhost);
+            // Set the new stylized "drag image" of the dragged element
+            e.dataTransfer.setDragImage(dragGhost, 0, 0);
         }} onDragEnd={(e) => {
             dispatch({
                 type: 'draggedProduct',
                 payload: undefined
-            })
+            });
+            dragGhost?.classList?.remove('scale-wdith-150px');
+            dragGhost?.parentNode?.removeChild(dragGhost);
         }}>
             <AppV3FurnitureCard
                 imageURLs={eachProduct?.imageURLs}

@@ -13,8 +13,8 @@ const SelectedUnitMapProducts = () => {
             <div className='flex text-4xl font-moret'><div className='mx-auto'>Select a unit to get started</div></div>
         </div>
     }
-    const ondrop = (e: React.DragEvent<HTMLDivElement>) => {
-        console.log('fired');
+    const ondrop = (e: React.DragEvent<HTMLDivElement>, eachRoom: any, eachCategory:any) => {
+        console.log('droped ' + eachRoom?.name + ' ' + eachCategory?.name);
         console.log(selectedProduct)
     }
     return <div className='flex-1 p-4 overflow-auto'>
@@ -24,7 +24,7 @@ const SelectedUnitMapProducts = () => {
                     <>
                     {
                         eachRoom?.categories?.map(
-                            (eachCategory: any) => <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e)} ><FurnitureInRoomRowCard isDesign currentFurnitureNumber={1} furnitureName={eachCategory?.name} number={eachCategory?.qty} editable buy={eachCategory?.rentable} buyMSRP={eachCategory?.budget} rentMSRP={eachCategory?.budget}  /></div>
+                            (eachCategory: any) => <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard isDesign currentFurnitureNumber={1} furnitureName={eachCategory?.name} number={eachCategory?.qty} editable buy={eachCategory?.rentable} buyMSRP={eachCategory?.budget} rentMSRP={eachCategory?.budget}  /></div>
                         )
                     }
                     </>
