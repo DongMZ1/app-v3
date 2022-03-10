@@ -1,7 +1,7 @@
 import { AppV3FurnitureCard } from '@fulhaus/react.ui.product-card-app'
 import './Product.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Tappstate } from '../../../../redux/reducers'
 import { ReactComponent as ExitIcon } from '../../../../styles/images/exit.svg'
 type ProductProp = {
@@ -15,6 +15,9 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     const dragGhost = (productRef.current as any)?.cloneNode(true);
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    useEffect(()=>{
+        setselectedRoom(undefined);
+    }, [selectedQuoteUnit])
     const openProductDetail = () => {
         dispatch({
             type: 'showselectedProductDetail',
@@ -82,11 +85,14 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                             }
                         </> : <>
                             {
+                                selectedQuoteUnit? 
                                 selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div className='px-4 py-2 text-xs cursor-pointer hover:bg-gray-200 w-44' onClick={() => setselectedRoom(eachRoom)}>
                                     {
                                         eachRoom?.name
                                     }
-                                </div>)
+                                </div>) : <div className='px-4 py-2 text-xs font-semibold w-36 font-ssp'>
+                                      Please Select A Unit
+                                </div>
                             }
                         </>
                     }
