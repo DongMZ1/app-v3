@@ -111,7 +111,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         }
     }
 
-    const updateRoomCount = async (count: number) => {
+    const updateRoomCount = debouncePromise(async (count: number) => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             draft.rooms[index].count = count;
@@ -131,7 +131,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         if (!res?.success) {
             console.log('updateRoomCount failed at line 55 Room.tsx')
         }
-    }
+    }, 500, {leading: true})
 
     const addRoomPackagesToRoom = async () => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {

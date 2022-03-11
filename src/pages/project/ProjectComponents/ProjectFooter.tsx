@@ -5,6 +5,7 @@ import apiRequest from '../../../Service/apiRequest';
 import debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
 import { getQuoteDetail } from '../../../redux/Actions';
+import debouncePromise from 'debounce-promise'
 const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
@@ -18,7 +19,7 @@ const ProjectFooter = () => {
     const dispatch = useDispatch();
     useEffect(
         () => {
-            const getQuoteTotal = async () => {
+            const getQuoteTotal = debouncePromise(async () => {
                 const res = await apiRequest(
                     {
                         url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/total`,
@@ -28,18 +29,15 @@ const ProjectFooter = () => {
                 if (res?.success) {
                     setquoteTotal(res.quoteTotal);
                 }
-            }
-            const debounceGetQuoteTotal = debounce(
-                getQuoteTotal, 1000
-            )
+            }, 1200, {leading: true})
             if (JSONquoteDetail) {
-                debounceGetQuoteTotal();
+                getQuoteTotal();
             }
         }, [JSONquoteDetail]
     )
     useEffect(
         () => {
-            const getUnitTotal = async () => {
+            const getUnitTotal = debouncePromise(async () => {
                 const res = await apiRequest(
                     {
                         url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/${selectedQuoteUnit.unitID}/total`,
@@ -49,12 +47,9 @@ const ProjectFooter = () => {
                 if (res?.success) {
                     setunitTotal(res.unitTotal);
                 }
-            }
-            const debounceGetUnitTotal = debounce(
-                getUnitTotal, 1000
-            )
+            }, 1200, {leading: true})
             if (JSONselectedQuoteUnit) {
-                debounceGetUnitTotal();
+                getUnitTotal();
             }
         }, [JSONselectedQuoteUnit]
     )
