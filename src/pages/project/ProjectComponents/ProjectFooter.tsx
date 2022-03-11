@@ -41,7 +41,7 @@ const ProjectFooter = () => {
         if (res?.success) {
             setunitTotal(res.unitTotal);
         }
-    }, [])
+    }, [JSONselectedQuoteUnit])
     const getQuoteTotal = useCallback(async () => {
         const res = await apiRequest(
             {
@@ -52,7 +52,7 @@ const ProjectFooter = () => {
         if (res?.success) {
             setquoteTotal(res.quoteTotal);
         }
-    }, [])
+    }, [JSONquoteDetail])
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
         {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
         <>
