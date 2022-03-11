@@ -56,7 +56,6 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
     const debouncedCatagory = useDebounce(eachRoom?.categories, 500);
-    const debouncedRoomCount = useDebounce(eachRoom?.count, 300);
 
     useEffect(() => {
         if (!isFirstRendering && debouncedCatagory) {

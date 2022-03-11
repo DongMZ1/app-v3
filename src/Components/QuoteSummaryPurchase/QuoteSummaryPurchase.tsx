@@ -69,12 +69,14 @@ const QuoteSummaryPurchase = () => {
                 <div className='text-sm font-ssp'>
                     Volume Discount
                 </div>
-                {editable ? <DropdownListInput initialValue={'Tier 1'} options={['Tier 1']} wrapperClassName='w-6rem-important' /> :
+                {editable ?
+                    <DropdownListInput initialValue={'Tier Not Available'} options={['Tier Not Available']} wrapperClassName='w-6rem-important' />
+                    :
                     <div>
-                        Tier 1
+                        Tier Not Available
                     </div>}
             </div>
-            <div className='my-auto ml-auto'>- 9999.00$</div>
+            <div className='my-auto ml-auto'>Tier Not Available</div>
         </div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
             <div className='flex'>
@@ -102,17 +104,24 @@ const QuoteSummaryPurchase = () => {
                 <div className='ml-auto'>$9999.00</div>
             </div>
             {editable ?
-                <div className='flex mt-4'>
-                    <div className='w-1/12 mr-4'>
-                        <div>Additional Discount</div>
-                        <TextInput className='w-full' variant='box' inputName='additional discount' value={additionalDiscount} onChange={(e) => setadditionalDiscount((e.target as any).value)} suffix={<small>%</small>} />
+                <>
+                    <div className='flex'>
+                        <div className='w-1/6 mr-4'>
+                            Additional Discount
+                        </div>
+                        <div className='w-2/3'>
+                            Rationale
+                        </div>
                     </div>
-                    <div className='w-2/3 mr-4'>
-                        <div>Rationale</div>
-                        <TextInput className='w-full' variant='box' inputName='rationale' value={rationale} onChange={(e) => setrationale((e.target as any).value)} />
-                    </div>
-                    <div className='my-auto ml-auto'>-3578$</div>
-                </div> :
+                    <div className='flex'>
+                        <div className='w-1/6 my-auto mr-4'>
+                            <TextInput className='w-full' variant='box' inputName='additional discount' value={additionalDiscount} onChange={(e) => setadditionalDiscount((e.target as any).value)} suffix={<small>%</small>} />
+                        </div>
+                        <div className='w-2/3'>
+                            <TextInput className='w-full' variant='box' inputName='rationale' value={rationale} onChange={(e) => setrationale((e.target as any).value)} />
+                        </div>
+                        <div className='my-auto ml-auto'>-3578$</div>
+                    </div></> :
                 <div className='flex'>
                     <div className='w-1/3'>
                         <div>Additional Discount : {additionalDiscount}%</div>
@@ -123,12 +132,12 @@ const QuoteSummaryPurchase = () => {
 
             }
             <div className='flex pt-4 mt-4 border-t border-black border-solid'>
-                 <div className='my-auto font-semibold'>
-                     Total Quote Before Tax
-                 </div>
-                 <div className='ml-auto'>
-                     $128500.00
-                 </div>
+                <div className='my-auto font-semibold'>
+                    Total Quote Before Tax
+                </div>
+                <div className='ml-auto'>
+                    $128500.00
+                </div>
             </div>
             {
                 editable ? <div className='flex mt-4'>
@@ -145,7 +154,7 @@ const QuoteSummaryPurchase = () => {
                             initialValue={'$'}
                             wrapperClassName='w-6rem-important h-2-5-rem-important ml-auto'
                             options={['$', '%']} />
-                        <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{"$"}</span>} inputName='tax on sale input' variant='box' value={taxOnSale} onChange={(e) => {
+                        <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{"$"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
                             settaxOnSale((e.target as any).value)
                         }} />
                     </div>
@@ -161,12 +170,12 @@ const QuoteSummaryPurchase = () => {
                     </div>
             }
             <div className='flex pt-4 mt-4 border-t border-black border-solid'>
-                 <div className='my-auto font-semibold'>
-                     Total Quote After Estimated Tax
-                 </div>
-                 <div className='ml-auto'>
-                     $128500.00
-                 </div>
+                <div className='my-auto font-semibold'>
+                    Total Quote After Estimated Tax
+                </div>
+                <div className='ml-auto'>
+                    $128500.00
+                </div>
             </div>
         </div>
         <div className='my-2 text-2xl font-moret'>Payment Terms</div>
