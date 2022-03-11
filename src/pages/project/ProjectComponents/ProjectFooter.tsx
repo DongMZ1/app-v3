@@ -5,7 +5,7 @@ import apiRequest from '../../../Service/apiRequest';
 import debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
 import { getQuoteDetail } from '../../../redux/Actions';
-import debouncePromise from 'debounce-promise'
+import useDebounce from '../../../Hooks/useDebounce'
 const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
@@ -13,25 +13,25 @@ const ProjectFooter = () => {
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
-    const JSONquoteDetail = JSON.stringify(quoteDetail);
-    const JSONselectedQuoteUnit = JSON.stringify(selectedQuoteUnit);
+    const JSONquoteDetail = useDebounce(JSON.stringify(quoteDetail), 800);
+    const JSONselectedQuoteUnit = useDebounce(JSON.stringify(selectedQuoteUnit), 800);
     const history = useHistory();
     const dispatch = useDispatch();
     useEffect(
         () => {
             if (JSONquoteDetail) {
-                debounce(getQuoteTotal, 1000)();
+                getQuoteTotal()
             }
         }, [JSONquoteDetail]
     )
     useEffect(
         () => {
             if (JSONselectedQuoteUnit) {
-                debounce(getUnitTotal, 1000)();
+                getUnitTotal()
             }
         }, [JSONselectedQuoteUnit]
     )
-    const getUnitTotal = useCallback(async () => {
+    const getUnitTotal = async () => {
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/${selectedQuoteUnit?.unitID}/total`,
@@ -41,8 +41,8 @@ const ProjectFooter = () => {
         if (res?.success) {
             setunitTotal(res.unitTotal);
         }
-    }, [JSONselectedQuoteUnit])
-    const getQuoteTotal = useCallback(async () => {
+    }
+    const getQuoteTotal = async () => {
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/total`,
@@ -52,7 +52,7 @@ const ProjectFooter = () => {
         if (res?.success) {
             setquoteTotal(res.quoteTotal);
         }
-    }, [JSONquoteDetail])
+    }
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
         {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
         <>
