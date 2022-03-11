@@ -56,6 +56,10 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
         }
     }, 1000, { leading: true });
     const fetchProducts = async () => {
+        dispatch({
+            type: 'products',
+            payload: []
+        })
         setloading(true);
         let tags: any = [];
         if (filterCatalogue?.roomsAndStyleRoom?.map((eachRoom: any) => eachRoom?._id)) {
@@ -67,7 +71,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
         let categoryIDs = filterCatalogue?.itemTypes?.map((eachCategory: any) => eachCategory._id);
         let vendorIDs = filterCatalogue?.vendors?.map((eachVendor: any) => eachVendor._id)
         const res = await apiRequest({
-            url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=0&limit=20${filterCatalogue?.minPrice !== undefined ? `&priceMin=${Number(filterCatalogue?.minPrice)}` : ``}${filterCatalogue?.maxPrice ? `&priceMax=${Number(filterCatalogue?.maxPrice)}` : ''}${filterCatalogue?.nameOrSKU ? `&nameOrSKU=${filterCatalogue?.nameOrSKU}` : ''}${filterCatalogue?.color ? `&colorName=${filterCatalogue?.color}` : ''}${filterCatalogue?.maxWeight ? `&weight=${filterCatalogue?.maxWeight}` : ''}${filterCatalogue?.weightUnit ? `&weightUnit=${filterCatalogue?.weightUnit}` : ''}${filterCatalogue?.lengthUnit ? `&dimensionUnit=${filterCatalogue?.lengthUnit}` : ''}${filterCatalogue?.L ? `&length=${filterCatalogue?.L}` : ''}${filterCatalogue?.W ? `&width=${filterCatalogue?.W}` : ''}${filterCatalogue?.H ? `&height=${filterCatalogue?.H}` : ''}${tags?.length > 0 ? `&tagIDs=${tags?.join()}` : ''}${categoryIDs?.length > 0 ? `&categoryIDs=${categoryIDs?.join()}` : ''}${vendorIDs?.length > 0 ? `&vendorIDs=${vendorIDs?.join()}` : ''}${filterCatalogue?.sort === 'Price low to high' ? `&sortParams={retailPrice: -1}` : ''}`,
+            url: `/api/products-service/products/${currency ? currency : 'CAD'}?page=0&limit=20${filterCatalogue?.minPrice !== undefined ? `&priceMin=${Number(filterCatalogue?.minPrice)}` : ``}${filterCatalogue?.maxPrice ? `&priceMax=${Number(filterCatalogue?.maxPrice)}` : ''}${filterCatalogue?.nameOrSKU ? `&nameOrSKU=${filterCatalogue?.nameOrSKU}` : ''}${filterCatalogue?.color ? `&colorName=${filterCatalogue?.color}` : ''}${filterCatalogue?.maxWeight ? `&weight=${filterCatalogue?.maxWeight}` : ''}${filterCatalogue?.weightUnit ? `&weightUnit=${filterCatalogue?.weightUnit}` : ''}${filterCatalogue?.lengthUnit ? `&dimensionUnit=${filterCatalogue?.lengthUnit}` : ''}${filterCatalogue?.L ? `&length=${filterCatalogue?.L}` : ''}${filterCatalogue?.W ? `&width=${filterCatalogue?.W}` : ''}${filterCatalogue?.H ? `&height=${filterCatalogue?.H}` : ''}${tags?.length > 0 ? `&tagIDs=${tags?.join()}` : ''}${categoryIDs?.length > 0 ? `&categoryIDs=${categoryIDs?.join()}` : ''}${vendorIDs?.length > 0 ? `&vendorIDs=${vendorIDs?.join()}` : ''}${filterCatalogue?.sort === 'Price high to low' ? `&sortParams={"retailPrice":-1}` : ''}${filterCatalogue?.sort === 'Price low to high' ? `&sortParams={"retailPrice":1}` : ''}`,
             method: 'GET'
         })
         if (res.success) {
