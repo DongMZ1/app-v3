@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { FurnitureInRoomRowCard } from '@fulhaus/react.ui.furniture-in-room-row-card'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import produce from 'immer'
@@ -65,7 +65,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         if (!res?.success) {
             console.log('updateCategories failed at line 33 Room.tsx')
         }
-    }, 500, {leading: true})
+    }, 500, {leading: true});
 
     const saveAsRoomPackage = async () => {
         const res = await apiRequest(

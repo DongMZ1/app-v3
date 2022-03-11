@@ -19,40 +19,42 @@ const ProjectFooter = () => {
     const dispatch = useDispatch();
     useEffect(
         () => {
-            const getQuoteTotal = debouncePromise(async () => {
-                const res = await apiRequest(
-                    {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/total`,
-                        method: 'GET'
-                    }
-                )
-                if (res?.success) {
-                    setquoteTotal(res.quoteTotal);
-                }
-            }, 1200, {leading: true})
+            const debouncedGetQuoteDetail = debounce(getQuoteTotal, 1000);
             if (JSONquoteDetail) {
-                getQuoteTotal();
+                debouncedGetQuoteDetail();
             }
         }, [JSONquoteDetail]
     )
     useEffect(
         () => {
-            const getUnitTotal = debouncePromise(async () => {
-                const res = await apiRequest(
-                    {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/${selectedQuoteUnit.unitID}/total`,
-                        method: 'GET'
-                    }
-                )
-                if (res?.success) {
-                    setunitTotal(res.unitTotal);
-                }
-            }, 1200, {leading: true})
+            const debounceGetUnitTotal = debounce(getUnitTotal, 1000);
             if (JSONselectedQuoteUnit) {
-                getUnitTotal();
+                debounceGetUnitTotal();
             }
         }, [JSONselectedQuoteUnit]
     )
+    const getUnitTotal = async () => {
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/${selectedQuoteUnit?.unitID}/total`,
+                method: 'GET'
+            }
+        )
+        if (res?.success) {
+            setunitTotal(res.unitTotal);
+        }
+    }
+    const getQuoteTotal = debouncePromise(async () => {
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/total`,
+                method: 'GET'
+            }
+        )
+        if (res?.success) {
+            setquoteTotal(res.quoteTotal);
+        }
+    }, 1500, {leading: true})
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
         {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
         <>
