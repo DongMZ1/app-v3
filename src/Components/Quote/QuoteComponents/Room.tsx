@@ -13,7 +13,6 @@ import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
 import { Popup } from '@fulhaus/react.ui.popup';
 import debounce from 'lodash.debounce';
-import debouncePromise from 'debounce-promise';
 import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender';
 
@@ -65,25 +64,19 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         }
     }, [JSON.stringify(debouncedCatagory)]);
 
-    useEffect(
-        () => {
-            const updateRoomCountRemote = async () => {
-                const res = await apiRequest(
-                    {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
-                        body: { count: debouncedRoomCount },
-                        method: 'PATCH'
-                    }
-                )
-                if (!res?.success) {
-                    console.log('updateRoomCount failed at line 55 Room.tsx')
-                }
+    const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID])
+    const updateRoomCountRemote = async (count: any) => {
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+                body: { count},
+                method: 'PATCH'
             }
-            if (!isFirstRendering && debouncedCatagory) {
-                updateRoomCountRemote();
-            }
-        }, [debouncedRoomCount]
-    )
+        )
+        if (!res?.success) {
+            console.log('updateRoomCount failed at line 55 Room.tsx')
+        }
+    }
 
     const updateCategories = async (categories: any) => {
         const res = await apiRequest({
@@ -151,6 +144,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
             type: 'selectedQuoteUnit',
             payload: newselectedQuoteUnit
         })
+        debounceUpdateRoomCountRemote(count);
         updateQuoteDetail(newselectedQuoteUnit);
     }
 
