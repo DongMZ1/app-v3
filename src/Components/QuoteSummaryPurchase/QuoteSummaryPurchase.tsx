@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './QuoteSummaryPurchase.scss'
 import UnitBudget from '../UnitBudget/UnitBudget'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../redux/reducers'
 import { ReactComponent as EditPenIcon } from '../../styles/images/edit-pen.svg'
 import { ImCross } from 'react-icons/im'
@@ -12,19 +12,53 @@ import { Button } from '@fulhaus/react.ui.button';
 import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { Radio } from '@fulhaus/react.ui.radio';
 import { Checkbox } from '@fulhaus/react.ui.checkbox';
+import produce from 'immer'
 const QuoteSummaryPurchase = () => {
     const [editable, seteditable] = useState(false);
-    const [showCalendar, setshowCalendar] = useState(false);
-    const [shipping, setshipping] = useState('10000')
     const [paymentTerms, setpaymentTerms] = useState<any[]>([]);
     const [paymentTermsUnit, setpaymentTermsUnit] = useState('%');
     const [additionalDiscount, setadditionalDiscount] = useState('5');
     const [rationale, setrationale] = useState('');
     const [checkedTax, setcheckedTax] = useState(false);
     const [taxOnSale, settaxOnSale] = useState('0')
+    const dispatch = useDispatch();
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
+    const updateshipping = (v: string) => {
+        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+            draft.shipping = v
+        });
+        dispatch({
+            type: 'quoteDetail',
+            payload: newQuoteDetail
+        })
+    }
+
+    const setAdditionalDiscountPercent = (v: string) => {
+        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+            if (!draft.additionalDiscount) {
+                draft.additionalDiscount = {}
+            }
+            draft.additionalDiscount.percent = v
+        });
+        dispatch({
+            type: 'quoteDetail',
+            payload: newQuoteDetail
+        })
+    }
+    const setAdditionalDiscountDescription = (v: string) => {
+        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+            if (!draft.additionalDiscount) {
+                draft.additionalDiscount = {}
+            }
+            draft.additionalDiscount.description = v
+        });
+        dispatch({
+            type: 'quoteDetail',
+            payload: newQuoteDetail
+        })
+    }
     if (selectedQuoteUnit) {
         return <UnitBudget />
     }
@@ -59,7 +93,7 @@ const QuoteSummaryPurchase = () => {
         <div className='flex py-2'>
             <div className='w-1/4 '>Totals</div>
             <div className='w-1/2'>{quoteDetail?.unitCount}</div>
-            <div className='w-1/4'>Need to implement</div>
+            <div className='w-1/4'>${quoteDetail?.upfrontTotalPriceOfAllUnits?.toFixed(2)}</div>
         </div>
         <div className='flex mt-2 font-ssp'>
             <div>
@@ -90,15 +124,17 @@ const QuoteSummaryPurchase = () => {
                     <>
                         <DropdownListInput
                             wrapperClassName=' w-6rem-important h-2-5-rem-important ml-auto'
-                            options={['CAD', 'USD', 'EURO']} />
-                        <TextInput prefix={<span>$</span>} className='w-24 h-2-5-rem-important' variant='box' inputName='security deposit' value={shipping} onChange={
-                            (e) => setshipping((e.target as any).value)
-                        } /></> : <div className='ml-auto'>${shipping}</div>}
+                            options={['%', '$']} />
+                        <TextInput prefix={<span>$</span>} className='w-24 h-10' variant='box' inputName='security deposit' value={quoteDetail?.shipping} onChange={
+                            (e) => {
+                                updateshipping((e.target as any).value)
+                            }
+                        } /></> : <div className='ml-auto'>${Number(quoteDetail?.shipping)?.toFixed(2)}</div>}
             </div>
             <div className='flex pt-4 pb-4 mt-4 border-t border-black border-solid'>
                 <div className='mr-1 font-semibold font-ssp'>Subtotal</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>$9999.00</div>
+                <div className='ml-auto'>${quoteDetail?.upfrontSubtotal?.toFixed(2)}</div>
             </div>
             {editable ?
                 <>
@@ -112,28 +148,27 @@ const QuoteSummaryPurchase = () => {
                     </div>
                     <div className='flex'>
                         <div className='w-1/6 my-auto mr-4'>
-                            <TextInput className='w-full' variant='box' inputName='additional discount' value={additionalDiscount} onChange={(e) => setadditionalDiscount((e.target as any).value)} suffix={<small>%</small>} />
+                            <TextInput className='w-full' variant='box' inputName='additional discount' value={quoteDetail?.additionalDiscount?.percent} onChange={(e) => setAdditionalDiscountPercent((e.target as any).value)} suffix={<small>%</small>} />
                         </div>
                         <div className='w-2/3'>
-                            <TextInput className='w-full' variant='box' inputName='rationale' value={rationale} onChange={(e) => setrationale((e.target as any).value)} />
+                            <TextInput className='w-full' variant='box' inputName='rationale' value={quoteDetail?.additionalDiscount?.description} onChange={(e) => setAdditionalDiscountDescription((e.target as any).value)} />
                         </div>
-                        <div className='my-auto ml-auto'>-3578$</div>
+                        <div className='my-auto ml-auto'>-{quoteDetail?.additionalDiscount?.percent}%</div>
                     </div></> :
                 <div className='flex'>
                     <div className='w-1/3'>
-                        <div>Additional Discount : {additionalDiscount}%</div>
-                        <div className='text-xs'>{rationale}</div>
+                        <div>Additional Discount : {quoteDetail?.additionalDiscount?.percent}%</div>
+                        <div className='text-xs'>{quoteDetail?.additionalDiscount?.description}</div>
                     </div>
-                    <div className='my-auto ml-auto'>-3578$</div>
+                    <div className='my-auto ml-auto'>-{quoteDetail?.additionalDiscount?.percent}%</div>
                 </div>
-
             }
             <div className='flex pt-4 mt-4 border-t border-black border-solid'>
                 <div className='my-auto font-semibold'>
                     Total Quote Before Tax
                 </div>
                 <div className='ml-auto'>
-                    $128500.00
+                    Not Implement Yet
                 </div>
             </div>
             {
@@ -147,11 +182,7 @@ const QuoteSummaryPurchase = () => {
                         </div>
                     </div>
                     <div className='flex my-auto ml-auto'>
-                        <DropdownListInput
-                            initialValue={'$'}
-                            wrapperClassName='w-6rem-important h-2-5-rem-important ml-auto'
-                            options={['$', '%']} />
-                        <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{"$"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
+                        <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{"%"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
                             settaxOnSale((e.target as any).value)
                         }} />
                     </div>
@@ -164,6 +195,9 @@ const QuoteSummaryPurchase = () => {
                                 <div className='mr-1'><i>Approximation, adjusted at checkout</i></div><Tooltip text='' iconColor='blue' />
                             </div>
                         </div>
+                        <div className='my-auto ml-auto'>
+                            {quoteDetail?.tax} %
+                        </div>
                     </div>
             }
             <div className='flex pt-4 mt-4 border-t border-black border-solid'>
@@ -171,7 +205,7 @@ const QuoteSummaryPurchase = () => {
                     Total Quote After Estimated Tax
                 </div>
                 <div className='ml-auto'>
-                    $128500.00
+                    Not Implement Yet
                 </div>
             </div>
         </div>

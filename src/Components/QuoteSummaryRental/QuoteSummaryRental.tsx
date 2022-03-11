@@ -185,12 +185,12 @@ const QuoteSummaryRental = () => {
                     <>
                         <DropdownListInput
                             wrapperClassName=' w-6rem-important h-2-5-rem-important ml-auto'
-                            options={['CAD', 'USD', 'EURO']} />
+                            options={['%', '$']} />
                         <TextInput prefix={<span>$</span>} className='w-24 h-10' variant='box' inputName='security deposit' value={quoteDetail?.shipping} onChange={
                             (e) => {
                                 updateshipping((e.target as any).value)
                             }
-                        } /></> : <div className='ml-auto'>${quoteDetail?.shipping?.toFixed(2)}</div>}
+                        } /></> : <div className='ml-auto'>${Number(quoteDetail?.shipping)?.toFixed(2)}</div>}
             </div>
             {
                 quoteDetail?.paymentTerms?.map(
@@ -319,11 +319,7 @@ const QuoteSummaryRental = () => {
                     </div>
                 </div>
                 <div className='flex my-auto ml-auto'>
-                    <DropdownListInput
-                        initialValue={'$'}
-                        wrapperClassName='w-6rem-important h-2-5-rem-important ml-auto'
-                        options={['$', '%']} />
-                    <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{"$"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
+                    <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{"%"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
                         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
                             draft.tax = (e.target as any).valueAsNumber
                         })
@@ -343,7 +339,7 @@ const QuoteSummaryRental = () => {
                         </div>
                     </div>
                     <div className='my-auto ml-auto'>
-                        ${quoteDetail?.tax?.toFixed(2)}
+                        {quoteDetail?.tax} %
                     </div>
                 </div>
         }
