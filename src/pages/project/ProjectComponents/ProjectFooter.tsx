@@ -44,7 +44,7 @@ const ProjectFooter = () => {
             setunitTotal(res.unitTotal);
         }
     }
-    const getQuoteTotal = debouncePromise(async () => {
+    const getQuoteTotal = async () => {
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/total`,
@@ -54,7 +54,7 @@ const ProjectFooter = () => {
         if (res?.success) {
             setquoteTotal(res.quoteTotal);
         }
-    }, 1500, {leading: true})
+    }
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
         {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
         <>
