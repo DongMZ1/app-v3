@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Tappstate } from "../../../redux/reducers";
 import { useSelector, useDispatch } from "react-redux";
 import apiRequest from '../../../Service/apiRequest';
@@ -19,32 +19,30 @@ const ProjectFooter = () => {
     const dispatch = useDispatch();
     useEffect(
         () => {
-            const debouncedGetQuoteDetail = debounce(getQuoteTotal, 1000);
             if (JSONquoteDetail) {
-                debouncedGetQuoteDetail();
+                debounce(getQuoteTotal, 1000)();
             }
         }, [JSONquoteDetail]
     )
     useEffect(
         () => {
-            const debounceGetUnitTotal = debounce(getUnitTotal, 1000);
             if (JSONselectedQuoteUnit) {
-                debounceGetUnitTotal();
+                debounce(getUnitTotal, 1000)();
             }
         }, [JSONselectedQuoteUnit]
     )
-    const getUnitTotal = async () => {
+    const getUnitTotal = useCallback(async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail._id}/${selectedQuoteUnit?.unitID}/total`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/${selectedQuoteUnit?.unitID}/total`,
                 method: 'GET'
             }
         )
         if (res?.success) {
             setunitTotal(res.unitTotal);
         }
-    }
-    const getQuoteTotal = async () => {
+    }, [])
+    const getQuoteTotal = useCallback(async () => {
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/total`,
@@ -54,7 +52,7 @@ const ProjectFooter = () => {
         if (res?.success) {
             setquoteTotal(res.quoteTotal);
         }
-    }
+    }, [])
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
         {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
         <>
