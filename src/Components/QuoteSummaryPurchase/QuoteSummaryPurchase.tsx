@@ -15,10 +15,6 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox';
 import produce from 'immer'
 const QuoteSummaryPurchase = () => {
     const [editable, seteditable] = useState(false);
-    const [paymentTerms, setpaymentTerms] = useState<any[]>([]);
-    const [paymentTermsUnit, setpaymentTermsUnit] = useState('%');
-    const [additionalDiscount, setadditionalDiscount] = useState('5');
-    const [rationale, setrationale] = useState('');
     const [checkedTax, setcheckedTax] = useState(false);
     const [taxOnSale, settaxOnSale] = useState('0')
     const dispatch = useDispatch();
@@ -217,62 +213,101 @@ const QuoteSummaryPurchase = () => {
                 </div>
                 {editable &&
                     <>
-                        <Radio className='ml-auto mr-12' label='%' checked={paymentTermsUnit === '%'} onChange={() => { setpaymentTermsUnit('%') }} />
-                        <Radio className='mr-12' label='$' checked={paymentTermsUnit === '$'} onChange={() => { setpaymentTermsUnit('$') }} />
+                        <Radio className='ml-auto mr-12' label='%' checked={quoteDetail?.paymentTerms[0]?.type === 'PERCENT'} onChange={() => {
+                            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                draft?.paymentTerms?.forEach((each: any) => each.type = 'PERCENT')
+                            });
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
+                        }} />
+                        <Radio className='mr-12' label='$' checked={quoteDetail?.paymentTerms[0]?.type === 'ABSOLUTE'} onChange={() => {
+                            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                draft?.paymentTerms?.forEach((each: any) => each.type = 'ABSOLUTE')
+                            });
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
+                        }} />
                     </>
                 }
             </div>
             <div className='my-1 text-sm font-ssp'><i>Tax Not Included</i></div>
             {
-                paymentTerms?.map(
-                    (eachTerm, key) => <div className='flex w-full py-2 border-b border-black border-solid '>
+                quoteDetail?.paymentTerms?.map(
+                    (eachCost: any, key: any) => <div className='flex w-full py-2 border-b border-black border-solid '>
                         <div className='my-auto mr-4'>{key + 1}.</div>
                         {editable ?
-                            <TextInput inputName='payment term name' variant='box' value={eachTerm?.name} onChange={
+                            <TextInput inputName='payment term name' variant='box' value={eachCost?.term} onChange={
                                 (e) => {
-                                    let newPaymentTerms = [...paymentTerms]
-                                    newPaymentTerms[key].name = (e.target as any).value;
-                                    setpaymentTerms(newPaymentTerms);
+                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                        draft.paymentTerms[key].term = (e.target as any).value
+                                    });
+                                    dispatch({
+                                        type: 'quoteDetail',
+                                        payload: newQuoteDetail
+                                    })
                                 }
                             } />
                             :
-                            <div className='my-auto'>{eachTerm?.name}</div>
+                            <div className='my-auto'>{eachCost?.term}</div>
                         }
                         {
                             editable ? <>
-                                <TextInput type='number' disabled={paymentTermsUnit !== '$'} className={`${paymentTermsUnit !== '$' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachTerm?.amount} onChange={(e) => {
-                                    let newPaymentTerms = [...paymentTerms]
-                                    newPaymentTerms[key].amount = (e.target as any).valueAsNumber;
-                                    setpaymentTerms(newPaymentTerms);
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
+                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                        draft.paymentTerms[key].amount = (e.target as any).value
+                                    });
+                                    dispatch({
+                                        type: 'quoteDetail',
+                                        payload: newQuoteDetail
+                                    })
                                 }} />
-                                <TextInput type='number' disabled={paymentTermsUnit !== '%'} className={`${paymentTermsUnit !== '%' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={eachTerm?.percent} onChange={(e) => {
-                                    let newPaymentTerms = [...paymentTerms]
-                                    newPaymentTerms[key].percent = (e.target as any).valueAsNumber;
-                                    setpaymentTerms(newPaymentTerms);
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
+                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                        draft.paymentTerms[key].amount = (e.target as any).value
+                                    });
+                                    dispatch({
+                                        type: 'quoteDetail',
+                                        payload: newQuoteDetail
+                                    })
                                 }} />
                             </>
                                 :
                                 <div className='my-auto ml-auto mr-4'>
-                                    {eachTerm?.amount} {paymentTermsUnit}
+                                    {eachCost?.amount} {quoteDetail?.paymentTerms[0]?.type === 'PERCENT' ? '%' : '$'}
                                 </div>
                         }
                         {
                             editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
-                                let newPaymentTerms = [...paymentTerms];
-                                newPaymentTerms.splice(key, 1);
-                                setpaymentTerms(newPaymentTerms);
+                                const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                    draft.paymentTerms?.splice(key, 1);
+                                });
+                                dispatch({
+                                    type: 'quoteDetail',
+                                    payload: newQuoteDetail
+                                })
                             }} />
                         }
                     </div>
                 )
             }
             {
-                editable && <Button className='mt-2' variant='primary' onClick={() => setpaymentTerms(
-                    state => [...state, {
-                        name: "",
-                        amount: null
-                    }]
-                )} >Add new Service Cost</Button>
+                editable && <Button className='mt-2' variant='primary' onClick={() => {
+                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                        draft.paymentTerms?.push({
+                            term: '',
+                            type: 'PERCENT',
+                            amount: 0
+                        })
+                    });
+                    dispatch({
+                        type: 'quoteDetail',
+                        payload: newQuoteDetail
+                    })
+                }} >Add new Service Cost</Button>
             }
         </div>
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>

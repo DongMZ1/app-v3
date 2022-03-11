@@ -243,7 +243,7 @@ const QuoteSummaryRental = () => {
                                 </>
                                     :
                                     <div className='my-auto ml-auto'>
-                                        {eachCost?.type === 'ABSOLUTE' ? '$' : ''}{eachCost?.amount?.toFixed(2)}{eachCost?.type === 'PERCENT' ? '%' : ''}
+                                        {eachCost?.type === 'ABSOLUTE' ? '$' : ''}{Number(eachCost?.amount)?.toFixed(2)}{eachCost?.type === 'PERCENT' ? '%' : ''}
                                     </div>
                             }
                             {
