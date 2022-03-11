@@ -4,9 +4,6 @@ import UnitBudget from '../UnitBudget/UnitBudget'
 import { useSelector } from 'react-redux'
 import { Tappstate } from '../../redux/reducers'
 import { ReactComponent as EditPenIcon } from '../../styles/images/edit-pen.svg'
-import { DatePicker } from '@fulhaus/react.ui.date-picker'
-import { FaRegCalendarAlt } from 'react-icons/fa'
-import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { ImCross } from 'react-icons/im'
 import { Tooltip } from '@fulhaus/react.ui.tooltip'
 import { TextInput } from '@fulhaus/react.ui.text-input';
@@ -55,8 +52,8 @@ const QuoteSummaryPurchase = () => {
             quoteDetail?.data?.map((eachUnit: any) => <div className='flex py-2 border-b border-black border-solid'>
                 <div className='w-1/4 '>{eachUnit?.name}</div>
                 <div className='w-1/4'>{eachUnit?.count}</div>
-                <div className='w-1/4'>Need to implement</div>
-                <div className='w-1/4'>Need to implement</div>
+                <div className='w-1/4'>${eachUnit?.upfrontPricePerUnit?.toFixed(2)}</div>
+                <div className='w-1/4'>${eachUnit?.upfrontPriceOfAllUnit?.toFixed(2)}</div>
             </div>)
         }
         <div className='flex py-2'>

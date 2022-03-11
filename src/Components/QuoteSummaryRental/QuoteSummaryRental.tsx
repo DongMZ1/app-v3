@@ -128,9 +128,9 @@ const QuoteSummaryRental = () => {
             <div className='w-4/12'>Totals</div>
             <div className='w-2/12'>{quoteDetail?.unitCount ? quoteDetail.unitCount : 0}</div>
             <div className='width-12-percent'></div>
-            <div className='w-1/12'>${quoteDetail?.rentalPriceTotalPerMonthYear1 ? quoteDetail.rentalPriceTotalPerMonthYear1 : 0}</div>
+            <div className='w-1/12'>${quoteDetail?.rentalPriceTotalPerMonthYear1 ? quoteDetail.rentalPriceTotalPerMonthYear1?.toFixed(2) : 0}</div>
             <div className='ml-auto width-12-percent'></div>
-            <div className='w-1/12'>${quoteDetail?.rentalPriceTotalPerMonthYear2 ? quoteDetail.rentalPriceTotalPerMonthYear2 : 0}</div>
+            <div className='w-1/12'>${quoteDetail?.rentalPriceTotalPerMonthYear2 ? quoteDetail.rentalPriceTotalPerMonthYear2?.toFixed(2) : 0}</div>
         </div>
         <div className='flex mt-4 font-ssp'>
             <div>
@@ -153,28 +153,28 @@ const QuoteSummaryRental = () => {
             <div className='flex'>
                 <div className='mr-1'>Setup Fee</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.setupFee}</div>
+                <div className='ml-auto'>${quoteDetail?.setupFee?.toFixed(2)}</div>
             </div>
             <div className='flex mt-3'>
                 <div className='mr-1'>
                     Non rentable
                 </div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.nonRentalTotalAmount}</div>
+                <div className='ml-auto'>${quoteDetail?.nonRentalTotalAmount?.toFixed(2)}</div>
             </div>
             <div className='flex mt-3'>
                 <div className='mr-1'>
                     First Month Rent On Product
                 </div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.rentalPriceTotalPerMonthYear1}</div>
+                <div className='ml-auto'>${quoteDetail?.rentalPriceTotalPerMonthYear1?.toFixed(2)}</div>
             </div>
             <div className='flex mt-3'>
                 <div className='my-auto mr-1'>
                     Security Deposit
                 </div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.securityDeposit}</div>
+                <div className='ml-auto'>${quoteDetail?.securityDeposit?.toFixed(2)}</div>
             </div>
             <div className='flex mt-3'>
                 <div className='my-auto mr-1'>
@@ -190,7 +190,7 @@ const QuoteSummaryRental = () => {
                             (e) => {
                                 updateshipping((e.target as any).value)
                             }
-                        } /></> : <div className='ml-auto'>${quoteDetail?.shipping}</div>}
+                        } /></> : <div className='ml-auto'>${quoteDetail?.shipping?.toFixed(2)}</div>}
             </div>
             {
                 quoteDetail?.paymentTerms?.map(
@@ -243,7 +243,7 @@ const QuoteSummaryRental = () => {
                                 </>
                                     :
                                     <div className='my-auto ml-auto'>
-                                        {eachCost?.type === 'ABSOLUTE' ? '$' : ''}{eachCost?.amount}{eachCost?.type === 'PERCENT' ? '%' : ''}
+                                        {eachCost?.type === 'ABSOLUTE' ? '$' : ''}{eachCost?.amount?.toFixed(2)}{eachCost?.type === 'PERCENT' ? '%' : ''}
                                     </div>
                             }
                             {
@@ -279,7 +279,7 @@ const QuoteSummaryRental = () => {
         <div className='flex pt-4 pb-4 mt-4 border-t border-black border-solid'>
             <div className='mr-1 font-semibold font-ssp'>Subtotal</div>
             <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>${quoteDetail?.rentalSubtotal}</div>
+            <div className='ml-auto'>${quoteDetail?.rentalSubtotal?.toFixed(2)}</div>
         </div>
         {editable ?
             <>
@@ -343,30 +343,30 @@ const QuoteSummaryRental = () => {
                         </div>
                     </div>
                     <div className='my-auto ml-auto'>
-                        ${quoteDetail?.tax}
+                        ${quoteDetail?.tax?.toFixed(2)}
                     </div>
                 </div>
         }
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>
             <div className='font-semibold '>Estimated Amount Due Today</div>
-            <div className='ml-auto font-semibold'>${quoteDetail?.rentalEstimatedAmountDueToday}</div>
+            <div className='ml-auto font-semibold'>${quoteDetail?.rentalEstimatedAmountDueToday?.toFixed(2)}</div>
         </div>
         <div className='flex px-4 py-2 mt-4 border border-black border-solid'>
             <div className='mr-1'>Total Quote Value Before Tax</div>
             <Tooltip text='' iconColor='blue' />
-            <div className='ml-auto'>${quoteDetail?.rentalTotalQuoteBeforeTax}</div>
+            <div className='ml-auto'>${quoteDetail?.rentalTotalQuoteBeforeTax?.toFixed(2)}</div>
         </div>
         <div className='w-full px-4 py-2 mt-4 text-sm border border-black border-solid font-ssp'>
             <div className='my-auto text-xl font-moret'>End Of Lease Option</div>
             <div className='flex mt-2'>
                 <div className='mr-1'>Buy Back After Year 1</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1 : 0}</div>
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1?.toFixed(2) : 0}</div>
             </div>
             <div className='flex mt-2'>
                 <div className='mr-1'>Buy Back After Year 2</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2 : 0}</div>
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2?.toFixed(2) : 0}</div>
             </div>
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
