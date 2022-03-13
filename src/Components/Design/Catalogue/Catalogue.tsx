@@ -1,7 +1,6 @@
 import './Catalogue.scss'
 import { useState, useRef, useEffect } from 'react';
 import CatalogueFilter from "./CatalogueFilter/CatalogueFilter";
-import debouncePromise from 'debounce-promise'
 import apiRequest from '../../../Service/apiRequest';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tappstate } from '../../../redux/reducers';
@@ -9,6 +8,7 @@ import SelectedProductDetail from './CatalogueComponents/SelectedProductDetail';
 import Product from '../Catalogue/CatalogueComponents/Product'
 import { Loader } from "@fulhaus/react.ui.loader";
 import SelectedUnitMapProduct from './CatalogueComponents/SelectedUnitMapProducts'
+import debounce from 'lodash.debounce'
 type CatalogueProps = {
     tabState: string
 }
@@ -28,8 +28,8 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
             fetchProducts();
         }
     }, [quoteDetail, JSON.stringify(filterCatalogue)]);
-
-    const fetchMoreProducts = debouncePromise(async () => {
+   
+    const fetchMoreProducts = async () => {
         if ((scrollRef.current?.clientHeight + scrollRef.current?.scrollTop + 5) > scrollRef.current?.scrollHeight) {
             setloading(true);
             let tags: any = [];
@@ -54,7 +54,10 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
             }
             setloading(false);
         }
-    }, 1000, { leading: true });
+    }
+    
+    const debounceFetchMoreProducts = debounce(()=>fetchMoreProducts(), 500);
+
     const fetchProducts = async () => {
         dispatch({
             type: 'products',
@@ -97,7 +100,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
         <div className={`${tabState !== "Catalogue" && 'catalogue-display-none-important'} flex h-full catalogue`}>
             <div style={draggableWidth ? { width: draggableWidth } : {}} className={`flex flex-col ${isExpand ? 'w-full' : 'w-1/2'} overflow-hidden`}>
                 <CatalogueFilter isExpand={isExpand} setisExpand={setisExpand} setdraggableWidth={setdraggableWidth} />
-                <div ref={scrollRef} id='catalogue-product-ref' className='flex flex-wrap h-full overflow-auto' onScroll={() => fetchMoreProducts()}>
+                <div ref={scrollRef} id='catalogue-product-ref' className='flex flex-wrap h-full overflow-auto' onScroll={() => debounceFetchMoreProducts()}>
                     {
                         products?.map(each => <Product isExpand={isExpand} draggableWidth={draggableWidth} eachProduct={each} />)
                     }
