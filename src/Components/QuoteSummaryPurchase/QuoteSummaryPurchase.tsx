@@ -251,7 +251,7 @@ const QuoteSummaryPurchase = () => {
                 </div>
                 {editable &&
                     <>
-                       <Radio className='ml-auto mr-12' label='$' checked={quoteDetail?.paymentTerms[0]?.type === 'ABSOLUTE'} onChange={() => {
+                        <Radio className='ml-auto mr-12' label='$' checked={quoteDetail?.paymentTerms[0]?.type === 'ABSOLUTE'} onChange={() => {
                             const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                 draft?.paymentTerms?.forEach((each: any) => each.type = 'ABSOLUTE')
                             });
@@ -288,13 +288,14 @@ const QuoteSummaryPurchase = () => {
                         {editable ?
                             <TextInput inputName='payment term name' variant='box' value={eachCost?.term} onChange={
                                 (e) => {
-                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                         draft.paymentTerms[key].term = (e.target as any).value
                                     });
                                     dispatch({
                                         type: 'quoteDetail',
                                         payload: newQuoteDetail
                                     })
+                                    debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                                 }
                             } />
                             :
@@ -302,28 +303,32 @@ const QuoteSummaryPurchase = () => {
                         }
                         {
                             editable ? <>
-                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
-                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                        draft.paymentTerms[key].amount = (e.target as any).value
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.price.toFixed(2) : eachCost?.amount} onChange={(e) => {
+                                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                        draft.paymentTerms[key].amount = (e.target as any).valueAsNumber
                                     });
                                     dispatch({
                                         type: 'quoteDetail',
                                         payload: newQuoteDetail
                                     })
+                                    debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                                 }} />
-                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
-                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                        draft.paymentTerms[key].amount = (e.target as any).value
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent.toFixed(2) : eachCost?.amount} onChange={(e) => {
+                                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                        draft.paymentTerms[key].amount = (e.target as any).valueAsNumber
                                     });
                                     dispatch({
                                         type: 'quoteDetail',
                                         payload: newQuoteDetail
                                     })
+                                    debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                                 }} />
                             </>
                                 :
                                 <div className='my-auto ml-auto mr-4'>
-                                    {eachCost?.amount} {quoteDetail?.paymentTerms[0]?.type === 'PERCENT' ? '%' : '$'}
+                                    {quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent?.toFixed(2)} % (
+                                    {quoteDetail?.upfrontPricesByPaymentTerms[key]?.price.toFixed(2)} $
+                                    )
                                 </div>
                         }
                         {
@@ -342,7 +347,7 @@ const QuoteSummaryPurchase = () => {
             }
             {
                 editable && <Button className='mt-2' variant='primary' onClick={() => {
-                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                         draft.paymentTerms?.push({
                             term: '',
                             type: 'PERCENT',
@@ -353,12 +358,13 @@ const QuoteSummaryPurchase = () => {
                         type: 'quoteDetail',
                         payload: newQuoteDetail
                     })
+                    debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                 }} >Add new Service Cost</Button>
             }
         </div>
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>
             <div className='font-semibold '>Estimated Amount Due Today</div>
-            <div className='ml-auto font-semibold'>$9000.00</div>
+            <div className='ml-auto font-semibold'>${quoteDetail?.upfrontEstimatedAmountDueToday?.toFixed(2)}</div>
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
         <div className='px-4 py-2 mt-4 mb-8 bg-white border border-black border-solid'>
