@@ -13,8 +13,8 @@ const ProjectFooter = () => {
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
-    const JSONquoteDetail = useDebounce(JSON.stringify(quoteDetail), 800);
-    const JSONselectedQuoteUnit = useDebounce(JSON.stringify(selectedQuoteUnit), 800);
+    const JSONquoteDetail = useDebounce(JSON.stringify(quoteDetail), 1500);
+    const JSONselectedQuoteUnit = useDebounce(JSON.stringify(selectedQuoteUnit), 1500);
     const history = useHistory();
     const dispatch = useDispatch();
     useEffect(

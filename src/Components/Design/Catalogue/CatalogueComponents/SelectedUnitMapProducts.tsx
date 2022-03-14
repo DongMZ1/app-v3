@@ -24,7 +24,7 @@ const SelectedUnitMapProducts = () => {
                     <>
                     {
                         eachRoom?.categories?.map(
-                            (eachCategory: any) => <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard isDesign currentFurnitureNumber={1} furnitureName={eachCategory?.name} number={eachCategory?.qty} editable buy={eachCategory?.rentable} buyMSRP={eachCategory?.budget} rentMSRP={eachCategory?.budget} /></div>
+                            (eachCategory: any) => <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard imageUrl={['https://files.plytix.com/api/v1.1/file/public_files/pim/assets/a1/ae/d4/5c/5cd4aea1a3dec0046811d88f/images/ac/24/f0/5c/5cf024acea56bd0469a3e7f6/AD-1031-26.jpg', 'https://files.plytix.com/api/v1.1/file/public_files/pim/assets/a1/ae/d4/5c/5cd4aea1a3dec0046811d88f/images/ac/24/f0/5c/5cf024acea56bd0469a3e7f6/AD-1031-26.jpg']} isDesign currentFurnitureNumber={1} furnitureName={eachCategory?.name} number={eachCategory?.qty} editable buy={eachCategory?.rentable} buyMSRP={eachCategory?.budget} rentMSRP={eachCategory?.budget} /></div>
                         )
                     }
                     </>
