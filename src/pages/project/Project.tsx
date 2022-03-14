@@ -190,8 +190,9 @@ const Project = () => {
                                 <InformationIcon onClick={() => setshowProjectInfor(true)} className='my-auto mr-8 cursor-pointer' />
                             }
                         </>}
-                    <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
-                    <SaveProject />
+                    {userRole !== 'viewer' && <>
+                        <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
+                        <SaveProject /></>}
                 </div>
             </div>
             <CSSTransition in={showHistory} timeout={300} unmountOnExit classNames='opacity-animation'><VersionHistory close={() => setshowHistory(false)} /></CSSTransition>

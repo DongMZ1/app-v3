@@ -8,6 +8,9 @@
       font-size: 14px !important;
     }
   }
+  .w-500px {
+    width: 500px;
+  }
   .w-400px {
     width: 400px;
   }
@@ -96,5 +99,8 @@
   }
   .position-initial-important {
     position: initial !important;
+  }
+  .z-99-important {
+    z-index: 99 !important;
   }
 }

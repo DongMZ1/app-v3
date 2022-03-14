@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FurnitureInRoomRowCard } from '@fulhaus/react.ui.furniture-in-room-row-card'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import produce from 'immer'
@@ -12,6 +12,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
 import { Popup } from '@fulhaus/react.ui.popup';
+import debounce from 'lodash.debounce';
+import useDebounce from '../../../Hooks/useDebounce';
+import useIsFirstRender from '../../../Hooks/useIsFirstRender';
 
 type RoomType = {
     eachRoom: any,
@@ -51,6 +54,28 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const dispatch = useDispatch();
+    const isFirstRendering = useIsFirstRender();
+    const debouncedCatagory = useDebounce(eachRoom?.categories, 500);
+
+    useEffect(() => {
+        if (!isFirstRendering && debouncedCatagory) {
+            updateCategories(debouncedCatagory);
+        }
+    }, [JSON.stringify(debouncedCatagory)]);
+
+    const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID])
+    const updateRoomCountRemote = async (count: any) => {
+        const res = await apiRequest(
+            {
+                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+                body: { count},
+                method: 'PATCH'
+            }
+        )
+        if (!res?.success) {
+            console.log('updateRoomCount failed at line 55 Room.tsx')
+        }
+    }
 
     const updateCategories = async (categories: any) => {
         const res = await apiRequest({
@@ -63,7 +88,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         if (!res?.success) {
             console.log('updateCategories failed at line 33 Room.tsx')
         }
-    }
+    };
 
     const saveAsRoomPackage = async () => {
         const res = await apiRequest(
@@ -109,7 +134,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         }
     }
 
-    const updateRoomCount = async (count: number) => {
+    const updateRoomCount = (count: number) => {
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             draft.rooms[index].count = count;
@@ -118,17 +143,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
             type: 'selectedQuoteUnit',
             payload: newselectedQuoteUnit
         })
+        debounceUpdateRoomCountRemote(count);
         updateQuoteDetail(newselectedQuoteUnit);
-        const res = await apiRequest(
-            {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
-                body: { count },
-                method: 'PATCH'
-            }
-        )
-        if (!res?.success) {
-            console.log('updateRoomCount failed at line 55 Room.tsx')
-        }
     }
 
     const addRoomPackagesToRoom = async () => {
@@ -142,7 +158,6 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                     }
                 }
             }
-            updateCategories(draft.rooms[index].categories)
         });
         dispatch({
             type: 'selectedQuoteUnit',
@@ -177,7 +192,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 )
             }
             draft.rooms[index].categories = draft.rooms[index].categories.concat(itemlist);
-            updateCategories(draft.rooms[index].categories);
+
         })
         dispatch({
             type: 'selectedQuoteUnit',
@@ -252,7 +267,6 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         eachRoom={eachRoom}
                                         eachCategory={eachCategory}
                                         updateQuoteDetail={updateQuoteDetail}
-                                        updateCategories={updateCategories}
                                     /></CSSTransition>)
                         }
                     </TransitionGroup>
@@ -344,9 +358,8 @@ type CategoryType = {
     eachCategory: any,
     eachRoom: any,
     updateQuoteDetail: (newselectedQuoteUnit: any) => void,
-    updateCategories: (categories: any) => Promise<void>,
 }
-const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories }: CategoryType) => {
+const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -360,8 +373,6 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories 
             const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
             draft.rooms[roomIndex].categories[categoriesIndex].budget = MSRP
-            //we do not have to wait this action
-            updateCategories(draft.rooms[roomIndex].categories)
         });
         dispatch({
             type: 'selectedQuoteUnit',
@@ -374,8 +385,6 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories 
         const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
             const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             draft.rooms[roomIndex].categories = draft.rooms[roomIndex]?.categories?.filter((each: any) => each?.name !== eachCategory.name);
-            //we do not have to wait this action
-            updateCategories(draft.rooms[roomIndex].categories)
         });
         dispatch({
             type: 'selectedQuoteUnit',
@@ -389,8 +398,6 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories 
             const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
             draft.rooms[roomIndex].categories[categoriesIndex].qty = count
-            //we do not have to wait this action
-            updateCategories(draft.rooms[roomIndex].categories)
         });
         dispatch({
             type: 'selectedQuoteUnit',
@@ -404,8 +411,6 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail, updateCategories 
             const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
             const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
             draft.rooms[roomIndex].categories[categoriesIndex].rentable = rentable
-            //we do not have to wait this action
-            updateCategories(draft.rooms[roomIndex].categories)
         });
         dispatch({
             type: 'selectedQuoteUnit',

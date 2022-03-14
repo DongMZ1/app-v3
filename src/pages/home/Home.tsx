@@ -1,5 +1,6 @@
 import "./Home.scss";
 import React, { useState, useEffect, useRef } from "react";
+import { APP_ACCOUNTS_URL } from '../../Constant/url.constant'
 import debounce from 'lodash.debounce'
 import { useSelector, useDispatch } from 'react-redux'
 import useIsFirstRender from "../../Hooks/useIsFirstRender";
@@ -14,6 +15,7 @@ import { TiArrowSortedUp } from 'react-icons/ti'
 import { TextInput } from "@fulhaus/react.ui.text-input";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Popup } from '@fulhaus/react.ui.popup'
+import { Loader } from "@fulhaus/react.ui.loader";
 
 import EachProjectQuoteDesignRow from './homeComponents/EachProjectQuoteDesignRow'
 import InvitePeople from "../../Components/InvitePeople/InvitePeople";
@@ -23,6 +25,7 @@ import OrganizationSelection from './homeComponents/OrganizationSelection'
 import { fetchMoreProject, fetchProject } from "../../redux/Actions";
 const Home = () => {
   const homePageSearchKeyword = useSelector((state: Tappstate) => state.homePageSearchKeyword);
+  const homePageLoader = useSelector((state: Tappstate) => state.homePageLoader);
   const [StartNewProjectQuoteDesignType, setStartNewProjectQuoteDesignType] = useState<'design' | 'quote' | 'project'>('project')
   const [showStartNewProjectQuotoDesign, setshowStartNewProjectQuotoDesign] = useState(false);
   const [searchkeyWord, setsearchKeyWord] = useState(homePageSearchKeyword ? homePageSearchKeyword : '');
@@ -85,13 +88,11 @@ const Home = () => {
   const logout = async () => {
     const res = await apiRequest(
       {
-        url: '/account/user/logout',
+        url: '/auth/logout',
         method: 'POST'
       }
     )
-    if (!res?.success) {
-      console.log(res?.message)
-    }
+    window.location.assign(`${APP_ACCOUNTS_URL}/login?redirectURL=${window.location.href}`);
   }
 
   const chooseProjectQuoteDesignStart = (v: string) => {
@@ -109,7 +110,7 @@ const Home = () => {
     setshowStartNewProjectQuotoDesign(true);
   }
 
-  const sortByDate = (arr: any[] | null, sorted: boolean) => {
+  const sortByDate = (arr: any[] | null | undefined, sorted: boolean) => {
     if (sorted) {
       return arr?.slice().sort(function (a: any, b: any) {
         return (new Date((b.updatedAt as string)) as any) - (new Date(a.updatedAt) as any);
@@ -207,7 +208,7 @@ const Home = () => {
           <Button active>Add Projects</Button>
         </div>
         */}
-        {(state?.projects && state?.projects.length > 0) ?
+        {((state?.projects && state?.projects.length > 0) || homePageLoader) ?
           <>
             <div className='flex mt-4 mb-2 text-sm font-ssp'>
               <div className='pl-4 width-30-percent'>Project name</div>
@@ -225,6 +226,7 @@ const Home = () => {
               setshowStartNewProjectQuotoDesign={setshowStartNewProjectQuotoDesign}
               setProjectQuoteDesignInfoNeedDuplicate={setProjectQuoteDesignInfoNeedDuplicate}
               showInvitePeople={() => setshowInvitePeople(true)} />)}
+            {homePageLoader && <div className="flex items-center justify-center h-60"><Loader /></div>}
           </> :
           <>
             <div className='flex mt-8 mb-4'><HomePageEmptyCover className='mx-auto' /></div>

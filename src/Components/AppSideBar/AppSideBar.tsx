@@ -12,6 +12,7 @@ import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
+import { Loader } from '@fulhaus/react.ui.loader'
 
 const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
@@ -25,7 +26,7 @@ const AppSideBar = () => {
     const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
-    const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase'));
+    const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase')) && (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only'));
     useEffect(() => {
         getUnitPackages()
     }, [currentOrgID])
@@ -155,7 +156,16 @@ const AppSideBar = () => {
                 </div>
                 <div className='w-full h-full px-4 overflow-y-auto'>
                     {
-                        quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
+                        quoteDetail && quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
+                    }
+                    {
+                        !quoteDetail &&
+                        <div className='flex justify-center mt-12'><Loader /></div>
+                    }
+                    {
+                        ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only'))) && quoteDetail && quoteDetail?.data?.length === 0 && <div className='flex mt-4 text-sm font-ssp'>
+                            Add A Unit To Get Started
+                        </div>
                     }
                 </div>
             </div>

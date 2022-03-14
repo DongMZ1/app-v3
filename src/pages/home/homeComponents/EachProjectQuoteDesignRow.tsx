@@ -1,5 +1,5 @@
 //for scss, please refer Home.scss
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
@@ -7,6 +7,7 @@ import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useGetProjectRole } from '../../../Hooks/useGetProjectRole'
 import { deleteSpecificProject, renameSpecificProjectAction } from '../../../redux/Actions'
 import { Tappstate } from '../../../redux/reducers';
+import useIsFirstRender from '../../../Hooks/useIsFirstRender';
 type EachProjectQuoteDesignRowProps = {
     thisProject: {
         title: string
@@ -44,6 +45,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     const dispatch = useDispatch();
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const projects = useSelector((state: Tappstate) => state.projects);
+    const isFirstRendering = useIsFirstRender()
     let optionList = [''];
     let linkURL = '';
     if (thisProject.type === 'design') {
@@ -58,6 +60,12 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         optionList = ['Duplicate Project', 'Rename Project', 'Share Project', 'Delete Project'];
         linkURL = `/project/quote`
     }
+
+    useEffect(() => {
+        if (!isFirstRendering) {
+            setrenameProjectTitle(thisProject.title);
+        }
+    }, [thisProject.title])
 
     const handleDropDown = (v: string) => {
         switch (v) {
