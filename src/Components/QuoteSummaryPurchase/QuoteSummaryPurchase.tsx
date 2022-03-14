@@ -303,7 +303,7 @@ const QuoteSummaryPurchase = () => {
                         }
                         {
                             editable ? <>
-                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.price.toFixed(2) : eachCost?.amount} onChange={(e) => {
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.price?.toFixed(2) : eachCost?.amount} onChange={(e) => {
                                     const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                         draft.paymentTerms[key].amount = (e.target as any).valueAsNumber
                                     });
@@ -313,7 +313,7 @@ const QuoteSummaryPurchase = () => {
                                     })
                                     debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                                 }} />
-                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent.toFixed(2) : eachCost?.amount} onChange={(e) => {
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent?.toFixed(2) : eachCost?.amount} onChange={(e) => {
                                     const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                         draft.paymentTerms[key].amount = (e.target as any).valueAsNumber
                                     });
