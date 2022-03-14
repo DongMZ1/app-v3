@@ -230,7 +230,7 @@ const QuoteSummaryPurchase = () => {
                             </div>
                         </div>
                         <div className='my-auto ml-auto'>
-                            - {quoteDetail?.tax} %
+                             {quoteDetail?.tax} %
                         </div>
                     </div>
             }
@@ -247,7 +247,7 @@ const QuoteSummaryPurchase = () => {
         <div className='w-full p-4 mt-4 border border-black border-solid'>
             <div className='flex'>
                 <div className='my-auto text-xs font-ssp'>
-                    TOTAL QUOTE BUDGET : $100000
+                    TOTAL QUOTE BUDGET : ${quoteDetail?.upfrontTotalQuoteAfterEstimatedTax}
                 </div>
                 {editable &&
                     <>
@@ -327,7 +327,7 @@ const QuoteSummaryPurchase = () => {
                                 :
                                 <div className='my-auto ml-auto mr-4'>
                                     {quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent?.toFixed(2)} % (
-                                    {quoteDetail?.upfrontPricesByPaymentTerms[key]?.price.toFixed(2)} $
+                                    {quoteDetail?.upfrontPricesByPaymentTerms[key]?.price?.toFixed(2)} $
                                     )
                                 </div>
                         }
@@ -344,6 +344,11 @@ const QuoteSummaryPurchase = () => {
                         }
                     </div>
                 )
+            }
+            {
+                (quoteDetail?.upfrontPricesByPaymentTerms as any[])?.map((each: any) => each?.percent)?.reduce((a:any, b:any) => a + b, 0) > 100.5 && <div className='flex py-4 my-4 border border-solid rounded bg-red-warning-exceed-100 border-red'>
+                        <div className='m-auto text-red'>Total percentage exceeds limit at {(quoteDetail?.upfrontPricesByPaymentTerms as any[])?.map((each: any) => each?.percent)?.reduce((a:any, b:any) => a + b, 0)?.toFixed(2)}% – please readjust.</div>
+                    </div>
             }
             {
                 editable && <Button className='mt-2' variant='primary' onClick={() => {
