@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AiOutlineRight } from 'react-icons/ai'
 import apiRequest from '../../../Service/apiRequest';
 import { Tappstate } from '../../../redux/reducers';
+import { Loader } from '@fulhaus/react.ui.loader';
 import getQuoteDetail from '../../../redux/Actions/getQuoteDetail'
 type VersionHistoryType = {
     close: () => void
@@ -14,6 +15,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
     const [showConfirm, setshowConfirm] = useState(false);
     const [allversions, setallversions] = useState<any[]>();
     const [selectedVersion, setselectedVersion] = useState<any>();
+    const [loading, setloading] = useState(true);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const quoteRefID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteRefID;
@@ -29,6 +31,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                 if (res?.success) {
                     setallversions(res.quoteVersions)
                 }
+                setloading(false);
             }
             getAllVersions();
         }, []
@@ -70,7 +73,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                     <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
                 </div>
                 {
-                    allversions?.map(eachVersion =>
+                    !loading && allversions?.map(eachVersion =>
                         <div onClick={() => {
                             setselectedVersion(eachVersion);
                             setshowConfirm(true);
@@ -78,6 +81,16 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                             <div className='my-auto'>{eachVersion.versionName}</div>
                             <AiOutlineRight className='my-auto ml-auto cursor-pointer' />
                         </div>)
+                }
+                {
+                    loading && <div className='flex justify-center mt-12'>
+                            <Loader />
+                        </div>
+                }
+                {
+                    !loading && (allversions?.length === 0 || !allversions) && <div className='mt-4 text-sm font-ssp'>
+                               No Saved Version
+                        </div>
                 }
             </div>
         </div>
