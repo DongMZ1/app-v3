@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './AppSideBar.scss'
 import SelectAll from './AppSideBarComponents/SelectAll';
-import EachUnitQuote from './AppSideBarComponents/EachUnitQuote';
+import EachUnit from './AppSideBarComponents/EachUnit';
 import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
@@ -12,6 +12,7 @@ import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
+import { Loader } from '@fulhaus/react.ui.loader'
 
 const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
@@ -146,7 +147,7 @@ const AppSideBar = () => {
                     </div>
                 }
                 <div className='flex px-4 mt-2'>
-                    {(!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>}
+                    <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>
                     {!editable &&
                         <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
                             <AiOutlineLeft size={22} />
@@ -155,7 +156,16 @@ const AppSideBar = () => {
                 </div>
                 <div className='w-full h-full px-4 overflow-y-auto'>
                     {
-                        (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && quoteDetail?.data?.map((each: any) => <EachUnitQuote getUnitPackages={getUnitPackages} eachUnit={each} />)
+                        quoteDetail && quoteDetail?.data?.map((each: any) => <EachUnit getUnitPackages={getUnitPackages} eachUnit={each} />)
+                    }
+                    {
+                        !quoteDetail &&
+                        <div className='flex justify-center mt-12'><Loader /></div>
+                    }
+                    {
+                        ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only'))) && quoteDetail && quoteDetail?.data?.length === 0 && <div className='flex mt-4 text-sm font-ssp'>
+                            Add A Unit To Get Started
+                        </div>
                     }
                 </div>
             </div>

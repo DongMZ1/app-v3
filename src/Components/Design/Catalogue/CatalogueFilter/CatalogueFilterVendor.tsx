@@ -17,7 +17,7 @@ const CatalogueFilterVendor = ({ showVendor, setshowVendor, vendorOptions }: Cat
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
     const [vendorKeyword, setvendorKeyword] = useState('')
     const [vendorRegions, setvendorRegions] = useState<'All regions' | 'North America' | 'Europe'>('All regions');
-    const [selectedVendors, setselectedVendors] = useState<any[]>([]);
+    const [selectedVendors, setselectedVendors] = useState<any[]>(filterCatalogue?.vendors? filterCatalogue?.vendors : []);
     const dispatch = useDispatch()
     if (vendorRegions === 'Europe') {
         vendorOptions = vendorOptions.filter((each: any) => each?.region === 'EU')

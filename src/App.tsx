@@ -8,9 +8,12 @@ import { Home, Project, VerifyEmail } from "./pages";
 import { useIdleTimer } from 'react-idle-timer'
 import MessageModal from "./Components/MessageModal/MessageModal";
 import "./styles/index.scss";
+import { Loader } from "@fulhaus/react.ui.loader";
+import { Popup } from "@fulhaus/react.ui.popup";
 const App = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state: Tappstate) => state.userRole);
+  const appLoader = useSelector((state: Tappstate) => state.appLoader);
   const [verifyUser, setverifyUser] = useState(false);
   //will refresh page if user is inactive for 30min
   useIdleTimer({
@@ -66,6 +69,11 @@ const App = () => {
 
   return (
     <>
+      <Popup horizontalAlignment="center" boxShadow={false} verticalAlignment="center" show={appLoader}>
+        <div className="flex items-center justify-center bg-transparent w-96 h-96">
+          <Loader />
+        </div>
+      </Popup>
       <MessageModal />
       <Switch>
         <Route exact path={`/`} component={Home} />

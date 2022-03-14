@@ -15,7 +15,7 @@ type StartNewProjectProps = {
     duplicateProjInfo?: any
     searchkeyWord: string
 }
-const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: StartNewProjectProps) => {
+const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: StartNewProjectProps) => {
     const [projectTitle, setprojectTitle] = useState(duplicateProjInfo?.title ? `${duplicateProjInfo.title} (Duplicated)` : '');
     //for create project
     const [currency, setcurrency] = useState(duplicateProjInfo?.currency ? duplicateProjInfo.currency : '');
@@ -52,6 +52,7 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: Start
     }
 
     const submitForm = async () => {
+        console.log(projectTitle);
         switch (type) {
             case 'project':
                 const projectRes = await apiRequest(
@@ -83,11 +84,14 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: Start
                 if (projectRes?.success) {
                     //fetch projects as projects is updated
                     dispatch(fetchProject(organizationID ? organizationID : '', {
-                       title: searchkeyWord
+                        title: searchkeyWord
                     }));
                     close();
                 }
-                if (!projectRes?.success) {
+                if (!projectRes?.success && projectRes?.message === "A project with this name already exists") {
+                    dispatch(showMessageAction(true, 'A project with this name already exists, please try another'));
+                }
+                if (!projectRes?.success && projectRes?.message !== "A project with this name already exists") {
                     dispatch(showMessageAction(true, projectRes.message));
                 }
                 break;
@@ -107,10 +111,13 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: Start
                     //fetch projects as projects is updated
                     dispatch(fetchProject(organizationID ? organizationID : '', {
                         title: searchkeyWord
-                     }));
+                    }));
                     close();
                 }
-                if (!quoteRes?.success) {
+                if (!quoteRes?.success && quoteRes?.message === "A project with this name already exists") {
+                    dispatch(showMessageAction(true, 'A project with this name already exists, please try another'));
+                }
+                if (!quoteRes?.success && quoteRes?.message !== "A project with this name already exists") {
                     dispatch(showMessageAction(true, quoteRes.message));
                 }
                 break;
@@ -130,10 +137,13 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord}: Start
                     //fetch projects as projects is updated
                     dispatch(fetchProject(organizationID ? organizationID : '', {
                         title: searchkeyWord
-                     }));
+                    }));
                     close();
                 }
-                if (!designRes?.success) {
+                if (!designRes?.success && designRes?.message === "A project with this name already exists") {
+                    dispatch(showMessageAction(true, 'A project with this name already exists, please try another'));
+                }
+                if (!designRes?.success && designRes?.message !== "A project with this name already exists") {
                     dispatch(showMessageAction(true, designRes.message));
                 }
                 break;

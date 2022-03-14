@@ -10,6 +10,7 @@ import { Button } from "@fulhaus/react.ui.button";
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import apiRequest from '../../Service/apiRequest'
 import { useGetProjectRole } from "../../Hooks/useGetProjectRole";
+import { Loader } from '@fulhaus/react.ui.loader'
 type InvitePeopleProps = {
   close: () => void;
   projectName?: string;
@@ -19,6 +20,7 @@ type InvitePeopleProps = {
 const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleProps) => {
   const [peopleKeyWord, setpeopleKeyWord] = useState('');
   const [peopleList, setpeopleList] = useState<any[]>([]);
+  const [loading, setloading] = useState(true);
   const dispatch = useDispatch();
   const OrganizationID = useSelector((state: Tappstate) => state.currentOrgID);
   //external user organization ID
@@ -81,6 +83,7 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
     if (!res?.success) {
       console.log('fetch organization users failed')
     }
+    setloading(false);
   }
 
   const fetchSpecificProjectUser = async () => {
@@ -94,6 +97,7 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
     if (!res?.success) {
       console.log('fetch organization users for specific project failed')
     }
+    setloading(false);
   }
 
   const validateEmail = (email: any) => {
@@ -114,17 +118,30 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
           <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
           <div className='w-1/12'><Button disabled={peopleKeyWord.split(', ')?.some(eachEmail => !validateEmail(eachEmail))} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
         </div>
-        {peopleList?.map(each =>
+        {
+          loading && <div className="flex justify-center mt-12">
+            <Loader />
+          </div>
+        }
+        {!loading && peopleList?.map(each =>
           <InvitePeopleUserRow
             userRole={userRole}
             peopleList={peopleList}
             setpeopleList={setpeopleList}
             projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role[0]} />
         )}
+        {
+          !loading && (peopleList?.length === 0 || !peopleList) &&
+          <div className="justify-center mt-4 text-sm font-ssp">
+            <div>
+               Invite people to this project by enter their email above
+            </div>
+          </div>
+        }
       </div>
     </div>
   );
-  
+
 };
 
 export default InvitePeople;
@@ -140,13 +157,13 @@ type InvitePeopleUserRowProps = {
   userRole: string | undefined;
   setpeopleList: React.Dispatch<React.SetStateAction<any>>;
 }
-const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleList, setpeopleList, userRole}: InvitePeopleUserRowProps) => {
+const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleList, setpeopleList, userRole }: InvitePeopleUserRowProps) => {
   const state = useSelector((state: Tappstate) => state);
   const roleOnHomePage = useGetProjectRole(projectID ? projectID : '')
   let myRole;
-  if(userRole){
+  if (userRole) {
     myRole = userRole;
-  }else{
+  } else {
     myRole = roleOnHomePage;
   }
   const dispatch = useDispatch();
@@ -209,15 +226,15 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
         break;
       case 'remove user':
         //remove user from organization level
-        if(!projectID){
+        if (!projectID) {
           const res = await apiRequest(
             {
-              url:`/api/fhapp-service/organization/remove-from-organization/${state.currentOrgID}/${eachUserID}`,
-              method:'DELETE'
+              url: `/api/fhapp-service/organization/remove-from-organization/${state.currentOrgID}/${eachUserID}`,
+              method: 'DELETE'
             }
           )
           if (res?.success) {
-            const newPeopleList = produce(peopleList, (draftState: any) => 
+            const newPeopleList = produce(peopleList, (draftState: any) =>
               draftState.filter((each: any) => each._id !== eachUserID)
             )
             setpeopleList(newPeopleList);
@@ -225,15 +242,15 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
             dispatch(showMessageAction(true, res?.message));
           }
         }
-        if(projectID){
+        if (projectID) {
           const res = await apiRequest(
             {
-              url:`/api/fhapp-service/organization/remove-from-project/${state.currentOrgID}/${projectID}/${eachUserID}`,
-              method:'DELETE'
+              url: `/api/fhapp-service/organization/remove-from-project/${state.currentOrgID}/${projectID}/${eachUserID}`,
+              method: 'DELETE'
             }
           )
           if (res?.success) {
-            const newPeopleList = produce(peopleList, (draftState: any) => 
+            const newPeopleList = produce(peopleList, (draftState: any) =>
               draftState.filter((each: any) => each._id !== eachUserID)
             )
             setpeopleList(newPeopleList);
@@ -252,12 +269,12 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
       <div className='hide-dropdown-list'>
         {`${state?.userInfo?.lastName} ${state?.userInfo?.firstName}` === name ?
           ''
-          :(role !== 'owner' &&
-          <DropdownListInput
-            listWrapperClassName='last-child-red'
-            onSelect={v => dropdownListAction(v)}
-            wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
-            options={optionList} />)
+          : (role !== 'owner' &&
+            <DropdownListInput
+              listWrapperClassName='last-child-red'
+              onSelect={v => dropdownListAction(v)}
+              wrapperClassName='border-none cursor-pointer w-40 last:text-error' labelClassName='hidden' listWrapperFloatDirection='left' disabled={true}
+              options={optionList} />)
         }
       </div>
     </div>
