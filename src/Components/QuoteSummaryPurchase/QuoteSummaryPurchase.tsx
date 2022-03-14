@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import './QuoteSummaryPurchase.scss'
 import UnitBudget from '../UnitBudget/UnitBudget'
 import { useSelector, useDispatch } from 'react-redux'
@@ -13,43 +13,76 @@ import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { Radio } from '@fulhaus/react.ui.radio';
 import { Checkbox } from '@fulhaus/react.ui.checkbox';
 import produce from 'immer'
+import debounce from 'lodash.debounce';
+import apiRequest from '../../Service/apiRequest';
+import { getQuoteDetail } from '../../redux/Actions';
 const QuoteSummaryPurchase = () => {
     const [editable, seteditable] = useState(false);
     const [checkedTax, setcheckedTax] = useState(false);
-    const [taxOnSale, settaxOnSale] = useState('0')
     const dispatch = useDispatch();
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
+    const updateQuoteField = async ({
+        field, value
+    }: {
+        field: string,
+        value: any,
+    }) => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
+            method: 'PATCH',
+            body: {
+                [field]: value
+            }
+        })
+        if (res?.success) {
+            dispatch(getQuoteDetail({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteDetail?._id
+            }))
+        } else {
+            console.log('update quote failed at QuoteSummaryRental')
+        }
+    }
+    const debounceUpdateShipping = useCallback(debounce((value: number) => updateQuoteField({ field: 'shipping', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdatePaymentTerms = useCallback(debounce((value: any) => updateQuoteField({ field: 'paymentTerms', value }), 1000), [currentOrgID, quoteDetail?._id]);
+
     const updateshipping = (v: string) => {
-        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
             draft.shipping = v
         });
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
+        debounceUpdateShipping(Number(v))
     }
 
     const setAdditionalDiscountPercent = (v: string) => {
-        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
             if (!draft.additionalDiscount) {
                 draft.additionalDiscount = {}
             }
             draft.additionalDiscount.percent = v
         });
+        debounceUpdateAdditionalDiscount(newQuoteDetail?.additionalDiscount);
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
     }
     const setAdditionalDiscountDescription = (v: string) => {
-        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
             if (!draft.additionalDiscount) {
                 draft.additionalDiscount = {}
             }
             draft.additionalDiscount.description = v
         });
+        debounceUpdateAdditionalDiscount(newQuoteDetail?.additionalDiscount);
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
@@ -91,19 +124,20 @@ const QuoteSummaryPurchase = () => {
             <div className='w-1/2'>{quoteDetail?.unitCount}</div>
             <div className='w-1/4'>${quoteDetail?.upfrontTotalPriceOfAllUnits?.toFixed(2)}</div>
         </div>
-        <div className='flex mt-2 font-ssp'>
+        <div className='flex mt-4 font-ssp'>
             <div>
                 <div className='text-sm font-ssp'>
                     Volume Discount
                 </div>
-                {editable ?
-                    <DropdownListInput initialValue={'Tier Not Available'} options={['Tier Not Available']} wrapperClassName='w-6rem-important' />
-                    :
+                {editable ? <DropdownListInput initialValue={quoteDetail?.customVolumeDiscount ? quoteDetail?.customVolumeDiscount : quoteDetail?.defaultVolumeDiscount} options={['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Tier 6']} onSelect={(v) => updateQuoteField({
+                    field: 'customVolumeDiscount',
+                    value: v
+                })} wrapperClassName='w-6rem-important' /> :
                     <div>
-                        Tier Not Available
+                        {quoteDetail?.customVolumeDiscount ? quoteDetail?.customVolumeDiscount : quoteDetail?.defaultVolumeDiscount}
                     </div>}
             </div>
-            <div className='my-auto ml-auto'>Tier Not Available</div>
+            <div className='my-auto ml-auto'>{quoteDetail?.customVolumeDiscount ? quoteDetail?.customVolumeDiscount : quoteDetail?.defaultVolumeDiscount}</div>
         </div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
             <div className='flex'>
@@ -118,10 +152,7 @@ const QuoteSummaryPurchase = () => {
                 <Tooltip text='' iconColor='blue' />
                 {editable ?
                     <>
-                        <DropdownListInput
-                            wrapperClassName=' w-6rem-important h-2-5-rem-important ml-auto'
-                            options={['%', '$']} />
-                        <TextInput prefix={<span>$</span>} className='w-24 h-10' variant='box' inputName='security deposit' value={quoteDetail?.shipping} onChange={
+                        <TextInput prefix={<span>$</span>} className='w-24 h-10 ml-auto' variant='box' inputName='security deposit' value={quoteDetail?.shipping} onChange={
                             (e) => {
                                 updateshipping((e.target as any).value)
                             }
@@ -164,7 +195,7 @@ const QuoteSummaryPurchase = () => {
                     Total Quote Before Tax
                 </div>
                 <div className='ml-auto'>
-                    Not Implement Yet
+                    {quoteDetail?.upfrontTotalQuoteBeforeTax}
                 </div>
             </div>
             {
@@ -179,7 +210,14 @@ const QuoteSummaryPurchase = () => {
                     </div>
                     <div className='flex my-auto ml-auto'>
                         <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{"%"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
-                            settaxOnSale((e.target as any).value)
+                            const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                draft.tax = (e.target as any).valueAsNumber
+                            })
+                            debounceUpdateTax((e.target as any).valueAsNumber)
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
                         }} />
                     </div>
                 </div>
@@ -192,7 +230,7 @@ const QuoteSummaryPurchase = () => {
                             </div>
                         </div>
                         <div className='my-auto ml-auto'>
-                            {quoteDetail?.tax} %
+                            - {quoteDetail?.tax} %
                         </div>
                     </div>
             }
@@ -201,7 +239,7 @@ const QuoteSummaryPurchase = () => {
                     Total Quote After Estimated Tax
                 </div>
                 <div className='ml-auto'>
-                    Not Implement Yet
+                    {quoteDetail?.upfrontTotalQuoteAfterEstimatedTax}
                 </div>
             </div>
         </div>
@@ -213,22 +251,30 @@ const QuoteSummaryPurchase = () => {
                 </div>
                 {editable &&
                     <>
-                        <Radio className='ml-auto mr-12' label='%' checked={quoteDetail?.paymentTerms[0]?.type === 'PERCENT'} onChange={() => {
-                            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                       <Radio className='ml-auto mr-12' label='$' checked={quoteDetail?.paymentTerms[0]?.type === 'ABSOLUTE'} onChange={() => {
+                            const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                draft?.paymentTerms?.forEach((each: any) => each.type = 'ABSOLUTE')
+                            });
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
+                            updateQuoteField({
+                                field: 'paymentTerms',
+                                value: newQuoteDetail.paymentTerms
+                            });
+                        }} />
+                        <Radio className='mr-12' label='%' checked={quoteDetail?.paymentTerms[0]?.type === 'PERCENT'} onChange={() => {
+                            const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                 draft?.paymentTerms?.forEach((each: any) => each.type = 'PERCENT')
                             });
                             dispatch({
                                 type: 'quoteDetail',
                                 payload: newQuoteDetail
                             })
-                        }} />
-                        <Radio className='mr-12' label='$' checked={quoteDetail?.paymentTerms[0]?.type === 'ABSOLUTE'} onChange={() => {
-                            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                draft?.paymentTerms?.forEach((each: any) => each.type = 'ABSOLUTE')
-                            });
-                            dispatch({
-                                type: 'quoteDetail',
-                                payload: newQuoteDetail
+                            updateQuoteField({
+                                field: 'paymentTerms',
+                                value: newQuoteDetail.paymentTerms
                             })
                         }} />
                     </>

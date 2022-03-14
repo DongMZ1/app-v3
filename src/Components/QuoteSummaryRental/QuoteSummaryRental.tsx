@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import './QuoteSummaryRental.scss'
 import UnitBudget from '../UnitBudget/UnitBudget'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,19 +14,45 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { Button } from '@fulhaus/react.ui.button';
 import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { Checkbox } from '@fulhaus/react.ui.checkbox';
-import produce, { Immer } from 'immer';
+import produce from 'immer';
+import debounce from 'lodash.debounce';
+import apiRequest from '../../Service/apiRequest';
+import { getQuoteDetail } from '../../redux/Actions';
 const QuoteSummaryRental = () => {
     const [editable, seteditable] = useState(false);
     const [showCalendar, setshowCalendar] = useState(false);
-    const [checkedTax, setcheckedTax] = useState(false);
-    const [taxOnSale, settaxOnSale] = useState('0')
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
     const dispatch = useDispatch()
-    if (selectedQuoteUnit) {
-        return <UnitBudget />
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
+
+    const updateQuoteField = async ({
+        field, value
+    }: {
+        field: string,
+        value: any,
+    }) => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
+            method: 'PATCH',
+            body: {
+                [field]: value
+            }
+        })
+        if (res?.success) {
+            dispatch(getQuoteDetail({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteDetail?._id
+            }))
+        } else {
+            console.log('update quote failed at QuoteSummaryRental')
+        }
     }
+
+    const debounceUpdateShipping = useCallback(debounce((value: number) => updateQuoteField({ field: 'shipping', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
     const updateshipping = (v: string) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
@@ -36,15 +62,17 @@ const QuoteSummaryRental = () => {
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
+        debounceUpdateShipping(Number(v))
     }
 
     const setAdditionalDiscountPercent = (v: string) => {
-        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
             if (!draft.additionalDiscount) {
                 draft.additionalDiscount = {}
             }
             draft.additionalDiscount.percent = v
         });
+        debounceUpdateAdditionalDiscount(newQuoteDetail?.additionalDiscount);
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
@@ -52,17 +80,23 @@ const QuoteSummaryRental = () => {
     }
 
     const setAdditionalDiscountDescription = (v: string) => {
-        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
             if (!draft.additionalDiscount) {
                 draft.additionalDiscount = {}
             }
             draft.additionalDiscount.description = v
         });
+        debounceUpdateAdditionalDiscount(newQuoteDetail?.additionalDiscount);
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
     }
+
+    if (selectedQuoteUnit) {
+        return <UnitBudget />
+    }
+
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto text-sm quote-summary-rental font-ssp'>
         <div className='flex'>
             <div className='my-auto text-2xl font-moret'>Rental Summary</div>
@@ -137,12 +171,15 @@ const QuoteSummaryRental = () => {
                 <div className='text-sm font-ssp'>
                     Volume Discount
                 </div>
-                {editable ? <DropdownListInput initialValue={'Tier Not Available'} options={['Tier Not Available']} wrapperClassName='w-6rem-important' /> :
+                {editable ? <DropdownListInput initialValue={quoteDetail?.customVolumeDiscount? quoteDetail?.customVolumeDiscount: quoteDetail?.defaultVolumeDiscount} options={['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Tier 6']} onSelect={(v) => updateQuoteField({
+                    field: 'customVolumeDiscount',
+                    value: v
+                })} wrapperClassName='w-6rem-important' /> :
                     <div>
-                        Tier Not Available
+                        {quoteDetail?.customVolumeDiscount? quoteDetail?.customVolumeDiscount: quoteDetail?.defaultVolumeDiscount}
                     </div>}
             </div>
-            <div className='my-auto ml-auto'>Volume Discount NOT Implement Yet</div>
+            <div className='my-auto ml-auto'>{quoteDetail?.customVolumeDiscount? quoteDetail?.customVolumeDiscount: quoteDetail?.defaultVolumeDiscount}</div>
         </div>
         <div className='mt-10 text-2xl font-moret'>Order Summary</div>
         <div className='flex mt-4 text-sm font-ssp'>
@@ -183,16 +220,13 @@ const QuoteSummaryRental = () => {
                 <Tooltip text='' iconColor='blue' />
                 {editable ?
                     <>
-                        <DropdownListInput
-                            wrapperClassName=' w-6rem-important h-2-5-rem-important ml-auto'
-                            options={['%', '$']} />
-                        <TextInput prefix={<span>$</span>} className='w-24 h-10' variant='box' inputName='security deposit' value={quoteDetail?.shipping} onChange={
+                        <TextInput prefix={<span>$</span>} className='w-24 h-10 ml-auto' variant='box' inputName='security deposit' value={quoteDetail?.shipping} onChange={
                             (e) => {
                                 updateshipping((e.target as any).value)
                             }
                         } /></> : <div className='ml-auto'>${Number(quoteDetail?.shipping)?.toFixed(2)}</div>}
             </div>
-            {
+            {/*
                 quoteDetail?.paymentTerms?.map(
                     (eachCost: any, key: any) =>
                         <div key={key} className='flex w-full mt-3'>
@@ -259,8 +293,8 @@ const QuoteSummaryRental = () => {
                             }
                         </div>
                 )
-            }
-            {
+                        */}
+            {/*
                 editable && <Button className='mt-2' variant='primary' onClick={() => {
                     const newQuoteDetail = produce(quoteDetail, (draft: any) => {
                         draft.paymentTerms?.push({
@@ -274,7 +308,7 @@ const QuoteSummaryRental = () => {
                         payload: newQuoteDetail
                     })
                 }} >Add new Service Cost</Button>
-            }
+            */}
         </div>
         <div className='flex pt-4 pb-4 mt-4 border-t border-black border-solid'>
             <div className='mr-1 font-semibold font-ssp'>Subtotal</div>
@@ -293,7 +327,9 @@ const QuoteSummaryRental = () => {
                 </div>
                 <div className='flex'>
                     <div className='w-1/6 my-auto mr-4'>
-                        <TextInput className='w-full' variant='box' inputName='additional discount' value={quoteDetail?.additionalDiscount?.percent} onChange={(e) => setAdditionalDiscountPercent((e.target as any).value)} suffix={<small>%</small>} />
+                        <TextInput className='w-full' variant='box' inputName='additional discount' value={quoteDetail?.additionalDiscount?.percent} onChange={(e) => {
+                            setAdditionalDiscountPercent((e.target as any).value)
+                        }} suffix={<small>%</small>} />
                     </div>
                     <div className='w-2/3'>
                         <TextInput className='w-full' variant='box' inputName='rationale' value={quoteDetail?.additionalDiscount?.description} onChange={(e) => setAdditionalDiscountDescription((e.target as any).value)} />
@@ -312,7 +348,7 @@ const QuoteSummaryRental = () => {
             editable ? <div className='flex mt-4'>
                 <div>
                     <div >
-                        <div className='flex'><Checkbox checked={checkedTax} onChange={(v) => setcheckedTax(v)} /><div>Estimated tax on sales </div></div>
+                        <div className='flex'><Checkbox checked={true} onChange={(v) => { }} /><div>Estimated tax on sales </div></div>
                         <div className='flex'>
                             <div className='mr-1'><i>Approximation, adjusted at checkout</i></div><Tooltip text='' iconColor='blue' />
                         </div>
@@ -320,9 +356,10 @@ const QuoteSummaryRental = () => {
                 </div>
                 <div className='flex my-auto ml-auto'>
                     <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>{"%"}</span>} inputName='tax on sale input' variant='box' value={quoteDetail?.tax} onChange={(e) => {
-                        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                             draft.tax = (e.target as any).valueAsNumber
                         })
+                        debounceUpdateTax((e.target as any).valueAsNumber)
                         dispatch({
                             type: 'quoteDetail',
                             payload: newQuoteDetail
@@ -339,7 +376,7 @@ const QuoteSummaryRental = () => {
                         </div>
                     </div>
                     <div className='my-auto ml-auto'>
-                        {quoteDetail?.tax} %
+                        - {quoteDetail?.tax} %
                     </div>
                 </div>
         }
@@ -351,6 +388,11 @@ const QuoteSummaryRental = () => {
             <div className='mr-1'>Total Quote Value Before Tax</div>
             <Tooltip text='' iconColor='blue' />
             <div className='ml-auto'>${quoteDetail?.rentalTotalQuoteBeforeTax?.toFixed(2)}</div>
+        </div>
+        <div className='flex px-4 py-2 mt-4 border border-black border-solid'>
+            <div className='mr-1'>Total Quote Value After Tax</div>
+            <Tooltip text='' iconColor='blue' />
+            <div className='ml-auto'>${quoteDetail?.rentalTotalQuoteAfterEstimatedTax?.toFixed(2)}</div>
         </div>
         <div className='w-full px-4 py-2 mt-4 text-sm border border-black border-solid font-ssp'>
             <div className='my-auto text-xl font-moret'>End Of Lease Option</div>

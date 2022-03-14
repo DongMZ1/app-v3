@@ -55,29 +55,42 @@ const ProjectFooter = () => {
     }
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
         {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
-        <>
-            <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
-            <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
-            <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
-            <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit ? `$${unitTotal.toFixed(2)}` : 'No Unit Selected'}</b></div>
-            <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal ? quoteTotal.toFixed(2) : 0}</b></div>
-            <div onClick={() =>{ 
-                dispatch({
-                    type:'selectedQuoteUnit',
-                    payload: undefined
-                })
-                dispatch(getQuoteDetail({
-                    organizationID: currentOrgID? currentOrgID : '',
-                    quoteID: quoteDetail?._id
-                }))
-                history.push('/quote-summary-rental')}} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
-        </>}
+            <>
+                <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
+                <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
+                <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
+                <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit ? `$${unitTotal.toFixed(2)}` : 'No Unit Selected'}</b></div>
+                <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal ? quoteTotal.toFixed(2) : 0}</b></div>
+                <div onClick={() => {
+                    dispatch({
+                        type: 'appLoader',
+                        payload: true
+                    })
+                    dispatch({
+                        type: 'selectedQuoteUnit',
+                        payload: undefined
+                    })
+                    dispatch(getQuoteDetail({
+                        organizationID: currentOrgID ? currentOrgID : '',
+                        quoteID: quoteDetail?._id
+                    }))
+                    setTimeout(() => {
+                        dispatch({
+                            type: 'appLoader',
+                            payload: false
+                        })
+                        history.push('/quote-summary-rental')
+                    }, 1200)
+                }} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>View Overall Budget</div>
+            </>}
         {
             (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) &&
             <>
-              <div className='my-auto mr-4 text-lg font-semibold'>Client Name</div>
-              <div onClick={() => history.push(selectedProject?.type === 'project'?'/project/quote':'/quote-only')} className='px-4 py-1 my-auto ml-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Exit Overall Budget</div>
-              <div onClick={() => {}} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Export PDF</div>
+                <div className='my-auto mr-4 text-lg font-semibold'>Client Name</div>
+                <div onClick={() => {
+                    history.push(selectedProject?.type === 'project' ? '/project/quote' : '/quote-only')
+                }} className='px-4 py-1 my-auto ml-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Exit Overall Budget</div>
+                <div onClick={() => { }} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Export PDF</div>
             </>
         }
     </div>

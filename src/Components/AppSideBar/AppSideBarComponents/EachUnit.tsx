@@ -147,10 +147,27 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     }
 
     const onSelectUnit = () => {
-        dispatch({
-            type: 'selectedQuoteUnit',
-            payload: eachUnit
-        })
+        if ((window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only'))) {
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
+            setTimeout(() => {
+                dispatch({
+                    type: 'selectedQuoteUnit',
+                    payload: eachUnit
+                })
+                dispatch({
+                    type: 'appLoader',
+                    payload: false
+                })
+            }, 1200)
+        } else {
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: eachUnit
+            })
+        }
     }
 
     const deleteUnit = async () => {
