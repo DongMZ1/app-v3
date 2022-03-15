@@ -177,7 +177,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                     rentable: false,
                     qty: 1,
                     budget: 0,
-                    categoryID: eachItem.id as (string | null)
+                    categoryID: eachItem.id as (string | null | undefined)
                 }
             })
             if (!draft.rooms[index].categories.map((each: any) => each.name).includes(customItemName) && customItemName !== '') {
@@ -187,7 +187,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                         rentable: false,
                         qty: 1,
                         budget: 0,
-                        categoryID: null,
+                        categoryID: undefined,
                     }
                 )
             }
