@@ -1,0 +1,14 @@
+.selected-unit-map-products {
+    .show-draft-menu {
+        .draft-menu {
+            display: none;
+        }
+        &:hover {
+            .draft-menu{
+                position: absolute;
+                display: block;
+            }
+        }
+    }
+
+}
