@@ -332,14 +332,15 @@ const QuoteSummaryPurchase = () => {
                                 </div>
                         }
                         {
-                            editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
-                                const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                            editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={(e) => {
+                                const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                     draft.paymentTerms?.splice(key, 1);
                                 });
                                 dispatch({
                                     type: 'quoteDetail',
                                     payload: newQuoteDetail
                                 })
+                                debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                             }} />
                         }
                     </div>
@@ -355,15 +356,15 @@ const QuoteSummaryPurchase = () => {
                     const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                         draft.paymentTerms?.push({
                             term: '',
-                            type: 'PERCENT',
+                            type: quoteDetail?.paymentTerms[0]?.type ? quoteDetail?.paymentTerms[0]?.type : 'PERCENT',
                             amount: 0
                         })
                     });
+                    debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                     dispatch({
                         type: 'quoteDetail',
                         payload: newQuoteDetail
                     })
-                    debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                 }} >Add new Service Cost</Button>
             }
         </div>
