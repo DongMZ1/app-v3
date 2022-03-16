@@ -43,7 +43,8 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         imageUrl={eachCategory?.items.length > 0 ? eachCategory?.items?.map((eachItem: any) => eachItem?.imageURLs?.[0]) : []}
         isDesign
         imageDelete={()=>deleteProduct()}
-        currentFurnitureNumber={1}
+        currentFurnitureNumber={eachCategory?.items?.[currentIndex]?.qty}
+        totalFurnitureNumber={eachCategory?.items?.map((each : any) => each?.qty)?.reduce((a: number, b: number) => a + b, 0)}
         furnitureName={eachCategory?.name}
         number={eachCategory?.qty}
         editable
