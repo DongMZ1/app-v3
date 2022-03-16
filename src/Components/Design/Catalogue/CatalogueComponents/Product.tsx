@@ -21,7 +21,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     useEffect(() => {
         setselectedRoom(undefined);
-    }, [selectedQuoteUnit])
+    }, [selectedQuoteUnit?.unitID])
     const openProductDetail = () => {
         dispatch({
             type: 'showselectedProductDetail',

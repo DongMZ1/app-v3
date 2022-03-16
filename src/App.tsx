@@ -69,7 +69,7 @@ const App = () => {
 
   return (
     <>
-      <Popup horizontalAlignment="center" boxShadow={false} verticalAlignment="center" show={appLoader}>
+      <Popup allowCloseOnClickOutside={false} horizontalAlignment="center" boxShadow={false} verticalAlignment="center" show={appLoader}>
         <div className="flex items-center justify-center bg-transparent w-96 h-96">
           <Loader />
         </div>
