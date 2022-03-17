@@ -211,7 +211,7 @@ const QuoteSummaryRental = () => {
                     Security Deposit
                 </div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.securityDeposit?.toFixed(2)}</div>
+                <div className='ml-auto'>${quoteDetail?.rentalPriceTotalPerMonthYear2?.toFixed(2)}</div>
             </div>
             <div className='flex mt-3'>
                 <div className='my-auto mr-1'>
