@@ -65,6 +65,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
 
     const updateRoomCountRemote = async (count: any) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
@@ -75,6 +79,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         if (!res?.success) {
             console.log('updateRoomCount failed at line 55 Room.tsx')
         }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        });
     }
 
     const debounceUpdateCategories = useCallback(debounce((categories: any) => updateCategories(categories), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
