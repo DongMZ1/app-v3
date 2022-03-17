@@ -123,9 +123,22 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
 
     const debounceUpdateCurrentFurnitureNumberRemote = useCallback(debounce((items: any) => updateCurrentFurnitureNumberRemote(items), 500), [currentOrgID, quoteID, selectedQuoteUnit?.unitID, eachRoom?.roomID, eachCategory?.categoryID]);
 
+
+    const showProductDetail = () => {
+            dispatch({
+                type: 'showselectedProductDetail',
+                payload: true
+            })
+            dispatch({
+                type: 'selectedProductDetail',
+                payload: eachCategory?.items?.[currentIndex]
+            })
+    }
+
     return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard
         imageUrl={eachCategory?.items?.length > 0 ? eachCategory?.items?.map((eachItem: any) => eachItem?.imageURLs?.[0]) : []}
         isDesign
+        imageInfor={()=>showProductDetail()}
         imageDelete={() => deleteProduct()}
         currentFurnitureNumber={eachCategory?.items?.[currentIndex]?.qty}
         onCurrentFurnitureNumberChange={(v) => updateCurrentFurnitureNumber(v)}
