@@ -16,11 +16,36 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const ondrop = (e: React.DragEvent<HTMLDivElement>, eachRoom: any, eachCategory: any) => {
-        console.log('droped ' + eachRoom?.name + ' ' + eachCategory?.name);
-        console.log(draggedProduct)
+    const ondrop = async (e: React.DragEvent<HTMLDivElement>, eachRoom: any, eachCategory: any) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
+        let items = (selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === eachRoom?.roomID)[0]?.categories?.filter((eachC: any) => eachC.categoryID === eachCategory?.categoryID)[0]?.items as any[]).concat({
+            ...draggedProduct,
+            qty: 1
+        })
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            method: 'PATCH',
+            body: { items }
+        })
+        if (res?.success) {
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+        }
+        if (!res?.success) {
+            console.log('add catagory for design failed at Product.tsx')
+        }
     }
     const deleteProduct = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
         let items = (eachCategory?.items as any[]);
         items.splice(currentIndex, 1);
         const res = await apiRequest({

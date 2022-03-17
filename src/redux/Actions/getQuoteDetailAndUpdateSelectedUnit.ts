@@ -21,6 +21,10 @@ const getQuoteDetailAndUpdateSelectedUnit = ({
                 payload: res?.quote?.data?.filter((eachUnit: any) => eachUnit.unitID === selectedQuoteUnitID)[0]
             })
         }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        })
     }
     if (!res?.success) {
         console.log('get quote detail failed, see getQuoteDetail.ts')
