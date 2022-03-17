@@ -38,7 +38,11 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             }))
         }
         if (!res?.success) {
-            console.log('add catagory for design failed at Product.tsx')
+            console.log('add catagory for design failed at Product.tsx');
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            });
         }
     }
     const deleteProduct = async () => {
@@ -46,7 +50,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             type: 'appLoader',
             payload: true
         });
-        let items = (eachCategory?.items as any[]);
+        let items = [...(eachCategory?.items as any[])];
         items.splice(currentIndex, 1);
         const res = await apiRequest({
             url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
@@ -62,15 +66,25 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         }
         if (!res?.success) {
             console.log('add catagory for design failed at Product.tsx')
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            });
         }
+    }
+
+    const updateCurrentFurnitureNumber = (v: number) => {
+
     }
     return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard
         imageUrl={eachCategory?.items.length > 0 ? eachCategory?.items?.map((eachItem: any) => eachItem?.imageURLs?.[0]) : []}
         isDesign
         imageDelete={()=>deleteProduct()}
         currentFurnitureNumber={eachCategory?.items?.[currentIndex]?.qty}
+        onCurrentFurnitureNumberChange={(v) => updateCurrentFurnitureNumber(v)}
         totalFurnitureNumber={eachCategory?.items?.map((each : any) => each?.qty)?.reduce((a: number, b: number) => a + b, 0)}
         furnitureName={eachCategory?.name}
+        furnitureBrandName={eachCategory?.items?.[currentIndex]?.name}
         number={eachCategory?.qty}
         editable
         buy={eachCategory?.rentable}
