@@ -25,10 +25,17 @@ const SelectedUnitMapProducts = () => {
             <div className='flex text-4xl font-moret'><div className='mx-auto'>Select a unit to get started</div></div>
         </div>
     }
+
+    const calculateTotalRoomProducts = (room: any) => {
+        const roomTotal = room.categories.map((eachCategory : any) => {
+            return eachCategory?.items?.map((each: any) => each?.retailPrice * each?.qty)?.reduce((a: any, b: any) => a + b, 0)
+        })?.reduce((a: any, b: any) => a + b, 0)
+        return roomTotal ? roomTotal : 0;
+    }
     return <><div className='flex-1 p-4 overflow-auto selected-unit-map-products'>
         {
             selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div className='mb-6'>
-                <FurnitureInRoomHeader editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
+                <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProducts(eachRoom)} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
                     <>
                         {
                             eachRoom?.categories?.map(
