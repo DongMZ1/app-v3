@@ -27,7 +27,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
         if (quoteDetail) {
             fetchProducts();
         }
-    }, [quoteDetail, JSON.stringify(filterCatalogue)]);
+    }, [quoteDetail?._id, JSON.stringify(filterCatalogue)]);
    
     const fetchMoreProducts = async () => {
         if ((scrollRef.current?.clientHeight + scrollRef.current?.scrollTop + 5) > scrollRef.current?.scrollHeight) {

@@ -19,17 +19,17 @@ const ProjectFooter = () => {
     const dispatch = useDispatch();
     useEffect(
         () => {
-            if (JSONquoteDetail) {
+            if (JSONquoteDetail && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')))) {
                 getQuoteTotal()
             }
-        }, [JSONquoteDetail]
+        }, [JSONquoteDetail, window.location.href]
     )
     useEffect(
         () => {
-            if (JSONselectedQuoteUnit) {
+            if (JSONselectedQuoteUnit && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')))) {
                 getUnitTotal()
             }
-        }, [JSONselectedQuoteUnit]
+        }, [JSONselectedQuoteUnit, window.location.href]
     )
     const getUnitTotal = async () => {
         const res = await apiRequest(

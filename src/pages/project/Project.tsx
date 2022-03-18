@@ -24,6 +24,7 @@ import AppSideBar from '../../Components/AppSideBar/AppSideBar';
 import QuoteSummaryPurchase from '../../Components/QuoteSummaryPurchase/QuoteSummaryPurchase';
 import QuoteSummaryRental from '../../Components/QuoteSummaryRental/QuoteSummaryRental';
 import SaveProject from './ProjectComponents/SaveProject';
+import {ImUnlocked} from 'react-icons/im'
 const Project = () => {
     const [showInvitePeople, setshowInvitePeople] = useState(false);
     const [showHistory, setshowHistory] = useState(false);
@@ -193,6 +194,9 @@ const Project = () => {
                     {userRole !== 'viewer' && <>
                         <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
                         <SaveProject /></>}
+                    {
+                        userRole !== 'viewer' && userRole !== 'editor' && <ImUnlocked className='my-auto mr-8 cursor-pointer' />
+                    }
                 </div>
             </div>
             <CSSTransition in={showHistory} timeout={300} unmountOnExit classNames='opacity-animation'><VersionHistory close={() => setshowHistory(false)} /></CSSTransition>
