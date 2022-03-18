@@ -103,7 +103,7 @@ const QuoteSummaryRental = () => {
             {
                 !editable && <>
                     <div className='my-auto ml-auto mr-8 text-sm font-ssp'>Start Date: May 1, 2021</div>
-                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />}
+                    {userRole !== 'viewer' && (!quoteDetail?.approved) && <EditPenIcon onClick={() => seteditable(true)} className='my-auto cursor-pointer' />}
                 </>
             }
             {

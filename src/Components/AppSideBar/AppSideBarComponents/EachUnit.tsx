@@ -30,7 +30,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [saveUnitPackageName, setsaveUnitPackageName] = useState('');
     const [showSaveAsUnitPackage, setshowSaveAsUnitPackage] = useState(false);
 
-    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only');
+    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only') || (quoteDetail?.approved);
     const darkMode = (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only')) && eachUnit?.unitID === selectedQuoteUnit?.unitID;
 
     const duplicateUnit = async () => {

@@ -274,7 +274,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 roomNumber={eachRoom?.count}
                 onRoomNumberChange={(v) => updateRoomCount(v)}
                 roomName={eachRoom?.name}
-                editable={userRole !== 'viewer'}
+                editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
             >
                 <>
                     <TransitionGroup>
@@ -289,7 +289,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                         }
                     </TransitionGroup>
                     <div className='h-1 '></div>
-                    {userRole !== 'viewer' &&
+                    {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                         <div className='flex'>
                             <div className='relative w-32 mr-4 text-sm-important'>
                                 <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
@@ -445,7 +445,7 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) =
         buyMSRP={eachCategory.budget}
         onMSRPChange={(MSRP) => categoryPriceChange(MSRP)}
         onRentableChange={(rentable) => updateRentable(rentable)}
-        editable={userRole !== 'viewer'}
+        editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
         DeleteFurniture={() => deleteCatogory()}
     />
 }
