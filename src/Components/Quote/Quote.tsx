@@ -168,7 +168,7 @@ const Quote = () => {
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
         {(selectedQuoteUnit) ?
             <>
-                {userRole !== 'viewer' &&
+                {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                     <div className='flex'>
                         <div className='relative w-32 mr-8 text-sm-important'>
                             <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>

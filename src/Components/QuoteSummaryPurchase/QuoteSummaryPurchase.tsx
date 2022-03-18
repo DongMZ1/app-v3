@@ -96,7 +96,7 @@ const QuoteSummaryPurchase = () => {
             <div className='my-auto text-2xl font-moret'>Order Summary</div>
             {
                 !editable && <>
-                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto ml-auto cursor-pointer' />}
+                    {userRole !== 'viewer' && (!quoteDetail?.approved) && <EditPenIcon onClick={() => seteditable(true)} className='my-auto ml-auto cursor-pointer' />}
                 </>
             }
             {

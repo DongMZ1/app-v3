@@ -39,12 +39,13 @@ const UnitBudget = () => {
                         <FurnitureInRoomHeader totalPrice={roomTotalPrice} editable={false} roomName={eachRoom.name} totalItems={roomItemCount} roomNumber={eachRoom.count ? eachRoom.count : 0} />
                         <CSSTransition in={showPerItemCost} timeout={300} unmountOnExit classNames='opacity-animation'>
                             <div>
-                            {
-                            eachRoom?.categories?.map(
-                                (eachCategory : any) => <FurnitureInRoomRowCard furnitureName={eachCategory.name} editable={false} buyMSRP={eachCategory.budget} rentMSRP={eachCategory.budget} number={eachCategory.qty ? eachCategory.qty : 0} buy={!eachCategory.rentable} 
-                                showImages={showImage}
-                                />
-                            )}
+                                {
+                                    eachRoom?.categories?.map(
+                                        (eachCategory: any) => <EachCategory
+                                            eachCategory={eachCategory}
+                                            showImage={showImage}
+                                        />
+                                    )}
                             </div>
                         </CSSTransition>
                     </div>
@@ -52,6 +53,25 @@ const UnitBudget = () => {
             )
         }
     </div>
+}
+
+const EachCategory = ({ eachCategory, showImage }: {
+    eachCategory: any,
+    showImage: boolean
+}) => {
+    const [currentIndex, setcurrentIndex] = useState(0);
+    return <FurnitureInRoomRowCard
+        furnitureName={eachCategory.name}
+        currentFurnitureIndex={(v) => setcurrentIndex(v)}
+        furnitureBrandName={eachCategory?.items?.[currentIndex]?.name}
+        imageUrl={eachCategory?.items?.map((each: any) => each?.imageURLs[0])}
+        editable={false}
+        buyMSRP={eachCategory.budget}
+        rentMSRP={eachCategory.budget}
+        number={eachCategory.qty ? eachCategory.qty : 0}
+        buy={!eachCategory.rentable}
+        showImages={showImage}
+    />
 }
 
 export default UnitBudget;
