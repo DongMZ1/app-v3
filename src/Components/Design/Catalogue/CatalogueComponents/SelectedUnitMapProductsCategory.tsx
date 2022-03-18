@@ -152,7 +152,6 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         rentMSRP={eachCategory?.budget}
         isDesignViewer={userRole === 'viewer'}
         currentFurnitureIndex={(index) => {
-            console.log(index)
             setcurrentIndex(index)
         }}
     />

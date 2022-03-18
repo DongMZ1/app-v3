@@ -59,8 +59,11 @@ const EachCategory = ({ eachCategory, showImage }: {
     eachCategory: any,
     showImage: boolean
 }) => {
+    const [currentIndex, setcurrentIndex] = useState(0);
     return <FurnitureInRoomRowCard
         furnitureName={eachCategory.name}
+        currentFurnitureIndex={(v) => setcurrentIndex(v)}
+        furnitureBrandName={eachCategory?.items?.[currentIndex]?.name}
         imageUrl={eachCategory?.items?.map((each: any) => each?.imageURLs[0])}
         editable={false}
         buyMSRP={eachCategory.budget}
