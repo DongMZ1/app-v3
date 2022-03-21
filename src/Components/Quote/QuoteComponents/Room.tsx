@@ -57,6 +57,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const isFirstRendering = useIsFirstRender();
 
     useEffect(() => {
+        console.log(eachRoom?.categories? 'have object' : 'null')
         if (!isFirstRendering && eachRoom?.categories) {
             debounceUpdateCategories(eachRoom?.categories);
         }

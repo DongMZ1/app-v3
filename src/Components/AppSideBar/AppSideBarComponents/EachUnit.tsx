@@ -145,12 +145,10 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     }
 
     const onSelectUnit = () => {
-        if ((window.location.href.includes('/project/design') || window.location.href.includes('/design-only'))) {
-            dispatch({
-                type: 'selectedQuoteUnit',
-                payload: undefined
-            })
-        }
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: undefined
+        })
         if (true) {
             dispatch({
                 type: 'appLoader',

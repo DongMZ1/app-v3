@@ -7,6 +7,8 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
 import { AiOutlineDown } from 'react-icons/ai';
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
+import { FiEdit2 } from 'react-icons/fi'
+import { ImCross } from 'react-icons/im'
 import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
@@ -22,6 +24,7 @@ const Quote = () => {
     const [customRoomName, setcustomRoomName] = useState('');
     const [roomOptionCheckedList, setroomOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('')
+    const [eachUnitSetUpFeeEditable, seteachUnitSetUpFeeEditable] = useState(false);
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const quoteUnitLength = useSelector((state: Tappstate) => state.quoteDetail)?.data?.length;
@@ -219,6 +222,22 @@ const Quote = () => {
                         </div>
                     </div>
                 }
+                <div className='flex px-4 py-3 mt-4 bg-white border border-black border-solid'>
+                    <div className='my-auto text-xl font-moret'>Set up Fee for <b>{selectedQuoteUnit?.name}</b></div>
+                    {eachUnitSetUpFeeEditable ?
+                        <>
+                            <TextInput prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value='100' onChange={(e) => { }} />
+                            <ImCross size={12} className='my-auto cursor-pointer' onClick={() => seteachUnitSetUpFeeEditable(false)} />
+                        </>
+                        :
+                        <>
+                            <div className='my-auto ml-auto mr-4 font-ssp'>$9000</div>
+                            {userRole !== 'viewer' && (!quoteDetail?.approved) &&
+                                <FiEdit2 size={15} onClick={() => seteachUnitSetUpFeeEditable(true)} className='my-auto cursor-pointer' />
+                            }
+                        </>
+                    }
+                </div>
                 {
                     selectedQuoteUnit?.rooms?.map((each: any) =>
                         <Room
