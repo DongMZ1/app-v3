@@ -22,7 +22,7 @@ const CatalogueFilterSort = ({ showSort, setshowSort }: CatalogueFilterSortProps
     return <ClickOutsideAnElementHandler onClickedOutside={() => setshowSort(false)}>
         <div className="absolute right-0 z-50 bg-white border border-black border-solid w-200px">
             {
-                ['Price low to high', 'Price high to low', 'Last Checked', 'In Stock'].map((each) =>
+                ['Price low to high', 'Price high to low', 'Last Updated', 'In Stock'].map((each) =>
                     <div onClick={() => apply(each)} className='w-full px-4 py-2 text-sm cursor-pointer font-ssp hover:bg-gray-200'>
                         {each}
                     </div>

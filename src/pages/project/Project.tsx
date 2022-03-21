@@ -25,6 +25,7 @@ import QuoteSummaryPurchase from '../../Components/QuoteSummaryPurchase/QuoteSum
 import QuoteSummaryRental from '../../Components/QuoteSummaryRental/QuoteSummaryRental';
 import SaveProject from './ProjectComponents/SaveProject';
 import {ImUnlocked} from 'react-icons/im'
+import {FaLock} from 'react-icons/fa'
 const Project = () => {
     const [showInvitePeople, setshowInvitePeople] = useState(false);
     const [showHistory, setshowHistory] = useState(false);
@@ -195,7 +196,7 @@ const Project = () => {
                         <HistoryIcon onClick={() => setshowHistory(true)} className='my-auto mr-8 cursor-pointer' />
                         <SaveProject /></>}
                     {
-                        userRole !== 'viewer' && userRole !== 'editor' && <ImUnlocked className='my-auto mr-8 cursor-pointer' />
+                        userRole !== 'viewer' && userRole !== 'editor' && (window.location.href.includes('/quote-only') || window.location.href.includes('/project/quote')) && <ImUnlocked className='my-auto mr-8 cursor-pointer' />
                     }
                 </div>
             </div>

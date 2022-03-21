@@ -30,7 +30,7 @@ const SelectedProductDetail = () => {
             <div className="flex text-sm font-semibold font-ssp">
                 <div className="w-1/3 ">${selectedProductDetail?.retailPrice}</div>
                 <div className="w-1/4 ">Stock: {selectedProductDetail?.stockQty}</div>
-                <div className="w-1/3 ">Last Checked: {selectedProductDetail?.stockDate?.slice(0, 10)}</div>
+                <div className="w-1/3 ">Last Updated: {selectedProductDetail?.stockDate?.slice(0, 10)}</div>
             </div>
             <div className="mt-1 text-sm font-ssp">Dimensions: {selectedProductDetail?.dimension} <b>{selectedProductDetail?.dimensionUnit}</b></div>
             <div className="mt-1 text-sm font-ssp">Material: {selectedProductDetail?.material}</div>
