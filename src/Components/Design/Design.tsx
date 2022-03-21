@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Tappstate } from '../../redux/reducers';
 import apiRequest from '../../Service/apiRequest';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../redux/Actions';
+import Canvas from './Canvas/Canvas';
 const tabs = [
   { icon: <FaRegListAlt style={{ marginRight: "0.5rem" }} />, label: "Catalogue" },
   { icon: <IoMdBook style={{ marginRight: "0.5rem" }} />, label: "Canvas" },
@@ -46,6 +47,7 @@ const Design = () => {
         <Tab initialActiveTabLabel='Catalogue' onChange={(label) => settabState(label)} tabs={tabs} />
       </div>
       <Catalogue tabState={tabState} />
+      <Canvas tabState={tabState} />
     </div>
   );
 };
