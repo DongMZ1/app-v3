@@ -57,7 +57,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const isFirstRendering = useIsFirstRender();
 
     useEffect(() => {
-        console.log(eachRoom?.categories? 'have object' : 'null')
+        console.log(eachRoom?.categories ? 'have object' : 'null')
         if (!isFirstRendering && eachRoom?.categories) {
             debounceUpdateCategories(eachRoom?.categories);
         }
@@ -87,7 +87,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     }
 
     const debounceUpdateCategories = useCallback(debounce((categories: any) => updateCategories(categories), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
-    
+
     const updateCategories = async (categories: any) => {
         dispatch({
             type: 'appLoader',
@@ -154,16 +154,18 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     }
 
     const updateRoomCount = (count: number) => {
-        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-            draft.rooms[index].count = count;
-        });
-        dispatch({
-            type: 'selectedQuoteUnit',
-            payload: newselectedQuoteUnit
-        })
-        debounceUpdateRoomCountRemote(count);
-        updateQuoteDetail(newselectedQuoteUnit);
+        if (count < 10000) {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+                draft.rooms[index].count = count;
+            });
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newselectedQuoteUnit
+            })
+            debounceUpdateRoomCountRemote(count);
+            updateQuoteDetail(newselectedQuoteUnit);
+        }
     }
 
     const addRoomPackagesToRoom = async () => {
@@ -267,7 +269,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         </Popup>
         <div className='w-full mt-6'>
             <FurnitureInRoomHeader
-                totalPrice={totalPriceOfEachRoom ? totalPriceOfEachRoom : 0}
+                totalPrice={totalPriceOfEachRoom ? totalPriceOfEachRoom.toFixed(2) as any : 0}
                 duplicateRoom={() => duplicateRoom()}
                 saveAsRoomPackage={() => setshowSaveAsRoomPackage(true)}
                 deleteRoom={() => deleteRoom()}
