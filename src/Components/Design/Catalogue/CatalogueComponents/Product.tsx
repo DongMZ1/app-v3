@@ -129,7 +129,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
             </AppV3FurnitureCard>
         </div>
         <div className='ml-1.5 text-xs font-ssp font-semibold'>${eachProduct?.retailPrice}</div>
-        <div className='ml-1.5 text-xs font-ssp font-semibold'>{eachProduct?.dimension}</div>
+        <div className='ml-1.5 text-xs font-ssp font-semibold'>{eachProduct?.name}</div>
     </div>
 }
 
