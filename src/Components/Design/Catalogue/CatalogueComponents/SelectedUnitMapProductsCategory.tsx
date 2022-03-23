@@ -100,21 +100,22 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
         const newSelectedQuoteUnit: any = produce(selectedQuoteUnit, (draft: any) => {
             draft.rooms[roomIndex].selectedCanvas.items[`${eachCategory?.categoryID}`][currentIndex].qty = v;
         })
+        debounceUpdateCurrentFurnitureNumberRemote(newSelectedQuoteUnit?.rooms[roomIndex].selectedCanvas.items)
         dispatch({
             type: 'selectedQuoteUnit',
             payload: newSelectedQuoteUnit
         })
     }
 
-    const updateCurrentFurnitureNumberRemote = async (items: any[]) => {
+    const updateCurrentFurnitureNumberRemote = async (items: object) => {
         dispatch({
             type: 'appLoader',
             payload: true
         });
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items }
+            body: { items : items }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
