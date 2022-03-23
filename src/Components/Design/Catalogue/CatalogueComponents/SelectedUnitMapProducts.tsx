@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './SelectedUnitMapProducts.scss'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Tappstate } from '../../../../redux/reducers'
 import { ReactComponent as AddUnitIcon } from "../../../../styles/images/add-a-unit-to-get-start.svg";
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header';
 import { Button } from '@fulhaus/react.ui.button';
 import { Popup } from '@fulhaus/react.ui.popup';
 import { TextInput } from '@fulhaus/react.ui.text-input';
-import {BsPlusLg} from 'react-icons/bs'
+import { BsPlusLg } from 'react-icons/bs'
 import SelectedUnitMapProductsCategory from './SelectedUnitMapProductsCategory';
+import apiRequest from '../../../../Service/apiRequest';
+import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
 const SelectedUnitMapProducts = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
@@ -18,18 +20,10 @@ const SelectedUnitMapProducts = () => {
             <div className='flex text-4xl font-moret'><div className='mx-auto'>Select a unit to get started</div></div>
         </div>
     }
-
-    const calculateTotalRoomProductsPrice = (room: any) => {
-        const roomTotal = room?.categories?.map((eachCategory: any) => {
-            return eachCategory?.items?.map((each: any) => each?.retailPrice * each?.qty)?.reduce((a: any, b: any) => a + b, 0)
-        })?.reduce((a: any, b: any) => a + b, 0) * room?.count
-        return roomTotal ? roomTotal : 0;
-    }
     return <><div className='flex-1 p-4 overflow-auto selected-unit-map-products'>
         {
             selectedQuoteUnit?.rooms?.map((eachRoom: any) => <SelectedUnitMapProductsRoom
                 eachRoom={eachRoom}
-                calculateTotalRoomProductsPrice={calculateTotalRoomProductsPrice}
                 userRole={userRole}
             />)
         }
@@ -39,10 +33,9 @@ const SelectedUnitMapProducts = () => {
 
 type SelectedUnitMapProductsRoomProps = {
     eachRoom: any,
-    calculateTotalRoomProductsPrice: (room: any) => number,
     userRole: string,
 }
-const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice, userRole }: SelectedUnitMapProductsRoomProps) => {
+const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProductsRoomProps) => {
     const [showConfirmBackToDraft, setshowConfirmBackToDraft] = useState(false);
     const [showConfirmDeleteDraft, setshowConfirmDeleteDraft] = useState(false);
 
@@ -51,8 +44,57 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice
 
     const [showConfirmDuplicateDraft, setshowConfirmDuplicateDraft] = useState(false);
     const [duplicateName, setduplicateName] = useState('');
+
+    const [roomProductCanvas, setroomProductCanvas] = useState([]);
+
+    const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+
+    const dispatch = useDispatch()
+    useEffect(() => {
+        const createCanvaForRoom = async () => {
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: true
+                }
+            )
+            const res = await apiRequest({
+                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
+                method: 'POST',
+            })
+            if (res?.success) {
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+            }
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: false
+                }
+            )
+        }
+        if (eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)) {
+            createCanvaForRoom();
+        }
+    }, [eachRoom?.roomID]);
+
+    const calculateTotalRoomProductsPrice = () => {
+        let roomTotal = 0;
+        if (eachRoom?.selectedCanvas) {
+            for (let variable in eachRoom?.selectedCanvas?.items) {
+                roomTotal = roomTotal + (eachRoom?.selectedCanvas?.items?.[variable]?.length > 0 ? eachRoom?.selectedCanvas?.items?.[variable]?.map((eachProduct: any) => eachProduct?.qty * eachProduct?.retailPrice)?.reduce((a: any, b: any) => a + b, 0) : 0)
+            }
+        }
+        return roomTotal * eachRoom?.count;
+    }
     return <><div className='mb-6'>
-        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice(eachRoom)} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
+        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice()} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
             <>
                 {
                     eachRoom?.categories?.map(
@@ -62,17 +104,20 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice
                 }
                 {userRole !== 'viewer' &&
                     <div className='flex flex-wrap mt-2 mr-28'>
-                        <div className='flex px-4 py-1 mr-6 text-white bg-link'>
-                            <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>Draft 1</div>
-                            <div className='relative px-2 my-auto font-semibold show-draft-menu'>
-                                <div>···</div>
-                                <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
-                                    <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
-                                    <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
-                                    <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                        {eachRoom?.canvases?.map((each: any) =>
+                            <div className={`flex px-4 py-1 mr-6 ${ each === eachRoom?.selectedCanvas?._id ? 'text-white bg-link' : 'text-black bg-transparent border border-solid border-black'}`}>
+                                <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>{each}</div>
+                                <div className='relative px-2 my-auto font-semibold show-draft-menu'>
+                                    <div>···</div>
+                                    <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
+                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
+                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
+                                        <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )
+                        }
                         <BsPlusLg className='my-auto cursor-pointer' />
                     </div>
                 }

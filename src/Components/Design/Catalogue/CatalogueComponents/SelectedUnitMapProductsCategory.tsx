@@ -8,9 +8,9 @@ import produce from 'immer'
 import debounce from 'lodash.debounce';
 type SelectedUnitMapProductsCategoryProps = {
     eachCategory: any;
-    eachRoom: any
+    eachRoom: any;
 }
-const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUnitMapProductsCategoryProps) => {
+const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnitMapProductsCategoryProps) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const draggedProduct = useSelector((state: Tappstate) => state.draggedProduct);
     const dispatch = useDispatch();
@@ -18,25 +18,37 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+
+    const selectedCanvas = eachRoom?.selectedCanvas;
+
     useEffect(() => {
-        if (eachCategory?.items?.length === 1) {
+        if (selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.length === 1) {
             //this is a react slick bug, it cannot detect index become 0, thus, using a effect to resolve this bug
             setcurrentIndex(0);
         }
     })
-    const ondrop = async (e: React.DragEvent<HTMLDivElement>, eachRoom: any, eachCategory: any) => {
+    const ondrop = async (e: React.DragEvent<HTMLDivElement>, eachCategory: any) => {
         dispatch({
             type: 'appLoader',
             payload: true
         })
-        let items = (selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === eachRoom?.roomID)[0]?.categories?.filter((eachC: any) => eachC.categoryID === eachCategory?.categoryID)[0]?.items as any[]).concat({
-            ...draggedProduct,
-            qty: 1
-        })
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items }
+            body: {
+                items: {
+                    ...selectedCanvas.items,
+                    [eachCategory?.categoryID]: selectedCanvas.items?.[`${eachCategory?.categoryID}`] ? selectedCanvas.items?.[`${eachCategory?.categoryID}`]?.concat({
+                        ...draggedProduct,
+                        qty: 1
+                    }) : [
+                        {
+                            ...draggedProduct,
+                            qty: 1
+                        },
+                    ]
+                }
+            }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -59,12 +71,13 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             type: 'appLoader',
             payload: true
         });
-        let items = [...(eachCategory?.items as any[])];
-        items.splice(currentIndex, 1);
+        let newselectedCanvas : any = produce(selectedCanvas, (draft: any) => {
+            draft.items[`${eachCategory?.categoryID}`]?.splice(currentIndex, 1)
+        }) 
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items }
+            body: { items : newselectedCanvas?.items }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -84,26 +97,25 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
 
     const updateCurrentFurnitureNumber = (v: number) => {
         const roomIndex = selectedQuoteUnit?.rooms?.findIndex((each: any) => each?.roomID === eachRoom?.roomID);
-        const categoryIndex = selectedQuoteUnit.rooms[roomIndex].categories.findIndex((each: any) => each.categoryID === eachCategory?.categoryID);
         const newSelectedQuoteUnit: any = produce(selectedQuoteUnit, (draft: any) => {
-            draft.rooms[roomIndex].categories[categoryIndex].items[currentIndex].qty = v;
+            draft.rooms[roomIndex].selectedCanvas.items[`${eachCategory?.categoryID}`][currentIndex].qty = v;
         })
-        debounceUpdateCurrentFurnitureNumberRemote(newSelectedQuoteUnit.rooms[roomIndex].categories[categoryIndex].items)
+        debounceUpdateCurrentFurnitureNumberRemote(newSelectedQuoteUnit?.rooms[roomIndex].selectedCanvas.items)
         dispatch({
             type: 'selectedQuoteUnit',
             payload: newSelectedQuoteUnit
         })
     }
 
-    const updateCurrentFurnitureNumberRemote = async (items: any[]) => {
+    const updateCurrentFurnitureNumberRemote = async (items: object) => {
         dispatch({
             type: 'appLoader',
             payload: true
         });
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items }
+            body: { items : items }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -131,20 +143,20 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             })
             dispatch({
                 type: 'selectedProductDetail',
-                payload: eachCategory?.items?.[currentIndex]
+                payload: selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]
             })
     }
 
-    return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard
-        imageUrl={eachCategory?.items?.length > 0 ? eachCategory?.items?.map((eachItem: any) => eachItem?.imageURLs?.[0]) : []}
+    return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachCategory)} ><FurnitureInRoomRowCard
+        imageUrl={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.length > 0 ? selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((eachProduct: any) => eachProduct?.imageURLs?.[0]) : []}
         isDesign
         imageInfor={()=>showProductDetail()}
         imageDelete={() => deleteProduct()}
-        currentFurnitureNumber={eachCategory?.items?.[currentIndex]?.qty}
+        currentFurnitureNumber={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.qty}
         onCurrentFurnitureNumberChange={(v) => updateCurrentFurnitureNumber(v)}
-        totalFurnitureNumber={eachCategory?.items?.map((each: any) => each?.qty)?.reduce((a: number, b: number) => a + b, 0)}
+        totalFurnitureNumber={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((each: any) => each?.qty)?.reduce((a: number, b: number) => a + b, 0)}
         furnitureName={eachCategory?.name}
-        furnitureBrandName={eachCategory?.items?.[currentIndex]?.name}
+        furnitureBrandName={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.name}
         number={eachCategory?.qty}
         editable
         buy={eachCategory?.rentable}
