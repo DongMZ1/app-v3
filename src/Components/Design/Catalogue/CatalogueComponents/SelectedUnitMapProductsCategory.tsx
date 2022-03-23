@@ -27,19 +27,28 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
             setcurrentIndex(0);
         }
     })
-    const ondrop = async (e: React.DragEvent<HTMLDivElement>, eachRoom: any, eachCategory: any) => {
+    const ondrop = async (e: React.DragEvent<HTMLDivElement>, eachCategory: any) => {
         dispatch({
             type: 'appLoader',
             payload: true
         })
-        let items = (selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === eachRoom?.roomID)[0]?.categories?.filter((eachC: any) => eachC.categoryID === eachCategory?.categoryID)[0]?.items as any[]).concat({
-            ...draggedProduct,
-            qty: 1
-        })
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items }
+            body: {
+                items: {
+                    ...selectedCanvas.items,
+                    [eachCategory?.categoryID]: selectedCanvas.items?.[`${eachCategory?.categoryID}`] ? selectedCanvas.items?.[`${eachCategory?.categoryID}`]?.concat({
+                        ...draggedProduct,
+                        qty: 1
+                    }) : [
+                        {
+                            ...draggedProduct,
+                            qty: 1
+                        },
+                    ]
+                }
+            }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -139,7 +148,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
             })
     }
 
-    return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard
+    return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachCategory)} ><FurnitureInRoomRowCard
         imageUrl={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.length > 0 ? selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((eachProduct: any) => eachProduct?.imageURLs?.[0]) : []}
         isDesign
         imageInfor={()=>showProductDetail()}
