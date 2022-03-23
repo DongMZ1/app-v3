@@ -302,7 +302,7 @@ const CatalogueFilter = ({ setisExpand, setdraggableWidth, isExpand }: Catalogue
                                 payload: newFilterCatalogue
                             })
                         }}
-                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>{filterCatalogue?.sort}</div></div>
+                    ><GoX className='mt-auto mb-1 mr-1' /><div className='mt-auto'>Sort</div></div>
                 }
                 <div onClick={() => resetFilter()} className='flex ml-auto mr-4 text-sm font-bold cursor-pointer'><div className='mt-auto'>Reset</div></div>
                 {/*<CatalogueFilterDistance />*/}

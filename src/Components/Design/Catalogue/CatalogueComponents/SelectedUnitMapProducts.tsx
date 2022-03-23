@@ -7,18 +7,11 @@ import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-heade
 import { Button } from '@fulhaus/react.ui.button';
 import { Popup } from '@fulhaus/react.ui.popup';
 import { TextInput } from '@fulhaus/react.ui.text-input';
+import {BsPlusLg} from 'react-icons/bs'
 import SelectedUnitMapProductsCategory from './SelectedUnitMapProductsCategory';
 const SelectedUnitMapProducts = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
-    const [showConfirmBackToDraft, setshowConfirmBackToDraft] = useState(false);
-    const [showConfirmDeleteDraft, setshowConfirmDeleteDraft] = useState(false);
-
-    const [showConfirmRenameDraft, setshowConfirmRenameDraft] = useState(false);
-    const [projectRenameName, setprojectRenameName] = useState('');
-
-    const [showConfirmDuplicateDraft, setshowConfirmDuplicateDraft] = useState(false);
-    const [duplicateName, setduplicateName] = useState('');
     if (!selectedQuoteUnit) {
         return <div className='m-auto'>
             <AddUnitIcon />
@@ -27,41 +20,64 @@ const SelectedUnitMapProducts = () => {
     }
 
     const calculateTotalRoomProductsPrice = (room: any) => {
-        const roomTotal = room?.categories?.map((eachCategory : any) => {
+        const roomTotal = room?.categories?.map((eachCategory: any) => {
             return eachCategory?.items?.map((each: any) => each?.retailPrice * each?.qty)?.reduce((a: any, b: any) => a + b, 0)
         })?.reduce((a: any, b: any) => a + b, 0) * room?.count
         return roomTotal ? roomTotal : 0;
     }
     return <><div className='flex-1 p-4 overflow-auto selected-unit-map-products'>
         {
-            selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div className='mb-6'>
-                <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice(eachRoom)} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
-                    <>
-                        {
-                            eachRoom?.categories?.map(
-                                (eachCategory: any) => 
-                                    <SelectedUnitMapProductsCategory eachCategory={eachCategory} eachRoom={eachRoom} />
-                            )
-                        }
-                        {userRole !== 'viewer' &&
-                            <div className='flex flex-wrap mr-28'>
-                                <div className='flex px-4 py-1 mt-2 text-white bg-link'>
-                                    <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>Draft 1</div>
-                                    <div className='relative px-2 my-auto font-semibold show-draft-menu'>
-                                        <div>···</div>
-                                        <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
-                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
-                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
-                                            <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
-                                        </div>
-                                    </div>
+            selectedQuoteUnit?.rooms?.map((eachRoom: any) => <SelectedUnitMapProductsRoom
+                eachRoom={eachRoom}
+                calculateTotalRoomProductsPrice={calculateTotalRoomProductsPrice}
+                userRole={userRole}
+            />)
+        }
+    </div>
+    </>
+}
+
+type SelectedUnitMapProductsRoomProps = {
+    eachRoom: any,
+    calculateTotalRoomProductsPrice: (room: any) => number,
+    userRole: string,
+}
+const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice, userRole }: SelectedUnitMapProductsRoomProps) => {
+    const [showConfirmBackToDraft, setshowConfirmBackToDraft] = useState(false);
+    const [showConfirmDeleteDraft, setshowConfirmDeleteDraft] = useState(false);
+
+    const [showConfirmRenameDraft, setshowConfirmRenameDraft] = useState(false);
+    const [projectRenameName, setprojectRenameName] = useState('');
+
+    const [showConfirmDuplicateDraft, setshowConfirmDuplicateDraft] = useState(false);
+    const [duplicateName, setduplicateName] = useState('');
+    return <><div className='mb-6'>
+        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice(eachRoom)} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
+            <>
+                {
+                    eachRoom?.categories?.map(
+                        (eachCategory: any) =>
+                            <SelectedUnitMapProductsCategory eachCategory={eachCategory} eachRoom={eachRoom} />
+                    )
+                }
+                {userRole !== 'viewer' &&
+                    <div className='flex flex-wrap mt-2 mr-28'>
+                        <div className='flex px-4 py-1 mr-6 text-white bg-link'>
+                            <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>Draft 1</div>
+                            <div className='relative px-2 my-auto font-semibold show-draft-menu'>
+                                <div>···</div>
+                                <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
+                                    <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
+                                    <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
+                                    <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
                                 </div>
                             </div>
-                        }
-                    </>
-                </FurnitureInRoomHeader>
-            </div>)
-        }
+                        </div>
+                        <BsPlusLg className='my-auto cursor-pointer' />
+                    </div>
+                }
+            </>
+        </FurnitureInRoomHeader>
     </div>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmBackToDraft(false)} show={showConfirmBackToDraft}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
