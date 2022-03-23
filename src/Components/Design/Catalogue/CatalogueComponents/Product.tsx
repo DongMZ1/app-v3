@@ -69,12 +69,12 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                 }))
             }
             if (!res?.success) {
-                console.log('add catagory for design failed at Product.tsx')
+                console.log('add catagory for design failed at Product.tsx');
+                dispatch({
+                    type: 'appLoader',
+                    payload: false
+                });
             }
-            dispatch({
-                type: 'appLoader',
-                payload: true
-            })
         }
     }
 

@@ -7,7 +7,7 @@ import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-heade
 import { Button } from '@fulhaus/react.ui.button';
 import { Popup } from '@fulhaus/react.ui.popup';
 import { TextInput } from '@fulhaus/react.ui.text-input';
-import {BsPlusLg} from 'react-icons/bs'
+import { BsPlusLg } from 'react-icons/bs'
 import SelectedUnitMapProductsCategory from './SelectedUnitMapProductsCategory';
 import apiRequest from '../../../../Service/apiRequest';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
@@ -57,7 +57,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         const createCanvaForRoom = async () => {
             dispatch(
                 {
-                    type:'appLoader',
+                    type: 'appLoader',
                     payload: true
                 }
             )
@@ -65,25 +65,33 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                 url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
                 method: 'POST',
             })
-            if(res?.success){
+            if (res?.success) {
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
                     organizationID: currentOrgID ? currentOrgID : '',
                     quoteID: quoteID,
                     selectedQuoteUnitID: selectedQuoteUnit?.unitID
                 }))
             }
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: false
+                }
+            )
         }
-        if(eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)){
+        if (eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)) {
             createCanvaForRoom();
         }
     }, [eachRoom?.roomID]);
 
     const calculateTotalRoomProductsPrice = () => {
         let roomTotal = 0;
-        for(let variable in eachRoom?.selectedCanvas?.items){
-            roomTotal = roomTotal + eachRoom?.selectedCanvas?.items[variable]?.map((eachProduct: any) => eachProduct?.qty * eachProduct?.retailPrice)?.reduce((a: any, b: any) => a + b)
+        if (eachRoom?.selectedCanvas) {
+            for (let variable in eachRoom?.selectedCanvas?.items) {
+                roomTotal = roomTotal + (eachRoom?.selectedCanvas?.items?.[variable]?.length > 0 ? eachRoom?.selectedCanvas?.items?.[variable]?.map((eachProduct: any) => eachProduct?.qty * eachProduct?.retailPrice)?.reduce((a: any, b: any) => a + b, 0) : 0)
+            }
         }
-        return roomTotal*eachRoom?.count;
+        return roomTotal * eachRoom?.count;
     }
     return <><div className='mb-6'>
         <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice()} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
@@ -91,7 +99,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                 {
                     eachRoom?.categories?.map(
                         (eachCategory: any) =>
-                            <SelectedUnitMapProductsCategory selectedCanvas={eachRoom?.selectedCanvas} eachCategory={eachCategory} eachRoom={eachRoom} />
+                            <SelectedUnitMapProductsCategory eachCategory={eachCategory} eachRoom={eachRoom} />
                     )
                 }
                 {userRole !== 'viewer' &&

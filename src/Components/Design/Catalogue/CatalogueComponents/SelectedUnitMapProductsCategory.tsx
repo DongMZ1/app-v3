@@ -9,9 +9,8 @@ import debounce from 'lodash.debounce';
 type SelectedUnitMapProductsCategoryProps = {
     eachCategory: any;
     eachRoom: any;
-    selectedCanvas: any;
 }
-const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom, selectedCanvas}: SelectedUnitMapProductsCategoryProps) => {
+const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnitMapProductsCategoryProps) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const draggedProduct = useSelector((state: Tappstate) => state.draggedProduct);
     const dispatch = useDispatch();
@@ -19,8 +18,11 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom, selectedCanva
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+
+    const selectedCanvas = eachRoom?.selectedCanvas;
+
     useEffect(() => {
-        if (eachCategory?.items?.length === 1) {
+        if (selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.length === 1) {
             //this is a react slick bug, it cannot detect index become 0, thus, using a effect to resolve this bug
             setcurrentIndex(0);
         }
@@ -60,12 +62,13 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom, selectedCanva
             type: 'appLoader',
             payload: true
         });
-        let items = [...(eachCategory?.items as any[])];
-        items.splice(currentIndex, 1);
+        let newselectedCanvas : any = produce(selectedCanvas, (draft: any) => {
+            draft.items[`${eachCategory?.categoryID}`]?.splice(currentIndex, 1)
+        }) 
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/${eachCategory?.categoryID}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items }
+            body: { items : newselectedCanvas?.items }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -132,7 +135,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom, selectedCanva
             })
             dispatch({
                 type: 'selectedProductDetail',
-                payload: eachCategory?.items?.[currentIndex]
+                payload: selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]
             })
     }
 
