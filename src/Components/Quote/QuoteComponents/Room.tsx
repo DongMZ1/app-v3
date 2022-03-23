@@ -55,29 +55,44 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
-    const debouncedCatagory = useDebounce(eachRoom?.categories, 500);
 
     useEffect(() => {
-        if (!isFirstRendering && debouncedCatagory) {
-            updateCategories(debouncedCatagory);
+        console.log(eachRoom?.categories ? 'have object' : 'null')
+        if (!isFirstRendering && eachRoom?.categories) {
+            debounceUpdateCategories(eachRoom?.categories);
         }
-    }, [JSON.stringify(debouncedCatagory)]);
+    }, [JSON.stringify(eachRoom?.categories)]);
 
-    const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID])
+    const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
+
     const updateRoomCountRemote = async (count: any) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
-                body: { count},
+                body: { count },
                 method: 'PATCH'
             }
         )
         if (!res?.success) {
             console.log('updateRoomCount failed at line 55 Room.tsx')
         }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        });
     }
 
+    const debounceUpdateCategories = useCallback(debounce((categories: any) => updateCategories(categories), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
+
     const updateCategories = async (categories: any) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
         const res = await apiRequest({
             url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
             body: {
@@ -88,6 +103,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         if (!res?.success) {
             console.log('updateCategories failed at line 33 Room.tsx')
         }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        });
     };
 
     const saveAsRoomPackage = async () => {
@@ -135,16 +154,18 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     }
 
     const updateRoomCount = (count: number) => {
-        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-            draft.rooms[index].count = count;
-        });
-        dispatch({
-            type: 'selectedQuoteUnit',
-            payload: newselectedQuoteUnit
-        })
-        debounceUpdateRoomCountRemote(count);
-        updateQuoteDetail(newselectedQuoteUnit);
+        if (count < 10000) {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                const index = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+                draft.rooms[index].count = count;
+            });
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newselectedQuoteUnit
+            })
+            debounceUpdateRoomCountRemote(count);
+            updateQuoteDetail(newselectedQuoteUnit);
+        }
     }
 
     const addRoomPackagesToRoom = async () => {
@@ -248,7 +269,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         </Popup>
         <div className='w-full mt-6'>
             <FurnitureInRoomHeader
-                totalPrice={totalPriceOfEachRoom ? totalPriceOfEachRoom : 0}
+                totalPrice={totalPriceOfEachRoom ? totalPriceOfEachRoom.toFixed(2) as any : 0}
                 duplicateRoom={() => duplicateRoom()}
                 saveAsRoomPackage={() => setshowSaveAsRoomPackage(true)}
                 deleteRoom={() => deleteRoom()}
@@ -256,7 +277,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 roomNumber={eachRoom?.count}
                 onRoomNumberChange={(v) => updateRoomCount(v)}
                 roomName={eachRoom?.name}
-                editable={userRole !== 'viewer'}
+                editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
             >
                 <>
                     <TransitionGroup>
@@ -271,7 +292,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                         }
                     </TransitionGroup>
                     <div className='h-1 '></div>
-                    {userRole !== 'viewer' &&
+                    {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                         <div className='flex'>
                             <div className='relative w-32 mr-4 text-sm-important'>
                                 <div onClick={() => setshowAddItemDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
@@ -427,7 +448,7 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) =
         buyMSRP={eachCategory.budget}
         onMSRPChange={(MSRP) => categoryPriceChange(MSRP)}
         onRentableChange={(rentable) => updateRentable(rentable)}
-        editable={userRole !== 'viewer'}
+        editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
         DeleteFurniture={() => deleteCatogory()}
     />
 }

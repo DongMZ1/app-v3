@@ -96,7 +96,7 @@ const QuoteSummaryPurchase = () => {
             <div className='my-auto text-2xl font-moret'>Order Summary</div>
             {
                 !editable && <>
-                    {userRole !== 'viewer' && <EditPenIcon onClick={() => seteditable(true)} className='my-auto ml-auto cursor-pointer' />}
+                    {userRole !== 'viewer' && (!quoteDetail?.approved) && <EditPenIcon onClick={() => seteditable(true)} className='my-auto ml-auto cursor-pointer' />}
                 </>
             }
             {
@@ -141,9 +141,16 @@ const QuoteSummaryPurchase = () => {
         </div>
         <div className='w-full p-4 mt-4 border border-black border-solid'>
             <div className='flex'>
-                <div className='mr-1'>Setup Fee</div>
+                <div className='my-auto mr-1'>Setup Fee</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>Included</div>
+                {editable ?
+                    <TextInput prefix={<span>$</span>} className='w-24 h-10 ml-auto' variant='box' inputName='security deposit' value={quoteDetail?.setupFee} onChange={
+                        (e) => {
+
+                        }
+                    } /> :
+                    <div className='ml-auto'>${quoteDetail?.setupFee?.toFixed(2)}</div>
+                }
             </div>
             <div className='flex mt-3'>
                 <div className='my-auto mr-1'>
@@ -230,7 +237,7 @@ const QuoteSummaryPurchase = () => {
                             </div>
                         </div>
                         <div className='my-auto ml-auto'>
-                             {quoteDetail?.tax} %
+                            {quoteDetail?.tax} %
                         </div>
                     </div>
             }
@@ -303,7 +310,7 @@ const QuoteSummaryPurchase = () => {
                         }
                         {
                             editable ? <>
-                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.price?.toFixed(2) : eachCost?.amount} onChange={(e) => {
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? 'input-gray-disable' : ''} ml-auto w-4rem-important`} suffix={<span>$</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'ABSOLUTE' ? quoteDetail?.upfrontPricesByPaymentTerms[key]?.price?.toFixed(2) : eachCost?.amount} onChange={(e) => {
                                     const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                         draft.paymentTerms[key].amount = (e.target as any).valueAsNumber
                                     });
@@ -313,7 +320,7 @@ const QuoteSummaryPurchase = () => {
                                     })
                                     debounceUpdatePaymentTerms(newQuoteDetail.paymentTerms);
                                 }} />
-                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ?  quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent?.toFixed(2) : eachCost?.amount} onChange={(e) => {
+                                <TextInput type='number' disabled={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT'} className={`${quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? 'input-gray-disable' : ''} mr-4 w-4rem-important`} suffix={<span>%</span>} inputName='payment item amount' variant='box' value={quoteDetail?.paymentTerms[0]?.type !== 'PERCENT' ? quoteDetail?.upfrontPricesByPaymentTerms[key]?.percent?.toFixed(2) : eachCost?.amount} onChange={(e) => {
                                     const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                         draft.paymentTerms[key].amount = (e.target as any).valueAsNumber
                                     });
@@ -347,9 +354,9 @@ const QuoteSummaryPurchase = () => {
                 )
             }
             {
-                (quoteDetail?.upfrontPricesByPaymentTerms as any[])?.map((each: any) => each?.percent)?.reduce((a:any, b:any) => a + b, 0) > 100.5 && <div className='flex py-4 my-4 border border-solid rounded bg-red-warning-exceed-100 border-red'>
-                        <div className='m-auto text-red'>Total percentage exceeds limit at {(quoteDetail?.upfrontPricesByPaymentTerms as any[])?.map((each: any) => each?.percent)?.reduce((a:any, b:any) => a + b, 0)?.toFixed(2)}% – please readjust.</div>
-                    </div>
+                (quoteDetail?.upfrontPricesByPaymentTerms as any[])?.map((each: any) => each?.percent)?.reduce((a: any, b: any) => a + b, 0) > 100.5 && <div className='flex py-4 my-4 border border-solid rounded bg-red-warning-exceed-100 border-red'>
+                    <div className='m-auto text-red'>Total percentage exceeds limit at {(quoteDetail?.upfrontPricesByPaymentTerms as any[])?.map((each: any) => each?.percent)?.reduce((a: any, b: any) => a + b, 0)?.toFixed(2)}% – please readjust.</div>
+                </div>
             }
             {
                 editable && <Button className='mt-2' variant='primary' onClick={() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { GroupUnit } from '@fulhaus/react.ui.group-unit'
 import { Popup } from '@fulhaus/react.ui.popup'
 import { TextInput } from '@fulhaus/react.ui.text-input'
@@ -10,6 +10,7 @@ import { Tappstate } from '../../../redux/reducers'
 import apiRequest from '../../../Service/apiRequest'
 import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender'
+import debounce from 'lodash.debounce'
 type eachUnitType = {
     eachUnit: any,
     getUnitPackages: () => Promise<void>
@@ -18,7 +19,6 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
-    const [unitCount, setunitCount] = useState(eachUnit?.count);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
@@ -30,16 +30,8 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [saveUnitPackageName, setsaveUnitPackageName] = useState('');
     const [showSaveAsUnitPackage, setshowSaveAsUnitPackage] = useState(false);
 
-    const debouncedUnitCount = useDebounce(unitCount, 300);
-    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only');
+    const viewOnly = userRole === 'viewer' || window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only') || (quoteDetail?.approved);
     const darkMode = (window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only')) && eachUnit?.unitID === selectedQuoteUnit?.unitID;
-
-    useEffect(() => {
-        //add debounce to update the count of unit
-        if (!isFirstRendering) {
-            updateCount(debouncedUnitCount);
-        }
-    }, [debouncedUnitCount])
 
     const duplicateUnit = async () => {
         const res = await apiRequest(
@@ -84,30 +76,30 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         }
     }
 
-    const updateCount = async (v: number) => {
+    const updateCount = (v: number) => {
         const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
-            if (v) {
-                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
-            }
-            else {
-                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = 0
-            }
+            (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).count = v
+
         })
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
         const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            if (v) {
-                draft.count = v;
-            } else {
-                draft.count = 0
-            }
+            draft.count = v;
         })
         dispatch({
             type: 'selectedQuoteUnit',
             payload: newSelectedQuoteUnit
         })
+        debounceUpdateCountRemote(v);
+    }
+
+    const updateCountRemote = async (v: number) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
@@ -120,7 +112,13 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         if (!res?.success) {
             console.log('updateCount failed at line 90 EachUnit.tsx')
         }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        });
     }
+
+    const debounceUpdateCountRemote = useCallback(debounce((v: number) => updateCountRemote(v), 500), [currentOrgID, quoteID, eachUnit?.unitID])
 
     const saveNotes = async () => {
         const res = await apiRequest(
@@ -147,7 +145,11 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     }
 
     const onSelectUnit = () => {
-        if ((window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only'))) {
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: undefined
+        })
+        if (true) {
             dispatch({
                 type: 'appLoader',
                 payload: true
@@ -241,7 +243,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             <GroupUnit
                 saveUnitAsUnitPackage={() => setshowSaveAsUnitPackage(true)}
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
-                onUnitsChange={(count) => setunitCount(count)}
+                onUnitsChange={(count) => updateCount(count)}
                 duplicateUnit={() => duplicateUnit()}
                 deleteUnit={() => deleteUnit()}
                 finishRenameUnit={() => saveName()}
@@ -250,7 +252,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
                 //check if it is selected, if not then give it a unit count
-                units={eachUnit?.unitID === selectedQuoteUnit?.unitID ? unitCount : unitCount ? unitCount : 0}
+                units={eachUnit?.count}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
                 darkmod={darkMode}
