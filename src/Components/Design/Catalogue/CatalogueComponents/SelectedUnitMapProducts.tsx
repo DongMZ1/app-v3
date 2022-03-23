@@ -104,17 +104,20 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                 }
                 {userRole !== 'viewer' &&
                     <div className='flex flex-wrap mt-2 mr-28'>
-                        <div className='flex px-4 py-1 mr-6 text-white bg-link'>
-                            <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>Draft 1</div>
-                            <div className='relative px-2 my-auto font-semibold show-draft-menu'>
-                                <div>···</div>
-                                <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
-                                    <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
-                                    <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
-                                    <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                        {eachRoom?.canvases?.map((each: any) =>
+                            <div className={`flex px-4 py-1 mr-6 ${ each === eachRoom?.selectedCanvas?._id ? 'text-white bg-link' : 'text-black bg-transparent border border-solid border-black'}`}>
+                                <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>{each}</div>
+                                <div className='relative px-2 my-auto font-semibold show-draft-menu'>
+                                    <div>···</div>
+                                    <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
+                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
+                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
+                                        <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )
+                        }
                         <BsPlusLg className='my-auto cursor-pointer' />
                     </div>
                 }
