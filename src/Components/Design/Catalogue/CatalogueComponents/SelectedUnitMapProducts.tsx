@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './SelectedUnitMapProducts.scss'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Tappstate } from '../../../../redux/reducers'
 import { ReactComponent as AddUnitIcon } from "../../../../styles/images/add-a-unit-to-get-start.svg";
 import { FurnitureInRoomHeader } from '@fulhaus/react.ui.furniture-in-room-header';
@@ -9,6 +9,8 @@ import { Popup } from '@fulhaus/react.ui.popup';
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import {BsPlusLg} from 'react-icons/bs'
 import SelectedUnitMapProductsCategory from './SelectedUnitMapProductsCategory';
+import apiRequest from '../../../../Service/apiRequest';
+import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
 const SelectedUnitMapProducts = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
@@ -51,13 +53,46 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice
 
     const [showConfirmDuplicateDraft, setshowConfirmDuplicateDraft] = useState(false);
     const [duplicateName, setduplicateName] = useState('');
+
+    const [roomProductCanvas, setroomProductCanvas] = useState([]);
+
+    const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+
+    const dispatch = useDispatch()
+    useEffect(() => {
+        const createCanvaForRoom = async () => {
+            dispatch(
+                {
+                    type:'appLoader',
+                    payload: true
+                }
+            )
+            const res = await apiRequest({
+                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
+                method: 'POST',
+            })
+            if(res?.success){
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+            }
+        }
+        if(eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)){
+            createCanvaForRoom();
+        }
+    }, [eachRoom?.roomID])
     return <><div className='mb-6'>
         <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice(eachRoom)} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
             <>
                 {
                     eachRoom?.categories?.map(
                         (eachCategory: any) =>
-                            <SelectedUnitMapProductsCategory eachCategory={eachCategory} eachRoom={eachRoom} />
+                            <SelectedUnitMapProductsCategory selectedCanvas={eachRoom?.selectedCanvas} eachCategory={eachCategory} eachRoom={eachRoom} />
                     )
                 }
                 {userRole !== 'viewer' &&

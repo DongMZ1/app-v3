@@ -8,9 +8,10 @@ import produce from 'immer'
 import debounce from 'lodash.debounce';
 type SelectedUnitMapProductsCategoryProps = {
     eachCategory: any;
-    eachRoom: any
+    eachRoom: any;
+    selectedCanvas: any;
 }
-const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUnitMapProductsCategoryProps) => {
+const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom, selectedCanvas}: SelectedUnitMapProductsCategoryProps) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const draggedProduct = useSelector((state: Tappstate) => state.draggedProduct);
     const dispatch = useDispatch();
@@ -136,15 +137,15 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
     }
 
     return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachRoom, eachCategory)} ><FurnitureInRoomRowCard
-        imageUrl={eachCategory?.items?.length > 0 ? eachCategory?.items?.map((eachItem: any) => eachItem?.imageURLs?.[0]) : []}
+        imageUrl={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.length > 0 ? selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((eachProduct: any) => eachProduct?.imageURLs?.[0]) : []}
         isDesign
         imageInfor={()=>showProductDetail()}
         imageDelete={() => deleteProduct()}
-        currentFurnitureNumber={eachCategory?.items?.[currentIndex]?.qty}
+        currentFurnitureNumber={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.qty}
         onCurrentFurnitureNumberChange={(v) => updateCurrentFurnitureNumber(v)}
-        totalFurnitureNumber={eachCategory?.items?.map((each: any) => each?.qty)?.reduce((a: number, b: number) => a + b, 0)}
+        totalFurnitureNumber={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((each: any) => each?.qty)?.reduce((a: number, b: number) => a + b, 0)}
         furnitureName={eachCategory?.name}
-        furnitureBrandName={eachCategory?.items?.[currentIndex]?.name}
+        furnitureBrandName={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.name}
         number={eachCategory?.qty}
         editable
         buy={eachCategory?.rentable}

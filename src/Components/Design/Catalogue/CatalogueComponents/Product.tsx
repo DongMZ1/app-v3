@@ -20,8 +20,9 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     useEffect(() => {
+        //if any of draft id changed for any selected rooms, make sure set selectedRoom to undefined to avoid mistake
         setselectedRoom(undefined);
-    }, [selectedQuoteUnit?.unitID])
+    }, [JSON.stringify(selectedQuoteUnit?.rooms?.map((eachRoom: any) => eachRoom?.selectedCanvas?._id))])
     const openProductDetail = () => {
         dispatch({
             type: 'showselectedProductDetail',
@@ -35,16 +36,30 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
 
     const addCatagory = async (eachCategory: any, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (!e.currentTarget.innerHTML.includes('(added!)')) {
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
             e.currentTarget.innerHTML = e?.currentTarget?.innerHTML + ' (added!) '
             e.currentTarget.style.fontWeight = '700';
-            let items = (selectedQuoteUnit?.rooms?.filter((eachRoom: any) => eachRoom?.roomID === selectedRoom?.roomID)[0]?.categories?.filter((eachC: any) => eachC.categoryID === eachCategory?.categoryID)[0]?.items as any[]).concat({
-                ...eachProduct,
-                qty: 1
-            })
+            let currentDraftItemsInRoom = selectedQuoteUnit?.rooms?.filter((room: any) => room?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items;
             const res = await apiRequest({
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${selectedQuoteUnit?.unitID}/${selectedRoom?.roomID}/${eachCategory?.categoryID}`,
+                url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedRoom?.selectedCanvas?._id}`,
                 method: 'PATCH',
-                body: { items }
+                body: {
+                    items: {
+                        ...currentDraftItemsInRoom,
+                        [eachCategory?.categoryID]: currentDraftItemsInRoom?.[`${eachCategory?.categoryID}`] ? currentDraftItemsInRoom?.[`${eachCategory?.categoryID}`]?.concat({
+                            ...eachProduct,
+                            qty: 1
+                        }) : [
+                            {
+                                ...eachProduct,
+                                qty: 1
+                            },
+                        ]
+                    }
+                }
             })
             if (res?.success) {
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -56,6 +71,10 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
             if (!res?.success) {
                 console.log('add catagory for design failed at Product.tsx')
             }
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
         }
     }
 
