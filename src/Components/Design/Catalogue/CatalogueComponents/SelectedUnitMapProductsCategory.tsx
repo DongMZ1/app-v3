@@ -97,11 +97,9 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
 
     const updateCurrentFurnitureNumber = (v: number) => {
         const roomIndex = selectedQuoteUnit?.rooms?.findIndex((each: any) => each?.roomID === eachRoom?.roomID);
-        const categoryIndex = selectedQuoteUnit.rooms[roomIndex].categories.findIndex((each: any) => each.categoryID === eachCategory?.categoryID);
         const newSelectedQuoteUnit: any = produce(selectedQuoteUnit, (draft: any) => {
-            draft.rooms[roomIndex].categories[categoryIndex].items[currentIndex].qty = v;
+            draft.rooms[roomIndex].selectedCanvas.items[`${eachCategory?.categoryID}`][currentIndex].qty = v;
         })
-        debounceUpdateCurrentFurnitureNumberRemote(newSelectedQuoteUnit.rooms[roomIndex].categories[categoryIndex].items)
         dispatch({
             type: 'selectedQuoteUnit',
             payload: newSelectedQuoteUnit
