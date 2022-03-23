@@ -20,18 +20,10 @@ const SelectedUnitMapProducts = () => {
             <div className='flex text-4xl font-moret'><div className='mx-auto'>Select a unit to get started</div></div>
         </div>
     }
-
-    const calculateTotalRoomProductsPrice = (room: any) => {
-        const roomTotal = room?.categories?.map((eachCategory: any) => {
-            return eachCategory?.items?.map((each: any) => each?.retailPrice * each?.qty)?.reduce((a: any, b: any) => a + b, 0)
-        })?.reduce((a: any, b: any) => a + b, 0) * room?.count
-        return roomTotal ? roomTotal : 0;
-    }
     return <><div className='flex-1 p-4 overflow-auto selected-unit-map-products'>
         {
             selectedQuoteUnit?.rooms?.map((eachRoom: any) => <SelectedUnitMapProductsRoom
                 eachRoom={eachRoom}
-                calculateTotalRoomProductsPrice={calculateTotalRoomProductsPrice}
                 userRole={userRole}
             />)
         }
@@ -41,10 +33,9 @@ const SelectedUnitMapProducts = () => {
 
 type SelectedUnitMapProductsRoomProps = {
     eachRoom: any,
-    calculateTotalRoomProductsPrice: (room: any) => number,
     userRole: string,
 }
-const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice, userRole }: SelectedUnitMapProductsRoomProps) => {
+const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProductsRoomProps) => {
     const [showConfirmBackToDraft, setshowConfirmBackToDraft] = useState(false);
     const [showConfirmDeleteDraft, setshowConfirmDeleteDraft] = useState(false);
 
@@ -85,9 +76,17 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, calculateTotalRoomProductsPrice
         if(eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)){
             createCanvaForRoom();
         }
-    }, [eachRoom?.roomID])
+    }, [eachRoom?.roomID]);
+
+    const calculateTotalRoomProductsPrice = () => {
+        let roomTotal = 0;
+        for(let variable in eachRoom?.selectedCanvas?.items){
+            roomTotal = roomTotal + eachRoom?.selectedCanvas?.items[variable]?.map((eachProduct: any) => eachProduct?.qty * eachProduct?.retailPrice)?.reduce((a: any, b: any) => a + b)
+        }
+        return roomTotal*eachRoom?.count;
+    }
     return <><div className='mb-6'>
-        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice(eachRoom)} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
+        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice()} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
             <>
                 {
                     eachRoom?.categories?.map(
