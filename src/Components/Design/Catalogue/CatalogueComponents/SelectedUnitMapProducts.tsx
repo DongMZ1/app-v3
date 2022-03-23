@@ -36,7 +36,6 @@ type SelectedUnitMapProductsRoomProps = {
     userRole: string,
 }
 const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProductsRoomProps) => {
-    const [showConfirmBackToDraft, setshowConfirmBackToDraft] = useState(false);
     const [showConfirmDeleteDraft, setshowConfirmDeleteDraft] = useState(false);
 
     const [showConfirmRenameDraft, setshowConfirmRenameDraft] = useState(false);
@@ -54,24 +53,29 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
 
     const dispatch = useDispatch()
     useEffect(() => {
-        const createCanvaForRoom = async () => {
-            dispatch(
-                {
-                    type: 'appLoader',
-                    payload: true
-                }
-            )
-            const res = await apiRequest({
-                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
-                method: 'POST',
-            })
-            if (res?.success) {
-                dispatch(getQuoteDetailAndUpdateSelectedUnit({
-                    organizationID: currentOrgID ? currentOrgID : '',
-                    quoteID: quoteID,
-                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
-                }))
+        if (eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)) {
+            createCanvaForRoom();
+        }
+    }, [eachRoom?.roomID]);
+
+    const createCanvaForRoom = async () => {
+        dispatch(
+            {
+                type: 'appLoader',
+                payload: true
             }
+        )
+        const res = await apiRequest({
+            url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
+            method: 'POST',
+        })
+        if (res?.success) {
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+        } else {
             dispatch(
                 {
                     type: 'appLoader',
@@ -79,10 +83,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                 }
             )
         }
-        if (eachRoom?.roomID && (!eachRoom?.selectedCanvas?._id)) {
-            createCanvaForRoom();
-        }
-    }, [eachRoom?.roomID]);
+    }
 
     const calculateTotalRoomProductsPrice = () => {
         let roomTotal = 0;
@@ -92,6 +93,38 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             }
         }
         return roomTotal * eachRoom?.count;
+    }
+
+    const goThisDraft = async (draftID: string) => {
+        if (draftID !== eachRoom?.selectedCanvas?._id) {
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: true
+                }
+            )
+            const res = await apiRequest({
+                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/selectCanvasDraft`,
+                body: {
+                    canvas_id: draftID
+                },
+                method: 'PATCH'
+            })
+            if (res?.success) {
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+            } else {
+                dispatch(
+                    {
+                        type: 'appLoader',
+                        payload: false
+                    }
+                )
+            }
+        }
     }
     return <><div className='mb-6'>
         <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice()} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
@@ -105,38 +138,29 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                 {userRole !== 'viewer' &&
                     <div className='flex flex-wrap mt-2 mr-28'>
                         {eachRoom?.canvases?.map((each: any) =>
-                            <div className={`flex px-4 py-1 mr-6 ${ each === eachRoom?.selectedCanvas?._id ? 'text-white bg-link' : 'text-black bg-transparent border border-solid border-black'}`}>
-                                <div onClick={() => setshowConfirmBackToDraft(true)} className='my-auto text-sm font-semibold cursor-pointer'>{each}</div>
-                                <div className='relative px-2 my-auto font-semibold show-draft-menu'>
-                                    <div>···</div>
-                                    <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
-                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
-                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
-                                        <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                            <div className='my-1'>
+                                <div className={`flex px-4 py-1 border border-solid mr-6 ${each === eachRoom?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
+                                    <div onClick={() => goThisDraft(each)} className='my-auto text-sm font-semibold cursor-pointer'>{each}</div>
+                                    <div className='relative px-2 my-auto font-semibold show-draft-menu'>
+                                        <div className='cursor-pointer'>···</div>
+                                        <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
+                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
+                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
+                                            {eachRoom?.canvases?.length > 1 &&
+                                                <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )
                         }
-                        <BsPlusLg className='my-auto cursor-pointer' />
+                        <BsPlusLg onClick={() => createCanvaForRoom()} className='my-auto cursor-pointer' />
                     </div>
                 }
             </>
         </FurnitureInRoomHeader>
     </div>
-        <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmBackToDraft(false)} show={showConfirmBackToDraft}>
-            <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
-                <div className='mx-2 text-base text-center font-moret'>
-                    Are you sure you want to go back to <b>Draft 1</b>, changes you made will not be saved
-                </div>
-                <div className='flex mt-4 mb-2'>
-                    <Button onClick={() => {
-                        setshowConfirmBackToDraft(false);
-                    }} className='w-20 ml-auto mr-4' variant='secondary'>Cancel</Button>
-                    <Button onClick={() => { }} variant='primary' className='w-20'>Revert</Button>
-                </div>
-            </div>
-        </Popup>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmDeleteDraft(false)} show={showConfirmDeleteDraft}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-base text-center font-moret'>
