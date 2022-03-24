@@ -39,12 +39,12 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
     const [showConfirmDeleteDraft, setshowConfirmDeleteDraft] = useState(false);
 
     const [showConfirmRenameDraft, setshowConfirmRenameDraft] = useState(false);
-    const [projectRenameName, setprojectRenameName] = useState('');
+    const [draftRenameName, setdraftRenameName] = useState('');
 
     const [showConfirmDuplicateDraft, setshowConfirmDuplicateDraft] = useState(false);
-    const [duplicateName, setduplicateName] = useState('');
+    const [duplicateDraftName, setduplicateDraftName] = useState('');
 
-    const [roomProductCanvas, setroomProductCanvas] = useState([]);
+    const [selectedDraft, setselectedDraft] = useState<any>();
 
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
@@ -94,6 +94,76 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         }
         return roomTotal * eachRoom?.count;
     }
+    const renameCanvas = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
+        const res = await apiRequest({
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            method: 'PATCH',
+            body: { draftName: draftRenameName }
+        })
+        if (res?.success) {
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+            setshowConfirmRenameDraft(false);
+        }
+        if (!res?.success) {
+            console.log('rename for draft failed at SelectedUnitMapProducts.tsx')
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            });
+        }
+    }
+
+    const duplicateDraft = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
+        const draftItemNeedToDuplicateRes = await apiRequest({
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            method: 'GET'
+        })
+        if (draftItemNeedToDuplicateRes?.success) {
+            const res = await apiRequest({
+                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
+                method: 'POST',
+                body: {
+                    draftName: duplicateDraftName,
+                    items: draftItemNeedToDuplicateRes?.canvas?.items
+                }
+            })
+            if (res?.success) {
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID as any,
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+                setshowConfirmDuplicateDraft(false);
+            }
+            if (!res?.success) {
+                console.log('rename for draft failed at SelectedUnitMapProducts.tsx')
+                dispatch({
+                    type: 'appLoader',
+                    payload: false
+                });
+            }
+        }else{
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: false
+                }
+            )
+            console.log('draftItemNeedToDuplicateRes fail at SelectedUnitMapProducts.tsx')
+        }
+    }
 
     const goThisDraft = async (draftID: string) => {
         if (draftID !== eachRoom?.selectedCanvas?._id) {
@@ -123,7 +193,43 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                         payload: false
                     }
                 )
+                console.log('goThisDraft failed at SelectedUnitMapProduct.tsx')
             }
+        }
+    }
+
+    const deleteDraft = async () => {
+        dispatch(
+            {
+                type: 'appLoader',
+                payload: true
+            }
+        )
+        const res = await apiRequest({
+            url:`/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            method:'DELETE',
+            body:{
+                quote_id: quoteID,
+                unitID: unitID,
+                roomID: eachRoom?.roomID,
+                isSelectedCanvas: selectedDraft?._id === eachRoom?.selectedCanvas?._id
+            }
+        })
+        if(res?.success){
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+            setshowConfirmDeleteDraft(false);
+        }else{
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: false
+                }
+            )
+            console.log('Delete Draft fail at SelectedUnitMapProduct.tsx')
         }
     }
     return <><div className='mb-6'>
@@ -139,15 +245,25 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                     <div className='flex flex-wrap mt-2 mr-28'>
                         {eachRoom?.canvases?.map((each: any) =>
                             <div className='my-1'>
-                                <div className={`flex px-4 py-1 border border-solid mr-6 ${each === eachRoom?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
-                                    <div onClick={() => goThisDraft(each)} className='my-auto text-sm font-semibold cursor-pointer'>{each}</div>
+                                <div className={`flex px-4 py-1 border border-solid mr-6 ${each?._id === eachRoom?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
+                                    <div onClick={() => goThisDraft(each?._id)} className='my-auto text-sm font-semibold cursor-pointer'>{each?.draftName}</div>
                                     <div className='relative px-2 my-auto font-semibold show-draft-menu'>
                                         <div className='cursor-pointer'>···</div>
                                         <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
-                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmRenameDraft(true)}>Rename</div>
-                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => setshowConfirmDuplicateDraft(true)}>Duplicate</div>
+                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => {
+                                                setselectedDraft(each);
+                                                setdraftRenameName(each?.draftName);
+                                                setshowConfirmRenameDraft(true);
+                                            }}>Rename</div>
+                                            <div className='py-2 pl-4 pr-6 text-black' onClick={() => {
+                                                setselectedDraft(each);
+                                                setduplicateDraftName(each?.draftName);
+                                                setshowConfirmDuplicateDraft(true);
+                                            }}>Duplicate</div>
                                             {eachRoom?.canvases?.length > 1 &&
-                                                <div className='py-2 pl-4 pr-6 text-red' onClick={() => setshowConfirmDeleteDraft(true)}>Delete</div>
+                                                <div className='py-2 pl-4 pr-6 text-red' onClick={() => {
+                                                    setselectedDraft(each);
+                                                    setshowConfirmDeleteDraft(true)}}>Delete</div>
                                             }
                                         </div>
                                     </div>
@@ -164,47 +280,43 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmDeleteDraft(false)} show={showConfirmDeleteDraft}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-base text-center font-moret'>
-                    Are you sure you want to <b>Delete Draft 1</b>?
+                    Are you sure you want to <b>Delete {selectedDraft?.draftName}</b>?
                 </div>
                 <div className='flex mt-4 mb-2'>
-                    <Button onClick={() => {
-                        setshowConfirmDeleteDraft(false);
-                    }} className='w-20 ml-auto mr-4' variant='secondary'>Cancel</Button>
-                    <Button onClick={() => { }} variant='primary' className='w-20'>Delete</Button>
+                    <Button onClick={() => 
+                        setshowConfirmDeleteDraft(false)
+                    } className='w-20 ml-auto mr-4' variant='secondary'>Cancel</Button>
+                    <Button onClick={() => deleteDraft()} variant='primary' className='w-20'>Delete</Button>
                 </div>
             </div>
         </Popup>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmRenameDraft(false)} show={showConfirmRenameDraft}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-xl text-center font-moret'>
-                    Rename <b>Draft 1</b>
+                    Rename <b>{selectedDraft?.draftName}</b>
                 </div>
-                <div className='mt-4 text-sm font-ssp'>Maximum 50 characters</div>
-                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={projectRenameName} onChange={(e) => { if ((e.target as any).value?.length < 51) { setprojectRenameName((e.target as any).value) } }} />
+                <div className='mt-4 text-sm font-ssp'>Maximum 30 characters</div>
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={draftRenameName} onChange={(e) => { if ((e.target as any).value?.length < 31) { setdraftRenameName((e.target as any).value) } }} />
                 <div className='flex my-2'>
                     <Button onClick={() => {
                         setshowConfirmRenameDraft(false);
                     }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                    <Button disabled={!projectRenameName} onClick={() => {
-
-                    }} variant='primary' className='w-20'>Save</Button>
+                    <Button disabled={!draftRenameName} onClick={() => renameCanvas()} variant='primary' className='w-20'>Save</Button>
                 </div>
             </div>
         </Popup>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmDuplicateDraft(false)} show={showConfirmDuplicateDraft}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-xl text-center font-moret'>
-                    please enter a name for duplicate <b>Draft 1</b>
+                    please enter a name for duplicate <b>{selectedDraft?.draftName}</b>
                 </div>
-                <div className='mt-4 text-sm font-ssp'>Maximum 50 characters</div>
-                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={duplicateName} onChange={(e) => { if ((e.target as any).value?.length < 51) { setduplicateName((e.target as any).value) } }} />
+                <div className='mt-4 text-sm font-ssp'>Maximum 30 characters</div>
+                <TextInput className='mt-2' inputName='save as room package input' variant='box' value={duplicateDraftName} onChange={(e) => { if ((e.target as any).value?.length < 31) { setduplicateDraftName((e.target as any).value) } }} />
                 <div className='flex my-2'>
                     <Button onClick={() => {
                         setshowConfirmDuplicateDraft(false);
                     }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
-                    <Button disabled={!duplicateName} onClick={() => {
-
-                    }} variant='primary' className='w-20'>Save</Button>
+                    <Button disabled={!duplicateDraftName} onClick={() => duplicateDraft()} variant='primary' className='w-20'>Save</Button>
                 </div>
             </div>
         </Popup>
