@@ -125,7 +125,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
             }))
         }
         if (!res?.success) {
-            console.log('add catagory for design failed at Product.tsx')
+            console.log('updateCurrentFurnitureNumberRemote failed at SelectedUnitMapProductsCategory.tsx')
             dispatch({
                 type: 'appLoader',
                 payload: false
