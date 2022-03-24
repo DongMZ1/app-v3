@@ -42,6 +42,7 @@ const UnitBudget = () => {
                                 {
                                     eachRoom?.categories?.map(
                                         (eachCategory: any) => <EachCategory
+                                            eachRoom={eachRoom}
                                             eachCategory={eachCategory}
                                             showImage={showImage}
                                         />
@@ -55,7 +56,8 @@ const UnitBudget = () => {
     </div>
 }
 
-const EachCategory = ({ eachCategory, showImage }: {
+const EachCategory = ({ eachCategory, showImage, eachRoom }: {
+    eachRoom: any,
     eachCategory: any,
     showImage: boolean
 }) => {
@@ -63,8 +65,8 @@ const EachCategory = ({ eachCategory, showImage }: {
     return <FurnitureInRoomRowCard
         furnitureName={eachCategory.name}
         currentFurnitureIndex={(v) => setcurrentIndex(v)}
-        furnitureBrandName={eachCategory?.items?.[currentIndex]?.name}
-        imageUrl={eachCategory?.items?.map((each: any) => each?.imageURLs[0])}
+        furnitureBrandName={eachRoom?.selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.name}
+        imageUrl={eachRoom?.selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((eachProduct: any) => eachProduct?.imageURLs?.[0])}
         editable={false}
         buyMSRP={eachCategory.budget}
         rentMSRP={eachCategory.budget}
