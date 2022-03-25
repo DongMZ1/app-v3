@@ -68,7 +68,7 @@ const LockQuote = () => {
     }
     return <>
         {
-            userRole !== 'viewer' && userRole !== 'editor' && !quoteDetail?.approved && <ImUnlocked onClick={() => lockQuote()} className='my-auto mr-8 cursor-pointer' />
+            userRole !== 'viewer' && userRole !== 'editor' && !quoteDetail?.approved && quoteDetail && <ImUnlocked onClick={() => lockQuote()} className='my-auto mr-8 cursor-pointer' />
         }
         {
             quoteDetail?.approved && <FaLock color='red' onClick={() => unlockQuote()} className={`my-auto mr-8 ${(userRole !== 'viewer' && userRole !== 'editor') ? 'cursor-pointer' : ''}`} />
