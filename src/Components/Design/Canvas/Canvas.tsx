@@ -110,7 +110,7 @@ const Canvas = ({ tabState }: CanvasState) => {
                         <div className='absolute z-50 bg-white border border-black border-solid w-72'>
                             <ClickOutsideAnElementHandler noStyle onClickedOutside={() => setshowRoomOptions(false)}>
                                 {
-                                    selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div onClick={() => onRoomSelect(eachRoom)} className='w-full px-2 py-2 text-sm cursor-pointer font-ssp hover:bg-gray-200'>
+                                    selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div onClick={() => onRoomSelect(eachRoom)} className='flex w-full px-2 py-2 text-sm cursor-pointer font-ssp hover:bg-gray-200'>
                                         {eachRoom?.name}
                                     </div>
                                     )
@@ -118,10 +118,9 @@ const Canvas = ({ tabState }: CanvasState) => {
                             </ClickOutsideAnElementHandler>
                         </div></CSSTransition>}
             </div>
-        </div>
-        <div className='flex flex-wrap px-4'>{
-            selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={()=>goThisDraft(eachCanvas)} className={`flex px-4 py-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
-                {eachCanvas?.draftName}
+            {
+            selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={()=>goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
+                <div className='m-auto'>{eachCanvas?.draftName}</div>
             </div>
             )
         }
