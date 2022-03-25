@@ -207,7 +207,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             body: {
                 name: saveUnitPackageName,
                 rooms: eachUnit.rooms,
-                setupFee: eachUnit?.setupFee
+                setupFee: Number(eachUnit?.setupFee)
             },
             method: 'POST'
         })
