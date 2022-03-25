@@ -28,7 +28,7 @@ const SelectedProductDetail = () => {
             }} />
             <div className="flex py-2 text-xl font-moret"><div className="m-auto">{selectedProductDetail?.fulhausProductName}</div></div>
             <div className="flex text-sm font-semibold font-ssp">
-                <div className="w-1/3 ">${selectedProductDetail?.retailPrice}</div>
+                <div className="w-1/3 ">Trade Price : ${selectedProductDetail?.tradePrice}</div>
                 <div className="w-1/4 ">Stock: {selectedProductDetail?.stockQty}</div>
                 <div className="w-1/3 ">Last Updated: {selectedProductDetail?.stockDate?.slice(0, 10)}</div>
             </div>

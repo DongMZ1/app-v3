@@ -90,11 +90,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         if (eachRoom?.selectedCanvas) {
             for (let variable in eachRoom?.selectedCanvas?.items) {
                 roomTotal = roomTotal + (eachRoom?.selectedCanvas?.items?.[variable]?.length > 0 ? eachRoom?.selectedCanvas?.items?.[variable]?.map((eachProduct: any) => {
-                    if (eachRoom?.categories?.filter(((eachCategory: any) => eachCategory?.categoryID === variable))?.[0]?.rentable) {
-                            return eachProduct?.qty * eachProduct?.rentalPrice  
-                    }else{
-                    return eachProduct?.qty * eachProduct?.retailPrice
-                    }
+                    return eachProduct?.qty * eachProduct?.tradePrice
                 }
                 )?.reduce((a: any, b: any) => a + b, 0) : 0)
             }

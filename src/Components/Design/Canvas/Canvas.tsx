@@ -44,7 +44,10 @@ const Canvas = ({ tabState }: CanvasState) => {
         setdesignItems(items);
     }
 
-    useEffect(() => updateDesignItems(), [JSON.stringify(selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items)])
+    useEffect(
+        () => updateDesignItems(),
+        [JSON.stringify(selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items)]
+    )
 
     useEffect(() => {
         setselectedRoom(undefined);
@@ -57,8 +60,8 @@ const Canvas = ({ tabState }: CanvasState) => {
 
 
     return <div className={`${tabState !== "Canvas" && 'canvas-display-none-important'} flex flex-col h-full canvas`}>
-        <div className='flex'>
-            <div className='relative px-4'>
+        <div className='flex px-4'>
+            <div className='relative mr-8'>
                 <div onClick={() => setshowRoomOptions(true)} className='flex px-2 py-2 text-lg font-semibold cursor-pointer font-moret'>
                     {selectedQuoteUnit ? (selectedRoom?.name ? selectedRoom?.name : 'SELECT A ROOM TO GET START') : 'SELECT A UNIT TO GET START'} <MdKeyboardArrowDown className='my-auto ml-2' /></div>
                 {selectedQuoteUnit &&
@@ -74,6 +77,13 @@ const Canvas = ({ tabState }: CanvasState) => {
                             </ClickOutsideAnElementHandler>
                         </div></CSSTransition>}
             </div>
+        </div>
+        <div className='flex flex-wrap px-4'>{
+            selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div className={`flex px-4 py-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
+                {eachCanvas?.draftName}
+            </div>
+            )
+        }
         </div>
         <DesignCanvas designItems={designItems?.length > 0 ? designItems : []} />
     </div>
