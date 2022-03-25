@@ -2,15 +2,23 @@ import React, { useEffect, useState } from 'react'
 import './Canvas.scss'
 import { DesignCanvas } from '@fulhaus/react.ui.design-canvas'
 import { MdKeyboardArrowDown } from 'react-icons/md'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 import { Tappstate } from '../../../redux/reducers'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { CSSTransition } from 'react-transition-group'
+import apiRequest from '../../../Service/apiRequest';
+import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
+
 type CanvasState = {
     tabState: string;
 }
 const Canvas = ({ tabState }: CanvasState) => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const dispatch = useDispatch()
+
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const [showRoomOptions, setshowRoomOptions] = useState(false);
     const [designItems, setdesignItems] = useState<any[]>([]);
@@ -58,6 +66,39 @@ const Canvas = ({ tabState }: CanvasState) => {
         setshowRoomOptions(false);
     }
 
+    const goThisDraft = async (draftID: string) => {
+        if (draftID !== selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id) {
+            dispatch(
+                {
+                    type: 'appLoader',
+                    payload: true
+                }
+            )
+            const res = await apiRequest({
+                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.roomID}/selectCanvasDraft`,
+                body: {
+                    canvas_id: draftID
+                },
+                method: 'PATCH'
+            })
+            if (res?.success) {
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+            } else {
+                dispatch(
+                    {
+                        type: 'appLoader',
+                        payload: false
+                    }
+                )
+                console.log('goThisDraft failed at SelectedUnitMapProduct.tsx')
+            }
+        }
+    }
+
 
     return <div className={`${tabState !== "Canvas" && 'canvas-display-none-important'} flex flex-col h-full canvas`}>
         <div className='flex px-4'>
@@ -79,7 +120,7 @@ const Canvas = ({ tabState }: CanvasState) => {
             </div>
         </div>
         <div className='flex flex-wrap px-4'>{
-            selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div className={`flex px-4 py-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
+            selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={()=>goThisDraft(eachCanvas)} className={`flex px-4 py-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
                 {eachCanvas?.draftName}
             </div>
             )
