@@ -4,6 +4,7 @@ import { Popup } from '@fulhaus/react.ui.popup'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { Button } from '@fulhaus/react.ui.button'
 import { useDispatch, useSelector } from 'react-redux'
+import {getQuoteDetailAndUpdateSelectedUnit} from '../../../redux/Actions'
 import produce from 'immer'
 import NoteModal from '../../NoteModal/NoteModal'
 import { Tappstate } from '../../../redux/reducers'
@@ -54,6 +55,10 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     }
 
     const saveName = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
         const res = await apiRequest(
             {
                 url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
@@ -64,14 +69,16 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             }
         )
         if (res?.success) {
-            const newQuoteDetail = produce(quoteDetail, (draftState: any) => {
-                (draftState?.data?.filter((each: any) => each?.unitID === eachUnit.unitID)?.[0] as any).name = name
-            })
-            dispatch({
-                type: 'quoteDetail',
-                payload: newQuoteDetail
-            })
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
         } else {
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            });
             console.log('saveName failed at line 61 EachUnit.tsx')
         }
     }
