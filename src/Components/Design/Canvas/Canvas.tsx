@@ -13,31 +13,38 @@ const Canvas = ({ tabState }: CanvasState) => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const [showRoomOptions, setshowRoomOptions] = useState(false);
-    let designItems: any[] = [];
-    let selectedRoomCanvasItems: any = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items;
-    if (selectedRoomCanvasItems) {
-        for (let variable in selectedRoomCanvasItems) {
-            for (let product of selectedRoomCanvasItems[variable]) {
-                if (product?.qty > 1) {
-                    let index = product?.qty;
-                    for (let i = 0; i < index; i++) {
-                        designItems.push({
+    const [designItems, setdesignItems] = useState<any[]>([]);
+
+    const updateDesignItems = () => {
+        let items: any[] = [];
+        let selectedRoomCanvasItems: any = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items;
+        if (selectedRoomCanvasItems) {
+            for (let variable in selectedRoomCanvasItems) {
+                for (let product of selectedRoomCanvasItems[variable]) {
+                    if (product?.qty > 1) {
+                        let index = product?.qty;
+                        for (let i = 0; i < index; i++) {
+                            items.push({
+                                type: "image",
+                                name: product?.name,
+                                value: product?.imageURLs[0],
+                            })
+                        }
+                    }
+                    if (product?.qty === 1) {
+                        items.push({
                             type: "image",
                             name: product?.name,
                             value: product?.imageURLs[0],
                         })
                     }
                 }
-                if (product?.qty === 1) {
-                    designItems.push({
-                        type: "image",
-                        name: product?.name,
-                        value: product?.imageURLs[0],
-                    })
-                }
             }
         }
+        setdesignItems(items);
     }
+
+    useEffect(() => updateDesignItems(), [JSON.stringify(selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items)])
 
     useEffect(() => {
         setselectedRoom(undefined);
