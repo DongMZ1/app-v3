@@ -206,7 +206,8 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             url: `/api/fhapp-service/package/unit/${currentOrgID}`,
             body: {
                 name: saveUnitPackageName,
-                rooms: eachUnit.rooms
+                rooms: eachUnit.rooms,
+                setupFee: eachUnit?.setupFee
             },
             method: 'POST'
         })

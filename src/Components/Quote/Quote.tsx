@@ -168,6 +168,16 @@ const Quote = () => {
         setroomOptionCheckedList([]);
         setshowAddRoomDropdown(false);
     }
+
+    const changeSetUpFee = (v: number) => {
+        const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            draft.setupFee = v;
+        })
+        dispatch({
+            type:'selectedQuoteUnit',
+            payload: newSelectedQuoteUnit
+        })
+    }
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
         {(selectedQuoteUnit) ?
             <>
@@ -226,12 +236,12 @@ const Quote = () => {
                     <div className='my-auto text-xl font-moret'>Set up Fee for <b>{selectedQuoteUnit?.name}</b></div>
                     {eachUnitSetUpFeeEditable ?
                         <>
-                            <TextInput prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value='100' onChange={(e) => { }} />
+                            <TextInput prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value={selectedQuoteUnit?.setupFee} onChange={(e) => {changeSetUpFee((e.target as any).value)}} />
                             <ImCross size={12} className='my-auto cursor-pointer' onClick={() => seteachUnitSetUpFeeEditable(false)} />
                         </>
                         :
                         <>
-                            <div className='my-auto ml-auto mr-4 font-ssp'>$9000</div>
+                            <div className='my-auto ml-auto mr-4 font-ssp'>${selectedQuoteUnit?.setupFee}</div>
                             {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                                 <FiEdit2 size={15} onClick={() => seteachUnitSetUpFeeEditable(true)} className='my-auto cursor-pointer' />
                             }
