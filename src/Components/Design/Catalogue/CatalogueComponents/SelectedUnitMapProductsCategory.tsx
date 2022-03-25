@@ -159,7 +159,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
         furnitureBrandName={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.name}
         number={eachCategory?.qty}
         editable
-        buy={eachCategory?.rentable}
+        buy={!eachCategory?.rentable}
         buyMSRP={eachCategory?.budget}
         rentMSRP={eachCategory?.budget}
         isDesignViewer={userRole === 'viewer'}
