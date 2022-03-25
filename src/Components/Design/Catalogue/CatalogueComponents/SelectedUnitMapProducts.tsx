@@ -89,7 +89,14 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         let roomTotal = 0;
         if (eachRoom?.selectedCanvas) {
             for (let variable in eachRoom?.selectedCanvas?.items) {
-                roomTotal = roomTotal + (eachRoom?.selectedCanvas?.items?.[variable]?.length > 0 ? eachRoom?.selectedCanvas?.items?.[variable]?.map((eachProduct: any) => eachProduct?.qty * eachProduct?.retailPrice)?.reduce((a: any, b: any) => a + b, 0) : 0)
+                roomTotal = roomTotal + (eachRoom?.selectedCanvas?.items?.[variable]?.length > 0 ? eachRoom?.selectedCanvas?.items?.[variable]?.map((eachProduct: any) => {
+                    if (eachRoom?.categories?.filter(((eachCategory: any) => eachCategory?.categoryID === variable))?.[0]?.rentable) {
+                            return eachProduct?.qty * eachProduct?.rentalPrice  
+                    }else{
+                    return eachProduct?.qty * eachProduct?.retailPrice
+                    }
+                }
+                )?.reduce((a: any, b: any) => a + b, 0) : 0)
             }
         }
         return roomTotal * eachRoom?.count;
@@ -154,7 +161,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                     payload: false
                 });
             }
-        }else{
+        } else {
             dispatch(
                 {
                     type: 'appLoader',
@@ -206,23 +213,23 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             }
         )
         const res = await apiRequest({
-            url:`/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
-            method:'DELETE',
-            body:{
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            method: 'DELETE',
+            body: {
                 quote_id: quoteID,
                 unitID: unitID,
                 roomID: eachRoom?.roomID,
                 isSelectedCanvas: selectedDraft?._id === eachRoom?.selectedCanvas?._id
             }
         })
-        if(res?.success){
+        if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
             setshowConfirmDeleteDraft(false);
-        }else{
+        } else {
             dispatch(
                 {
                     type: 'appLoader',
@@ -263,7 +270,8 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                                             {eachRoom?.canvases?.length > 1 &&
                                                 <div className='py-2 pl-4 pr-6 text-red' onClick={() => {
                                                     setselectedDraft(each);
-                                                    setshowConfirmDeleteDraft(true)}}>Delete</div>
+                                                    setshowConfirmDeleteDraft(true)
+                                                }}>Delete</div>
                                             }
                                         </div>
                                     </div>
@@ -283,7 +291,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                     Are you sure you want to <b>Delete {selectedDraft?.draftName}</b>?
                 </div>
                 <div className='flex mt-4 mb-2'>
-                    <Button onClick={() => 
+                    <Button onClick={() =>
                         setshowConfirmDeleteDraft(false)
                     } className='w-20 ml-auto mr-4' variant='secondary'>Cancel</Button>
                     <Button onClick={() => deleteDraft()} variant='primary' className='w-20'>Delete</Button>
