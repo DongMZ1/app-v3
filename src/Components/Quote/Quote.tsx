@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import './Quote.scss'
 import { ReactComponent as AddUnitIcon } from "../../styles/images/add-a-unit-to-get-start.svg";
 import Room from './QuoteComponents/Room';
@@ -13,7 +13,9 @@ import produce from 'immer'
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { Tappstate } from '../../redux/reducers';
+import { getQuoteDetailAndUpdateSelectedUnit } from '../../redux/Actions'
 import apiRequest from '../../Service/apiRequest';
+import debounce from 'lodash.debounce';
 
 const Quote = () => {
     //add room and add room packages list share the same name and ID
@@ -174,10 +176,38 @@ const Quote = () => {
             draft.setupFee = v;
         })
         dispatch({
-            type:'selectedQuoteUnit',
+            type: 'selectedQuoteUnit',
             payload: newSelectedQuoteUnit
         })
+        debounceChangeSetFeeRemote(v);
     }
+
+    const changeSetFeeRemote = async (v: any) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        });
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
+            method: 'PATCH',
+            body: {
+                setupFee: Number(v)
+            }
+        })
+        if (res.success) {
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+        } else {
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            });
+        }
+    }
+    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID, quoteID, unitID])
     return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
         {(selectedQuoteUnit) ?
             <>
@@ -236,7 +266,7 @@ const Quote = () => {
                     <div className='my-auto text-xl font-moret'>Set up Fee for <b>{selectedQuoteUnit?.name}</b></div>
                     {eachUnitSetUpFeeEditable ?
                         <>
-                            <TextInput prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value={selectedQuoteUnit?.setupFee} onChange={(e) => {changeSetUpFee((e.target as any).value)}} />
+                            <TextInput prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value={selectedQuoteUnit?.setupFee} onChange={(e) => { changeSetUpFee((e.target as any).value) }} />
                             <ImCross size={12} className='my-auto cursor-pointer' onClick={() => seteachUnitSetUpFeeEditable(false)} />
                         </>
                         :
