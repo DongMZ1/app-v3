@@ -57,9 +57,9 @@ const Canvas = ({ tabState }: CanvasState) => {
                 {selectedQuoteUnit &&
                     <CSSTransition in={showRoomOptions} timeout={300} unmountOnExit classNames='opacity-animation'>
                         <div className='absolute z-50 bg-white border border-black border-solid w-72'>
-                            <ClickOutsideAnElementHandler onClickedOutside={() => setshowRoomOptions(false)}>
+                            <ClickOutsideAnElementHandler noStyle onClickedOutside={() => setshowRoomOptions(false)}>
                                 {
-                                    selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div onClick={() => onRoomSelect(eachRoom)} className='w-full px-2 py-2 text-sm cursor-pointer font-ssp'>
+                                    selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div onClick={() => onRoomSelect(eachRoom)} className='w-full px-2 py-2 text-sm cursor-pointer font-ssp hover:bg-gray-200'>
                                         {eachRoom?.name}
                                     </div>
                                     )
@@ -68,7 +68,7 @@ const Canvas = ({ tabState }: CanvasState) => {
                         </div></CSSTransition>}
             </div>
         </div>
-        <DesignCanvas canvasWidth={90} designItems={designItems?.length > 0 ? designItems : []} />
+        <DesignCanvas designItems={designItems?.length > 0 ? designItems : []} />
     </div>
 }
 
