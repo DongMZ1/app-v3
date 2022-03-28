@@ -4,10 +4,12 @@ import { GrFormClose } from 'react-icons/gr'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input'
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router'
 import { Button } from '@fulhaus/react.ui.button'
 import apiRequest from '../../../Service/apiRequest'
 import { Tappstate } from '../../../redux/reducers'
 import { fetchProject, showMessageAction } from '../../../redux/Actions'
+import { useGetProjectRole } from '../../../Hooks/useGetProjectRole'
 
 type StartNewProjectProps = {
     type: 'project' | 'quote' | 'design'
@@ -35,6 +37,9 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
 
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
+    const projectRole = useGetProjectRole('');
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const history = useHistory()
 
     let FormIsValid = false;
     if (type === 'project') {
@@ -83,10 +88,17 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
                 )
                 if (projectRes?.success) {
                     //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : '', {
+                    /*dispatch(fetchProject(organizationID ? organizationID : '', {
                         title: searchkeyWord
-                    }));
+                    }));*/
+                    localStorage.setItem('selectedProject', JSON.stringify({ ...projectRes?.project, userRole: projectRole }));
+                    localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
+                    dispatch({
+                        type: 'selectedProject',
+                        payload: { ...projectRes?.project, userRole: projectRole }
+                    })
                     close();
+                    history.push(`/project/quote`);
                 }
                 if (!projectRes?.success && projectRes?.message === "A project with this name already exists") {
                     dispatch(showMessageAction(true, 'A project with this name already exists, please try another'));
@@ -108,11 +120,18 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
                     }
                 )
                 if (quoteRes?.success) {
-                    //fetch projects as projects is updated
-                    dispatch(fetchProject(organizationID ? organizationID : '', {
-                        title: searchkeyWord
-                    }));
+                    // fetch projects as projects is updated
+                    /* dispatch(fetchProject(organizationID ? organizationID : '', {
+                         title: searchkeyWord
+                      })); */
+                    localStorage.setItem('selectedProject', JSON.stringify({ ...quoteRes?.project, userRole: projectRole }));
+                    localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
+                    dispatch({
+                        type: 'selectedProject',
+                        payload: { ...quoteRes?.project, userRole: projectRole }
+                    })
                     close();
+                    history.push(`/quote-only`)
                 }
                 if (!quoteRes?.success && quoteRes?.message === "A project with this name already exists") {
                     dispatch(showMessageAction(true, 'A project with this name already exists, please try another'));

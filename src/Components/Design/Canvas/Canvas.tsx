@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './Canvas.scss'
 import { DesignCanvas } from '@fulhaus/react.ui.design-canvas'
 import { MdKeyboardArrowDown } from 'react-icons/md'
-import { useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../../redux/reducers'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { CSSTransition } from 'react-transition-group'
@@ -52,6 +52,8 @@ const Canvas = ({ tabState }: CanvasState) => {
         }
         setdesignItems(items);
     }
+
+    console.log('rerendered!')
 
     useEffect(
         () => updateDesignItems(),
@@ -104,7 +106,7 @@ const Canvas = ({ tabState }: CanvasState) => {
     return <div className={`${tabState !== "Canvas" && 'canvas-display-none-important'} flex flex-col h-full canvas`}>
         <div className='flex px-4'>
             <div className='relative mr-8'>
-                <div onClick={() => setshowRoomOptions(true)} className='flex px-2 py-2 text-lg font-semibold cursor-pointer font-moret'>
+                <div onClick={() => { if (selectedQuoteUnit) { setshowRoomOptions(true) } }} className='flex px-2 py-2 text-lg font-semibold cursor-pointer font-moret'>
                     {selectedQuoteUnit ? (selectedRoom?.name ? selectedRoom?.name : 'SELECT A ROOM TO GET START') : 'SELECT A UNIT TO GET START'} <MdKeyboardArrowDown className='my-auto ml-2' /></div>
                 {selectedQuoteUnit &&
                     <CSSTransition in={showRoomOptions} timeout={300} unmountOnExit classNames='opacity-animation'>
@@ -120,11 +122,11 @@ const Canvas = ({ tabState }: CanvasState) => {
                         </div></CSSTransition>}
             </div>
             {
-            selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={()=>goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
-                <div className='m-auto'>{eachCanvas?.draftName}</div>
-            </div>
-            )
-        }
+                selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={() => goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
+                    <div className='m-auto'>{eachCanvas?.draftName}</div>
+                </div>
+                )
+            }
         </div>
         <DesignCanvas designItems={designItems?.length > 0 ? designItems : []} />
     </div>

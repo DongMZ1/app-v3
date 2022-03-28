@@ -31,7 +31,7 @@ const fetchMoreProject =
     }
     dispatch({
       type: "homePageLoader",
-      payload: true,
+      payload: false,
     });
   };
 
