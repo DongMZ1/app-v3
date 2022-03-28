@@ -23,6 +23,7 @@ const Canvas = ({ tabState }: CanvasState) => {
     const [showRoomOptions, setshowRoomOptions] = useState(false);
     const [designItems, setdesignItems] = useState<any[]>([]);
 
+
     const updateDesignItems = () => {
         let items: any[] = [];
         let selectedRoomCanvasItems: any = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items;

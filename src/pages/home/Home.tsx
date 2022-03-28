@@ -188,7 +188,7 @@ const Home = () => {
                   wrapperClassName='border-none cursor-pointer' labelClassName='hidden'
                   suffixIcon={<div className='flex px-2 py-2 text-sm font-semibold text-white bg-black font-ssp'><div className='my-auto'>Start something new</div></div>}
                   listWrapperFloatDirection='left' disabled={true}
-                  options={currentOrgName === 'Fulhaus' ? ['Project', 'Quote Only', 'Design Only'] : ['Project']} />
+                  options={currentOrgName === 'Fulhaus' ? ['Project', 'Quote Only'] : ['Project']} />
               </div>
             }
           </div>
