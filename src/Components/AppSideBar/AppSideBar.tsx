@@ -13,6 +13,8 @@ import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { Loader } from '@fulhaus/react.ui.loader'
+import { RiDeleteBin5Line } from 'react-icons/ri'
+import { ActionModal } from '@fulhaus/react.ui.action-modal';
 
 const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
@@ -25,6 +27,9 @@ const AppSideBar = () => {
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
     const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
     const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
+
+    const [selectedUnitToDelete, setselectedUnitToDelete] = useState<any>(undefined);
+    const [showSelectedUnitToDelete, setshowSelectedUnitToDelete] = useState(false);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
     const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase')) && (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && (!quoteDetail?.approved);
     useEffect(() => {
@@ -85,7 +90,12 @@ const AppSideBar = () => {
         setunitOptionCheckedList([]);
         setshowAddUnitDropdown(false);
     }
+
+    const deleteRoomPackage = async () => {
+        
+    }
     return (<>
+        <ActionModal modalClassName='font-moret' showModal={showSelectedUnitToDelete} message={`Delete Unit Package => ${selectedUnitToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedUnitToDelete?.name} ?`} onCancel={() => setshowSelectedUnitToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteRoomPackage()} />
         <CSSTransition in={!showEntendSideBar} mountOnEnter unmountOnExit timeout={300} classNames='display-none-animation'>
             <div className='w-auto px-4 py-4 border-r border-black border-solid'>
                 <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
@@ -116,13 +126,19 @@ const AppSideBar = () => {
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
                                             {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
-                                                <Checkbox className='my-2' label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
-                                                    if (v) {
-                                                        setunitOptionCheckedList(state => [...state, each])
-                                                    } else {
-                                                        setunitOptionCheckedList(state => state.filter(e => e !== each))
-                                                    }
-                                                }} />)}
+                                                <div className='flex my-2'>
+                                                    <Checkbox label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
+                                                        if (v) {
+                                                            setunitOptionCheckedList(state => [...state, each])
+                                                        } else {
+                                                            setunitOptionCheckedList(state => state.filter(e => e !== each))
+                                                        }
+                                                    }} />{(userRole === 'admin' || userRole === 'owner') && <RiDeleteBin5Line
+                                                        onClick={() => {
+                                                            setselectedUnitToDelete(each);
+                                                            setshowSelectedUnitToDelete(true);
+                                                        }}
+                                                        className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}</div>)}
                                         </div>
                                         <div className='flex my-2'>
                                             <Button onClick={() => {
