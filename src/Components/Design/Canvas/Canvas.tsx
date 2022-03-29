@@ -35,7 +35,7 @@ const Canvas = () => {
                         for (let i = 0; i < index; i++) {
                             items.push({
                                 type: "image",
-                                name: product?.name,
+                                name: product?.name + (i >= 1 ? `--${i}` : ''),
                                 value: product?.imageURLs[0],
                             })
                         }
