@@ -30,7 +30,7 @@ const zipImagesAsBlob = async ({
 
     for (const imageDataInfo of imageData)
     {
-      const response = await axios.get(`http://localhost:8000/download-image?imageURL=${encodeURIComponent(imageDataInfo.imageURL)}`, { responseType: "blob" });
+      const response = await axios.get(`${APP_API_URL}/download-image?imageURL=${encodeURIComponent(imageDataInfo.imageURL)}`, { responseType: "blob" });
       const imageBlob = response.data;
       const imageExtension = mime[imageBlob.type]?.extensions?.[0];
       imageFiles?.file(`images/${imageDataInfo.name}.${imageExtension}`, imageBlob);

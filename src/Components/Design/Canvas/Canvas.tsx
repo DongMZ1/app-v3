@@ -7,6 +7,7 @@ import { Tappstate } from '../../../redux/reducers'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { CSSTransition } from 'react-transition-group'
 import apiRequest from '../../../Service/apiRequest';
+import handleDownloadImages from '../../../Service/downloadImage';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
 
 type CanvasState = {
@@ -126,7 +127,10 @@ const Canvas = () => {
                 )
             }
         </div>
-        <DesignCanvas designItems={designItems?.length > 0 ? designItems : []} />
+        <DesignCanvas 
+        designItems={designItems?.length > 0 ? designItems : []} 
+        onDownloadImages={() => handleDownloadImages(designItems)}
+        />
     </div>
 }
 
