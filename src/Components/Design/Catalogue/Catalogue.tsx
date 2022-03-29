@@ -110,7 +110,7 @@ const Catalogue = () => {
                 </div>
             </div>
             {!isExpand && <>
-                <div draggable onDrag={(e) => dragMiddleLine(e)} onDragOver={(e) => e.preventDefault()} className='box-border w-1 h-full bg-black border-l-2 border-r-2 border-solid border-cream cursor-width'>
+                <div draggable onDrag={(e) => dragMiddleLine(e)} onDragOver={(e) => e.preventDefault()} className='h-full w-0.5 mx-1 bg-black cursor-width'>
                 </div>
                 <SelectedUnitMapProduct />
             </>

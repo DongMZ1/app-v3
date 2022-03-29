@@ -36,11 +36,11 @@ const SelectedProductDetail = () => {
             <div className="mt-1 text-sm font-ssp">Material: {selectedProductDetail?.material}</div>
             <div className="mt-1 text-sm font-ssp">Colour: {selectedProductDetail?.colorName}</div>
             <div className="flex w-full mt-1 bg-white h-60">
-                <img alt='selected-product-detail-img' src={selectedImage} className='h-full m-auto' />
+                <img loading='lazy' alt='selected-product-detail-img' src={selectedImage} className='h-full m-auto' />
             </div>
             <div className='flex flex-wrap'>
                 {selectedProductDetail?.imageURLs?.map((eachURL: string) => <div className='h-full py-1 pr-1'>
-                    <img onClick={() => setselectedImage(eachURL)} alt='small-img-selected-product-detail' src={eachURL} className='h-16 cursor-pointer' />
+                    <img loading='lazy' onClick={() => setselectedImage(eachURL)} alt='small-img-selected-product-detail' src={eachURL} className='h-16 cursor-pointer' />
                 </div>)}
             </div>
             <div className='text-sm font-ssp'>
