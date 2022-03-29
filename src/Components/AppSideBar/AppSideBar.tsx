@@ -91,7 +91,7 @@ const AppSideBar = () => {
         setshowAddUnitDropdown(false);
     }
 
-    const deleteRoomPackage = async () => {
+    const deleteUnitPackage = async () => {
         const res = await apiRequest({
             url: `/api/fhapp-service/package/unit/${currentOrgID}/${selectedUnitToDelete?.id}`,
             method: 'DELETE'
@@ -104,7 +104,7 @@ const AppSideBar = () => {
         }
     }
     return (<>
-        <ActionModal modalClassName='font-moret' showModal={showSelectedUnitToDelete} message={`Delete Unit Package => ${selectedUnitToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedUnitToDelete?.name} ?`} onCancel={() => setshowSelectedUnitToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteRoomPackage()} />
+        <ActionModal modalClassName='font-moret' showModal={showSelectedUnitToDelete} message={`Delete Unit Package => ${selectedUnitToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedUnitToDelete?.name} ?`} onCancel={() => setshowSelectedUnitToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteUnitPackage()} />
         <CSSTransition in={!showEntendSideBar} mountOnEnter unmountOnExit timeout={300} classNames='display-none-animation'>
             <div className='w-auto px-4 py-4 border-r border-black border-solid'>
                 <AiOutlineUnorderedList className='cursor-pointer' onClick={() => setshowEntendSideBar(true)} />
@@ -116,7 +116,7 @@ const AppSideBar = () => {
                     {editable && <>
                         <div className='my-auto mr-4 text-sm font-ssp'>add:</div>
                         <div className='relative w-20 text-sm-important'>
-                            <div onClick={() => setshowAddUnitDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
+                            <div onClick={() => setshowAddUnitDropdown(state => !state)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Units</div><AiOutlineDown className='my-auto mr-auto' /></div>
                             <CSSTransition in={showAddUnitDropdown} timeout={300} unmountOnExit classNames='height-800px-animation'>
                                 <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
 

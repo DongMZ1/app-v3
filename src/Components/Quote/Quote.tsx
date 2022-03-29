@@ -14,6 +14,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { Tappstate } from '../../redux/reducers';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../redux/Actions'
+import { ActionModal } from '@fulhaus/react.ui.action-modal';
+import { RiDeleteBin5Line } from 'react-icons/ri'
+import { showMessageAction } from '../../redux/Actions'
 import apiRequest from '../../Service/apiRequest';
 import debounce from 'lodash.debounce';
 
@@ -209,51 +212,76 @@ const Quote = () => {
             });
         }
     }
-    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID, quoteID, unitID])
+
+    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID, quoteID, unitID]);
+
+    const deleteRoomPackage = async () => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/package/room/${currentOrgID}/${selectedRoomOptionToDelete?.id}`,
+            method: 'DELETE'
+        });
+        if (res?.success) {
+            await getRoomOptionList();
+            setshowSelectedRoomOptionToDelete(false);
+        } else {
+            dispatch(showMessageAction(true, res?.message));
+        }
+    }
+
     return <>
+        <ActionModal modalClassName='font-moret' showModal={showSelectedRoomOptionToDelete} message={`Delete Unit Package => ${selectedRoomOptionToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedRoomOptionToDelete?.name} ?`} onCancel={() => setshowSelectedRoomOptionToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteRoomPackage()} />
         <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
             {(selectedQuoteUnit) ?
                 <>
                     {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                         <div className='flex'>
                             <div className='relative w-32 mr-8 text-sm-important'>
-                                <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                                <ClickOutsideAnElementHandler onClickedOutside={() => setshowAddRoomDropdown(false)}>
-                                    <CSSTransition in={showAddRoomDropdown} noStyle timeout={300} unmountOnExit classNames='height-800px-animation'>
-                                        <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                            <div className='text-sm font-semibold font-ssp'>
-                                                New Room
-                                            </div>
-                                            <TextInput placeholder='Enter Room Name' variant='box' className='mt-2' inputName='customRoomName' value={customRoomName} onChange={(e) => setcustomRoomName((e.target as any).value)} />
-                                            <div className='mt-4 text-sm font-semibold font-ssp'>
-                                                Choose an existing unit package
-                                            </div>
-                                            <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
-                                                setroomPackageKeyword((e.target as any).value);
-                                                setroomOptionCheckedList([]);
-                                            }}
-                                            />
-                                            <div className='w-full overflow-y-auto max-h-60'>
-                                                {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
-                                                    <Checkbox className='my-2' label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
+                                <div onClick={() => setshowAddRoomDropdown(true)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'>
+                                    <div className='my-auto ml-auto mr-1'>Add Rooms</div><AiOutlineDown className='my-auto mr-auto' />
+                                </div>
+                                <CSSTransition in={showAddRoomDropdown} noStyle timeout={300} unmountOnExit classNames='height-800px-animation'>
+                                    <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                        <div className='text-sm font-semibold font-ssp'>
+                                            New Room
+                                        </div>
+                                        <TextInput placeholder='Enter Room Name' variant='box' className='mt-2' inputName='customRoomName' value={customRoomName} onChange={(e) => setcustomRoomName((e.target as any).value)} />
+                                        <div className='mt-4 text-sm font-semibold font-ssp'>
+                                            Choose an existing unit package
+                                        </div>
+                                        <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
+                                            setroomPackageKeyword((e.target as any).value);
+                                            setroomOptionCheckedList([]);
+                                        }}
+                                        />
+                                        <div className='w-full overflow-y-auto max-h-60'>
+                                            {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                                <div className='flex my-2'>
+                                                    <Checkbox label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
                                                         if (v) {
                                                             setroomOptionCheckedList(state => [...state, each])
                                                         } else {
                                                             setroomOptionCheckedList(state => state.filter(e => e !== each))
                                                         }
-                                                    }} />)}
-                                            </div>
-                                            <div className='flex my-2'>
-                                                <Button onClick={() => {
-                                                    setshowAddRoomDropdown(false)
-                                                }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                                <Button disabled={roomOptionCheckedList.length === 0 && customRoomName === ''} onClick={() => {
-                                                    addRooms();
-                                                }} variant='primary' className='w-36'>Create Rooms</Button>
-                                            </div>
+                                                    }} />
+                                                    {(userRole === 'admin' || userRole === 'owner') && <RiDeleteBin5Line
+                                                        onClick={() => {
+                                                            setselectedRoomOptionToDelete(each);
+                                                            setshowSelectedRoomOptionToDelete(true);
+                                                        }}
+                                                        className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
+                                                </div>
+                                            )}
                                         </div>
-                                    </CSSTransition>
-                                </ClickOutsideAnElementHandler>
+                                        <div className='flex my-2'>
+                                            <Button onClick={() => {
+                                                setshowAddRoomDropdown(false)
+                                            }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
+                                            <Button disabled={roomOptionCheckedList.length === 0 && customRoomName === ''} onClick={() => {
+                                                addRooms();
+                                            }} variant='primary' className='w-36'>Create Rooms</Button>
+                                        </div>
+                                    </div>
+                                </CSSTransition>
                             </div>
                             {/*
                         <div className='w-60 text-sm-important'>
@@ -284,6 +312,8 @@ const Quote = () => {
                     {
                         selectedQuoteUnit?.rooms?.map((each: any) =>
                             <Room
+                            setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
+                            setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
                                 updateQuoteDetail={updateQuoteDetail}
                                 RoomOptionList={RoomOptionList}
                                 roomItemOptionsList={roomItemOptionsList}
