@@ -30,7 +30,7 @@ const Design = () => {
     if (currentOrgID && selectedProject) {
       fetchDesign()
     }
-  }, [selectedProject, currentOrgID])
+  }, [selectedProject?._id, currentOrgID])
   useEffect(() => {
     //sync with remote, because previously custom items does not have a ID, so by fetch get single quote, it will have a ID now
     if (currentOrgID && quoteID) {
@@ -46,8 +46,8 @@ const Design = () => {
       <div className="flex justify-center py-2 border-b border-black border-solid justify-items-center h-14 tab-css-overwrite">
         <Tab initialActiveTabLabel='Catalogue' onChange={(label) => settabState(label)} tabs={tabs} />
       </div>
-      <Catalogue tabState={tabState} />
-      <Canvas tabState={tabState} />
+      {tabState === 'Catalogue' && <Catalogue />}
+      {tabState === 'Canvas' && <Canvas />}
     </div>
   );
 };

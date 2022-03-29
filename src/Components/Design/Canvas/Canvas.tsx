@@ -12,7 +12,7 @@ import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
 type CanvasState = {
     tabState: string;
 }
-const Canvas = ({ tabState }: CanvasState) => {
+const Canvas = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
@@ -52,8 +52,6 @@ const Canvas = ({ tabState }: CanvasState) => {
         }
         setdesignItems(items);
     }
-
-    console.log('rerendered!')
 
     useEffect(
         () => updateDesignItems(),
@@ -103,7 +101,7 @@ const Canvas = ({ tabState }: CanvasState) => {
     }
 
 
-    return <div className={`${tabState !== "Canvas" && 'canvas-display-none-important'} flex flex-col h-full canvas`}>
+    return <div className={`w-full flex flex-col h-full canvas`}>
         <div className='flex px-4'>
             <div className='relative mr-8'>
                 <div onClick={() => { if (selectedQuoteUnit) { setshowRoomOptions(true) } }} className='flex px-2 py-2 text-lg font-semibold cursor-pointer font-moret'>
@@ -128,7 +126,23 @@ const Canvas = ({ tabState }: CanvasState) => {
                 )
             }
         </div>
-        <DesignCanvas designItems={designItems?.length > 0 ? designItems : []} />
+        <DesignCanvas designItems={[
+            {
+                type: "image",
+                name: "Pedro Mid-century Dining Table Pedro Mid-century Dining Table",
+                value: "https://dl.airtable.com/.attachments/dc4a9a9663b09fbc526cb3e5de67c0be/31ff5715/Imagefromsafavieh.comon2022-03-07at4.26.25PM.jpeg",
+            },
+            {
+                type: "image",
+                name: "Lucius Outdoor Stool",
+                value: "https://files.plytix.com/api/v1.1/file/public_files/pim/assets/a1/ae/d4/5c/5cd4aea1a3dec0046811d88f/images/55/24/f8/5c/5cf82455e5e4ad046c385538/BQ-1006-25.jpg",
+            },
+            {
+                type: "image",
+                name: "Vintage Bench Large Grey",
+                value: "https://files.plytix.com/api/v1.1/file/public_files/pim/assets/a1/ae/d4/5c/5cd4aea1a3dec0046811d88f/images/ac/26/f8/5c/5cf826acde06fd046b578d68/BT-1001-37.jpg",
+            },
+        ]} />
     </div>
 }
 

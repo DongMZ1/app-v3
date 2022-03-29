@@ -12,7 +12,7 @@ import debounce from 'lodash.debounce'
 type CatalogueProps = {
     tabState: string
 }
-const Catalogue = ({ tabState }: CatalogueProps) => {
+const Catalogue = () => {
     const [calaloguePage, setcalaloguePage] = useState(1);
     const dispatch = useDispatch();
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
@@ -97,7 +97,7 @@ const Catalogue = ({ tabState }: CatalogueProps) => {
 
     return <>
         <SelectedProductDetail />
-        <div className={`${tabState !== "Catalogue" && 'catalogue-display-none-important'} flex h-full catalogue`}>
+        <div className={`flex h-full catalogue`}>
             <div style={draggableWidth ? { width: draggableWidth } : {}} className={`flex flex-col ${isExpand ? 'w-full' : 'w-1/2'} overflow-hidden`}>
                 <CatalogueFilter isExpand={isExpand} setisExpand={setisExpand} setdraggableWidth={setdraggableWidth} />
                 <div ref={scrollRef} id='catalogue-product-ref' className='flex flex-wrap h-full overflow-auto' onScroll={() => debounceFetchMoreProducts()}>
