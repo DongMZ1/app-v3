@@ -9,7 +9,7 @@ import { CSSTransition } from 'react-transition-group'
 import apiRequest from '../../../Service/apiRequest';
 import handleDownloadImages from '../../../Service/downloadImage';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
-
+import DesignElements from './CanvasComponent/design-elements'
 type CanvasState = {
     tabState: string;
 }
@@ -23,6 +23,7 @@ const Canvas = () => {
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const [showRoomOptions, setshowRoomOptions] = useState(false);
     const [designItems, setdesignItems] = useState<any[]>([]);
+    const [showDesignElementsOption, setshowDesignElementsOption] = useState(false);
 
 
     const updateDesignItems = () => {
@@ -127,10 +128,19 @@ const Canvas = () => {
                 )
             }
         </div>
-        <DesignCanvas 
-        designItems={designItems?.length > 0 ? designItems : []} 
-        onDownloadImages={() => handleDownloadImages(designItems)}
+        <DesignCanvas
+            onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
+            designItems={designItems?.length > 0 ? designItems : []}
+            onDownloadImages={() => handleDownloadImages(designItems)}
         />
+        {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
+            const newDesignElements = [...designItems, {
+                type: "image",
+                name: n,
+                value: v,
+            }]
+            setdesignItems(newDesignElements);
+        }} />}
     </div>
 }
 
