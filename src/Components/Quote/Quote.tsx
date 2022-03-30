@@ -302,7 +302,7 @@ const Quote = () => {
                             </>
                             :
                             <>
-                                <div className='my-auto ml-auto mr-4 font-ssp'>${selectedQuoteUnit?.setupFee}</div>
+                                <div className='my-auto ml-auto mr-4 font-ssp'>${Number(selectedQuoteUnit?.setupFee).toFixed(2)}</div>
                                 {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                                     <FiEdit2 size={15} onClick={() => seteachUnitSetUpFeeEditable(true)} className='my-auto cursor-pointer' />
                                 }
