@@ -147,7 +147,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                 </div>
             </AppV3FurnitureCard>
         </div>
-        <div className='ml-1.5 text-xs font-ssp font-semibold'>Trade Price : ${eachProduct?.tradePrice}</div>
+        <div className='ml-1.5 text-xs font-ssp font-semibold'>Trade Price : ${Number(eachProduct?.tradePrice)?.toFixed(2)}</div>
         <div className='ml-1.5 text-xs font-ssp font-semibold'>{eachProduct?.name}</div>
     </div>
 }

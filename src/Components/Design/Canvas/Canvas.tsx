@@ -106,7 +106,7 @@ const Canvas = () => {
     return <div className={`w-full flex flex-col h-full canvas`}>
         <div className='flex px-4'>
             <div className='relative mr-8'>
-                <div onClick={() => { if (selectedQuoteUnit) { setshowRoomOptions(true) } }} className='flex px-2 py-2 text-lg font-semibold cursor-pointer font-moret'>
+                <div onClick={() => { if (selectedQuoteUnit) { setshowRoomOptions(true) } }} className='flex px-2 py-1 text-lg font-semibold cursor-pointer font-moret'>
                     {selectedQuoteUnit ? (selectedRoom?.name ? selectedRoom?.name : 'SELECT A ROOM TO GET START') : 'SELECT A UNIT TO GET START'} <MdKeyboardArrowDown className='my-auto ml-2' /></div>
                 {selectedQuoteUnit &&
                     <CSSTransition in={showRoomOptions} timeout={300} unmountOnExit classNames='opacity-animation'>

@@ -236,7 +236,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         }
     }
     return <><div className='mb-6'>
-        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice()} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount} >
+        <FurnitureInRoomHeader totalProductPrice={Number(calculateTotalRoomProductsPrice().toFixed(2))} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount?.toFixed(2)} >
             <>
                 {
                     eachRoom?.categories?.map(

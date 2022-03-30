@@ -19,14 +19,14 @@ const ProjectFooter = () => {
     const dispatch = useDispatch();
     useEffect(
         () => {
-            if (JSONquoteDetail && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')))) {
+            if (JSONquoteDetail && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')|| window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
                 getQuoteTotal()
             }
         }, [JSONquoteDetail, window.location.href]
     )
     useEffect(
         () => {
-            if (JSONselectedQuoteUnit && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')))) {
+            if (JSONselectedQuoteUnit && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')|| window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
                 getUnitTotal()
             }
         }, [JSONselectedQuoteUnit, window.location.href]
@@ -54,12 +54,12 @@ const ProjectFooter = () => {
         }
     }
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
-        {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only')) &&
+        {(window.location.href.includes('/project/quote') || window.location.href.includes('/quote-only') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only')) &&
             <>
                 <div className='my-auto mr-4 text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.name : 'No Unit Selected'}</div>
                 <div className='my-auto mr-4 text-3xl font-semibold'>·</div>
                 <div className='my-auto text-lg font-semibold'>{selectedQuoteUnit ? selectedQuoteUnit.count : '0'} Unit</div>
-                <div className='my-auto ml-auto mr-6 text-sm'>Unit Total <b>{selectedQuoteUnit ? `$${unitTotal.toFixed(2)}` : 'No Unit Selected'}</b></div>
+                <div className='my-auto ml-auto mr-6 text-sm'>Unit Total: <b>{selectedQuoteUnit ? `$${unitTotal.toFixed(2)}` : 'No Unit Selected'}</b></div>
                 <div className='my-auto mr-6 text-sm'>Project Total <b>${quoteTotal ? quoteTotal.toFixed(2) : 0}</b></div>
                 <div onClick={() => {
                     dispatch({

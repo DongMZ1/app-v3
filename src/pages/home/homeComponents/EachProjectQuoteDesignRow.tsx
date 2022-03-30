@@ -147,7 +147,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdAt?.slice(0, 10)}</div></div>
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy ? thisProject?.createdBy?.length > 22 ? thisProject?.createdBy?.slice(0, 22) + '...' : thisProject?.createdBy : thisProject?.createdBy}</div></div>
         <div className='flex width-8-percent'>
-            <div className='my-auto'>{thisProject.unitCount ? thisProject.unitCount : 0}</div>
+            <div className='my-auto'>{thisProject?.quote?.unitCount ? thisProject?.quote?.unitCount : 0}</div>
             {(projectRole === ('owner') || (projectRole === 'admin')) && projectRole &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput

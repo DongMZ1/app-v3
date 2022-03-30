@@ -160,8 +160,8 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
         number={eachCategory?.qty}
         editable
         buy={!eachCategory?.rentable}
-        buyMSRP={eachCategory?.budget}
-        rentMSRP={eachCategory?.budget}
+        buyMSRP={eachCategory?.budget?.toFixed(2)}
+        rentMSRP={eachCategory?.budget?.toFixed(2)}
         isDesignViewer={userRole === 'viewer'}
         currentFurnitureIndex={(index) => {
             setcurrentIndex(index)

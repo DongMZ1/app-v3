@@ -191,10 +191,10 @@ const QuoteSummaryPurchase = () => {
                     </div></> :
                 <div className='flex'>
                     <div className='w-1/3'>
-                        <div>Additional Discount : {quoteDetail?.additionalDiscount?.percent}%</div>
+                        <div>Additional Discount : {Number(quoteDetail?.additionalDiscount?.percent).toFixed(2)}%</div>
                         <div className='text-xs'>{quoteDetail?.additionalDiscount?.description}</div>
                     </div>
-                    <div className='my-auto ml-auto'>-{quoteDetail?.additionalDiscount?.percent}%</div>
+                    <div className='my-auto ml-auto'>- {Number(quoteDetail?.additionalDiscount?.percent).toFixed(2)}%</div>
                 </div>
             }
             <div className='flex pt-4 mt-4 border-t border-black border-solid'>
@@ -202,7 +202,7 @@ const QuoteSummaryPurchase = () => {
                     Total Quote Before Tax
                 </div>
                 <div className='ml-auto'>
-                    {quoteDetail?.upfrontTotalQuoteBeforeTax}
+                    {quoteDetail?.upfrontTotalQuoteBeforeTax?.toFixed(2)}
                 </div>
             </div>
             {
@@ -237,7 +237,7 @@ const QuoteSummaryPurchase = () => {
                             </div>
                         </div>
                         <div className='my-auto ml-auto'>
-                            {quoteDetail?.tax} %
+                            {quoteDetail?.tax?.toFixed(2)} %
                         </div>
                     </div>
             }
