@@ -62,7 +62,7 @@ const Canvas = () => {
         }
     }, [selectedRoom?.roomID]);
 
-    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, quoteID, selectedQuoteUnit?.unitID, selectedCanvas?._id]);
+    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, selectedCanvas?._id]);
 
     const updateDesignItems = () => {
         let items: any[] = [];
