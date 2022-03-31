@@ -51,8 +51,12 @@ const QuoteSummaryRental = () => {
     }
 
     const debounceUpdateShipping = useCallback(debounce((value: number) => updateQuoteField({ field: 'shipping', value }), 1000), [currentOrgID, quoteDetail?._id]);
+
     const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, quoteDetail?._id]);
+
     const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id]);
+
+    const debounceUpdateServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'serviceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
     const updateshipping = (v: string) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
@@ -226,16 +230,17 @@ const QuoteSummaryRental = () => {
                             }
                         } /></> : <div className='ml-auto'>${Number(quoteDetail?.shipping)?.toFixed(2)}</div>}
             </div>
-            {/*
-                quoteDetail?.paymentTerms?.map(
+            {
+                quoteDetail?.serviceCosts?.map(
                     (eachCost: any, key: any) =>
                         <div key={key} className='flex w-full mt-3'>
                             {editable ?
                                 <TextInput inputName='payment term name' variant='box' value={eachCost?.term} onChange={
                                     (e) => {
-                                        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                            draft.paymentTerms[key].term = (e.target as any).value
+                                        const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
+                                            draft.serviceCosts[key].term = (e.target as any).value
                                         });
+                                        debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
                                         dispatch({
                                             type: 'quoteDetail',
                                             payload: newQuoteDetail
@@ -247,28 +252,11 @@ const QuoteSummaryRental = () => {
                             }
                             {
                                 editable ? <>
-                                    <DropdownListInput
-                                        initialValue={eachCost?.type === 'PERCENT' ? '%' : '$'}
-                                        wrapperClassName='ml-auto  w-6rem-important h-2-5-rem-important ml-auto'
-                                        onSelect={(v) => {
-                                            const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                                if (v === '%') {
-                                                    draft.paymentTerms[key].type = 'PERCENT'
-                                                }
-                                                if (v === '$') {
-                                                    draft.paymentTerms[key].type = 'ABSOLUTE'
-                                                }
-                                            });
-                                            dispatch({
-                                                type: 'quoteDetail',
-                                                payload: newQuoteDetail
-                                            })
-                                        }}
-                                        options={['$', '%']} />
-                                    <TextInput type='number' className='mr-4 w-4rem-important' suffix={<span>{eachCost?.type === 'PERCENT' ? '%' : '$'}</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
-                                        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                            draft.paymentTerms[key].amount = (e.target as any).value
+                                    <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
+                                        const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
+                                            draft.serviceCosts[key].amount = (e.target as any).valueAsNumber
                                         });
+                                        debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
                                         dispatch({
                                             type: 'quoteDetail',
                                             payload: newQuoteDetail
@@ -277,14 +265,15 @@ const QuoteSummaryRental = () => {
                                 </>
                                     :
                                     <div className='my-auto ml-auto'>
-                                        {eachCost?.type === 'ABSOLUTE' ? '$' : ''}{Number(eachCost?.amount)?.toFixed(2)}{eachCost?.type === 'PERCENT' ? '%' : ''}
+                                        ${Number(eachCost?.amount)?.toFixed(2)}
                                     </div>
                             }
                             {
                                 editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
-                                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                                        draft.paymentTerms?.splice(key, 1);
+                                    const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
+                                        draft.serviceCosts?.splice(key, 1);
                                     });
+                                    debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
                                     dispatch({
                                         type: 'quoteDetail',
                                         payload: newQuoteDetail
@@ -293,10 +282,10 @@ const QuoteSummaryRental = () => {
                             }
                         </div>
                 )
-                        */}
+            }
             {
                 editable && <Button className='mt-2' variant='primary' onClick={() => {
-                    const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                    const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
                         if (!draft.serviceCosts) {
                             draft.serviceCosts = [{
                                 term: '',
@@ -309,6 +298,7 @@ const QuoteSummaryRental = () => {
                             })
                         }
                     });
+                    debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
                     dispatch({
                         type: 'quoteDetail',
                         payload: newQuoteDetail
