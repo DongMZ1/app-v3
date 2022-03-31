@@ -116,7 +116,11 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
         </div>
         <div className='flex mt-4'>
           <TextInput className='w-11/12 text-xs' placeholder='Email, commas seperated' inputName='invite people search bar' variant="box" type='search' value={peopleKeyWord} onChange={e => setpeopleKeyWord((e as any).target.value)} />
-          <div className='w-1/12'><Button disabled={peopleKeyWord.split(', ')?.some(eachEmail => !validateEmail(eachEmail))} onClick={() => invite()} className='justify-center w-full'>Invite</Button></div>
+          <div className='w-1/12'><Button disabled={peopleKeyWord.split(', ')?.some(eachEmail => !validateEmail(eachEmail))} onClick={() => {
+            if (!peopleKeyWord.split(', ')?.some(eachEmail => !validateEmail(eachEmail))) {
+              invite()
+            }
+          }} className='justify-center w-full'>Invite</Button></div>
         </div>
         {
           loading && <div className="flex justify-center mt-12">
@@ -134,7 +138,7 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
           !loading && (peopleList?.length === 0 || !peopleList) &&
           <div className="justify-center mt-4 text-sm font-ssp">
             <div>
-               Invite people to this project by enter their email above
+              Invite people to this project by enter their email above
             </div>
           </div>
         }

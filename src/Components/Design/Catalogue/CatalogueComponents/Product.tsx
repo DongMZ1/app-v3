@@ -58,7 +58,8 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
                                 qty: 1
                             },
                         ]
-                    }
+                    },
+                    designItems: []
                 }
             })
             if (res?.success) {

@@ -10,7 +10,7 @@ type SelectedUnitMapProductsCategoryProps = {
     eachCategory: any;
     eachRoom: any;
 }
-const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnitMapProductsCategoryProps) => {
+const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUnitMapProductsCategoryProps) => {
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const draggedProduct = useSelector((state: Tappstate) => state.draggedProduct);
     const dispatch = useDispatch();
@@ -47,7 +47,8 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
                             qty: 1
                         },
                     ]
-                }
+                },
+                designItems: []
             }
         })
         if (res?.success) {
@@ -71,13 +72,16 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
             type: 'appLoader',
             payload: true
         });
-        let newselectedCanvas : any = produce(selectedCanvas, (draft: any) => {
+        let newselectedCanvas: any = produce(selectedCanvas, (draft: any) => {
             draft.items[`${eachCategory?.categoryID}`]?.splice(currentIndex, 1)
-        }) 
+        })
         const res = await apiRequest({
             url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items : newselectedCanvas?.items }
+            body: {
+                items: newselectedCanvas?.items,
+                designItems: []
+            }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -100,11 +104,11 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
         const newSelectedQuoteUnit: any = produce(selectedQuoteUnit, (draft: any) => {
             draft.rooms[roomIndex].selectedCanvas.items[`${eachCategory?.categoryID}`][currentIndex].qty = v;
         })
-        debounceUpdateCurrentFurnitureNumberRemote(newSelectedQuoteUnit?.rooms[roomIndex].selectedCanvas.items)
         dispatch({
             type: 'selectedQuoteUnit',
             payload: newSelectedQuoteUnit
         })
+        debounceUpdateCurrentFurnitureNumberRemote(newSelectedQuoteUnit?.rooms[roomIndex].selectedCanvas.items)
     }
 
     const updateCurrentFurnitureNumberRemote = async (items: object) => {
@@ -115,7 +119,11 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
         const res = await apiRequest({
             url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
-            body: { items : items }
+            body:
+            {
+                items: items,
+                designItems: []
+            }
         })
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
@@ -137,20 +145,20 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom}: SelectedUnit
 
 
     const showProductDetail = () => {
-            dispatch({
-                type: 'showselectedProductDetail',
-                payload: true
-            })
-            dispatch({
-                type: 'selectedProductDetail',
-                payload: selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]
-            })
+        dispatch({
+            type: 'showselectedProductDetail',
+            payload: true
+        })
+        dispatch({
+            type: 'selectedProductDetail',
+            payload: selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]
+        })
     }
 
     return <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => ondrop(e, eachCategory)} ><FurnitureInRoomRowCard
         imageUrl={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.length > 0 ? selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((eachProduct: any) => eachProduct?.imageURLs?.[0]) : []}
         isDesign
-        imageInfor={()=>showProductDetail()}
+        imageInfor={() => showProductDetail()}
         imageDelete={() => deleteProduct()}
         currentFurnitureNumber={selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.qty}
         onCurrentFurnitureNumberChange={(v) => updateCurrentFurnitureNumber(v)}

@@ -372,7 +372,7 @@ const QuoteSummaryPurchase = () => {
                         type: 'quoteDetail',
                         payload: newQuoteDetail
                     })
-                }} >Add new Service Cost</Button>
+                }} >Add New Instalment</Button>
             }
         </div>
         <div className='flex px-4 py-2 mt-4 border-4 border-black border-solid'>

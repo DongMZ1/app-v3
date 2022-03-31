@@ -171,15 +171,15 @@ const QuoteSummaryRental = () => {
                 <div className='text-sm font-ssp'>
                     Volume Discount
                 </div>
-                {editable ? <DropdownListInput initialValue={quoteDetail?.customVolumeDiscount? quoteDetail?.customVolumeDiscount: quoteDetail?.defaultVolumeDiscount} options={['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Tier 6']} onSelect={(v) => updateQuoteField({
+                {editable ? <DropdownListInput initialValue={quoteDetail?.customVolumeDiscount ? quoteDetail?.customVolumeDiscount : quoteDetail?.defaultVolumeDiscount} options={['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Tier 6']} onSelect={(v) => updateQuoteField({
                     field: 'customVolumeDiscount',
                     value: v
                 })} wrapperClassName='w-6rem-important' /> :
                     <div>
-                        {quoteDetail?.customVolumeDiscount? quoteDetail?.customVolumeDiscount: quoteDetail?.defaultVolumeDiscount}
+                        {quoteDetail?.customVolumeDiscount ? quoteDetail?.customVolumeDiscount : quoteDetail?.defaultVolumeDiscount}
                     </div>}
             </div>
-            <div className='my-auto ml-auto'>{quoteDetail?.customVolumeDiscount? quoteDetail?.customVolumeDiscount: quoteDetail?.defaultVolumeDiscount}</div>
+            <div className='my-auto ml-auto'>{quoteDetail?.customVolumeDiscount ? quoteDetail?.customVolumeDiscount : quoteDetail?.defaultVolumeDiscount}</div>
         </div>
         <div className='mt-10 text-2xl font-moret'>Order Summary</div>
         <div className='flex mt-4 text-sm font-ssp'>
@@ -294,21 +294,27 @@ const QuoteSummaryRental = () => {
                         </div>
                 )
                         */}
-            {/*
+            {
                 editable && <Button className='mt-2' variant='primary' onClick={() => {
                     const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-                        draft.paymentTerms?.push({
-                            term: '',
-                            type: 'PERCENT',
-                            amount: 0
-                        })
+                        if (!draft.serviceCosts) {
+                            draft.serviceCosts = [{
+                                term: '',
+                                amount: 0
+                            }]
+                        } else {
+                            draft.serviceCosts?.push({
+                                term: '',
+                                amount: 0
+                            })
+                        }
                     });
                     dispatch({
                         type: 'quoteDetail',
                         payload: newQuoteDetail
                     })
                 }} >Add new Service Cost</Button>
-            */}
+            }
         </div>
         <div className='flex pt-4 pb-4 mt-4 border-t border-black border-solid'>
             <div className='mr-1 font-semibold font-ssp'>Subtotal</div>
@@ -376,7 +382,7 @@ const QuoteSummaryRental = () => {
                         </div>
                     </div>
                     <div className='my-auto ml-auto'>
-                         {quoteDetail?.tax} %
+                        {quoteDetail?.tax} %
                     </div>
                 </div>
         }

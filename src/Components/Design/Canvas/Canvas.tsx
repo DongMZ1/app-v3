@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './Canvas.scss'
 import { DesignCanvas } from '@fulhaus/react.ui.design-canvas'
 import { MdKeyboardArrowDown } from 'react-icons/md'
@@ -10,6 +10,8 @@ import apiRequest from '../../../Service/apiRequest';
 import handleDownloadImages from '../../../Service/downloadImage';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
 import DesignElements from './CanvasComponent/design-elements'
+import produce from 'immer';
+import debounce from 'lodash.debounce';
 type CanvasState = {
     tabState: string;
 }
@@ -25,10 +27,46 @@ const Canvas = () => {
     const [designItems, setdesignItems] = useState<any[]>([]);
     const [showDesignElementsOption, setshowDesignElementsOption] = useState(false);
 
+    const selectedCanvas = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas;
+
+
+    const updatePopulatedDesignItemsRemote = async (designItems: any) => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
+            method: 'PATCH',
+            body: { designItems }
+        })
+    }
+
+    useEffect(
+        () => updateDesignItems(),
+        [JSON.stringify(selectedCanvas?.items)]
+    );
+
+    useEffect(() => {
+        setselectedRoom(undefined);
+    }, [selectedQuoteUnit?.unitID]);
+
+    useEffect(() => {
+        //if room changes, I need to fetch the designItems with its position from remote, the sync it up
+        if (selectedRoom?.roomID) {
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+        }
+    }, [selectedRoom?.roomID]);
+
+    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, quoteID, selectedQuoteUnit?.unitID, selectedCanvas?._id]);
 
     const updateDesignItems = () => {
         let items: any[] = [];
-        let selectedRoomCanvasItems: any = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items;
+        let selectedRoomCanvasItems: any = selectedCanvas?.items;
         if (selectedRoomCanvasItems) {
             for (let variable in selectedRoomCanvasItems) {
                 for (let product of selectedRoomCanvasItems[variable]) {
@@ -55,22 +93,13 @@ const Canvas = () => {
         setdesignItems(items);
     }
 
-    useEffect(
-        () => updateDesignItems(),
-        [JSON.stringify(selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items)]
-    )
-
-    useEffect(() => {
-        setselectedRoom(undefined);
-    }, [selectedQuoteUnit?.unitID])
-
     const onRoomSelect = (eachRoom: any) => {
         setselectedRoom(eachRoom);
         setshowRoomOptions(false);
     }
 
     const goThisDraft = async (draftID: string) => {
-        if (draftID !== selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id) {
+        if (draftID !== selectedCanvas?._id) {
             dispatch(
                 {
                     type: 'appLoader',
@@ -122,7 +151,7 @@ const Canvas = () => {
                         </div></CSSTransition>}
             </div>
             {
-                selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={() => goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
+                selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={() => goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
                     <div className='m-auto'>{eachCanvas?.draftName}</div>
                 </div>
                 )
@@ -130,8 +159,9 @@ const Canvas = () => {
         </div>
         <DesignCanvas
             onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
-            designItems={designItems?.length > 0 ? designItems : []}
+            designItems={selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : designItems?.length > 0 ? designItems : []}
             onDownloadImages={() => handleDownloadImages(designItems)}
+            onChange={(v) => debounceupdatePopulatedDesignItemsRemote(v?.designItems)}
         />
         {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
             const newDesignElements = [...designItems, {
