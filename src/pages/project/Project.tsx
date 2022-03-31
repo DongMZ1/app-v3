@@ -177,29 +177,31 @@ const Project = () => {
                 {(window.location.href.includes('/project/quote') || window.location.href.includes('/project/design')) &&
                     <div className='flex ml-auto'>
                         <Link to='/project/quote' className={`my-auto ml-auto mr-8 cursor-pointer ${window.location.href.includes('project/quote') ? 'border-solid border-black border-b-2' : 'border-b-2 border-solid border-transparent'}`}>Quote</Link>
-                        <Link to='/project/design' role='button' className={`my-auto flex cursor-pointer ${window.location.href.includes('project/design') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>
-                            <div className='my-auto'>Design:</div>
-                            <div className='my-auto ml-1 text-xs font-semibold'>{tabState}</div>
-                            <div className='my-auto'>
-                                <BsChevronDown size={12} onClick={() => {
-                                    if (window.location.href.includes('/project/design')) {
-                                        setshowTabStateMenu(true)
-                                    }
-                                }} />
-                                {showTabStateMenu && <ClickOutsideAnElementHandler onClickedOutside={() => setshowTabStateMenu(false)} noStyle><div className='absolute z-50 w-32 bg-white border border-black border-solid'>
-                                    {['Catalogue', 'Canvas'].map((each: any) =>
-                                        <div className='w-full px-4 py-2 text-xs font-semibold hover:bg-gray-200'
-                                            onClick={() => {
-                                                settabState(each);
-                                                setshowTabStateMenu(false);
-                                            }}
-                                        >
-                                            {each}
-                                        </div>
-                                    )}
-                                </div></ClickOutsideAnElementHandler>}
-                            </div>
-                        </Link>
+                        {userRole !== 'viewer' &&
+                            <Link to='/project/design' role='button' className={`my-auto flex cursor-pointer ${window.location.href.includes('project/design') ? 'border-b-2 border-solid border-black' : 'border-b-2 border-solid border-transparent'}`}>
+                                <div className='my-auto'>Design:</div>
+                                <div className='my-auto ml-1 text-xs font-semibold'>{tabState}</div>
+                                <div className='my-auto'>
+                                    <BsChevronDown size={12} onClick={() => {
+                                        if (window.location.href.includes('/project/design')) {
+                                            setshowTabStateMenu(true)
+                                        }
+                                    }} />
+                                    {showTabStateMenu && <ClickOutsideAnElementHandler onClickedOutside={() => setshowTabStateMenu(false)} noStyle><div className='absolute z-50 w-32 bg-white border border-black border-solid'>
+                                        {['Catalogue', 'Canvas'].map((each: any) =>
+                                            <div className='w-full px-4 py-2 text-xs font-semibold hover:bg-gray-200'
+                                                onClick={() => {
+                                                    settabState(each);
+                                                    setshowTabStateMenu(false);
+                                                }}
+                                            >
+                                                {each}
+                                            </div>
+                                        )}
+                                    </div></ClickOutsideAnElementHandler>}
+                                </div>
+                            </Link>
+                        }
                     </div>
                 }
                 {(window.location.href.includes('/quote-summary-rental') || window.location.href.includes('/quote-summary-purchase')) &&
@@ -229,7 +231,7 @@ const Project = () => {
             <div className='flex main-content-wrapper'>
                 <AppSideBar />
                 {(window.location.href.includes('project/quote') || window.location.href.includes('/quote-only')) && <Quote />}
-                {(window.location.href.includes('project/design') || window.location.href.includes('/design-only')) && <Design tabState={tabState} />}
+                {userRole !== 'viewer' && (window.location.href.includes('project/design') || window.location.href.includes('/design-only')) && <Design tabState={tabState} />}
                 {(window.location.href.includes('/quote-summary-rental')) && <QuoteSummaryRental />}
                 {(window.location.href.includes('/quote-summary-purchase')) && <QuoteSummaryPurchase />}
             </div>

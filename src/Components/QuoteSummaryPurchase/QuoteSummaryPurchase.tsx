@@ -30,6 +30,10 @@ const QuoteSummaryPurchase = () => {
         field: string,
         value: any,
     }) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
         const res = await apiRequest({
             url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
             method: 'PATCH',
@@ -40,16 +44,22 @@ const QuoteSummaryPurchase = () => {
         if (res?.success) {
             dispatch(getQuoteDetail({
                 organizationID: currentOrgID ? currentOrgID : '',
-                quoteID: quoteDetail?._id
+                quoteID: quoteDetail?._id,
+                loadingFalse: true
             }))
         } else {
-            console.log('update quote failed at QuoteSummaryRental')
+            console.log('update quote failed at QuoteSummaryRental');
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
         }
     }
     const debounceUpdateShipping = useCallback(debounce((value: number) => updateQuoteField({ field: 'shipping', value }), 1000), [currentOrgID, quoteDetail?._id]);
     const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, quoteDetail?._id]);
     const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id]);
     const debounceUpdatePaymentTerms = useCallback(debounce((value: any) => updateQuoteField({ field: 'paymentTerms', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
     const updateshipping = (v: string) => {
         const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
@@ -165,6 +175,81 @@ const QuoteSummaryPurchase = () => {
                             }
                         } /></> : <div className='ml-auto'>${Number(quoteDetail?.shipping)?.toFixed(2)}</div>}
             </div>
+            {
+                quoteDetail?.customServiceCosts?.map(
+                    (eachCost: any, key: any) =>
+                        <div key={key} className='flex w-full mt-3'>
+                            {editable ?
+                                <TextInput inputName='payment term name' variant='box' value={eachCost?.term} onChange={
+                                    (e) => {
+                                        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                            draft.customServiceCosts[key].term = (e.target as any).value
+                                        });
+                                        debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
+                                        dispatch({
+                                            type: 'quoteDetail',
+                                            payload: newQuoteDetail
+                                        })
+                                    }
+                                } />
+                                :
+                                <div className='my-auto'>{eachCost?.term}</div>
+                            }
+                            {
+                                editable ? <>
+                                    <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
+                                        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                            draft.customServiceCosts[key].amount = (e.target as any).valueAsNumber
+                                        });
+                                        debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
+                                        dispatch({
+                                            type: 'quoteDetail',
+                                            payload: newQuoteDetail
+                                        })
+                                    }} />
+                                </>
+                                    :
+                                    <div className='my-auto ml-auto'>
+                                        ${Number(eachCost?.amount)?.toFixed(2)}
+                                    </div>
+                            }
+                            {
+                                editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
+                                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                        draft.customServiceCosts?.splice(key, 1);
+                                    });
+                                    debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
+                                    dispatch({
+                                        type: 'quoteDetail',
+                                        payload: newQuoteDetail
+                                    })
+                                }} />
+                            }
+                        </div>
+                )
+            }
+            {
+                editable && <Button className='mt-2' variant='primary' onClick={() => {
+                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                        if (!draft.customServiceCosts) {
+                            draft.customServiceCosts = [{
+                                term: '',
+                                amount: 0
+                            }]
+                        } else {
+                            draft.customServiceCosts?.push({
+                                term: '',
+                                amount: 0
+                            })
+                        }
+                    });
+                    debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
+                    dispatch({
+                        type: 'quoteDetail',
+                        payload: newQuoteDetail
+                    })
+                }} >Add new Service Cost</Button>
+            }
             <div className='flex pt-4 pb-4 mt-4 border-t border-black border-solid'>
                 <div className='mr-1 font-semibold font-ssp'>Subtotal</div>
                 <Tooltip text='' iconColor='blue' />

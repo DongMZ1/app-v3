@@ -33,6 +33,10 @@ const QuoteSummaryRental = () => {
         field: string,
         value: any,
     }) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
         const res = await apiRequest({
             url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
             method: 'PATCH',
@@ -43,10 +47,15 @@ const QuoteSummaryRental = () => {
         if (res?.success) {
             dispatch(getQuoteDetail({
                 organizationID: currentOrgID ? currentOrgID : '',
-                quoteID: quoteDetail?._id
+                quoteID: quoteDetail?._id,
+                loadingFalse: true
             }))
         } else {
             console.log('update quote failed at QuoteSummaryRental')
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
         }
     }
 
@@ -56,7 +65,7 @@ const QuoteSummaryRental = () => {
 
     const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
-    const debounceUpdateServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'serviceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
     const updateshipping = (v: string) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
@@ -231,16 +240,16 @@ const QuoteSummaryRental = () => {
                         } /></> : <div className='ml-auto'>${Number(quoteDetail?.shipping)?.toFixed(2)}</div>}
             </div>
             {
-                quoteDetail?.serviceCosts?.map(
+                quoteDetail?.customServiceCosts?.map(
                     (eachCost: any, key: any) =>
                         <div key={key} className='flex w-full mt-3'>
                             {editable ?
                                 <TextInput inputName='payment term name' variant='box' value={eachCost?.term} onChange={
                                     (e) => {
-                                        const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
-                                            draft.serviceCosts[key].term = (e.target as any).value
+                                        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                            draft.customServiceCosts[key].term = (e.target as any).value
                                         });
-                                        debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
+                                        debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
                                         dispatch({
                                             type: 'quoteDetail',
                                             payload: newQuoteDetail
@@ -253,10 +262,10 @@ const QuoteSummaryRental = () => {
                             {
                                 editable ? <>
                                     <TextInput type='number' className='ml-auto mr-4 w-4rem-important' suffix={<span>$</span>} inputName='payment item amount' variant='box' value={eachCost?.amount} onChange={(e) => {
-                                        const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
-                                            draft.serviceCosts[key].amount = (e.target as any).valueAsNumber
+                                        const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                            draft.customServiceCosts[key].amount = (e.target as any).valueAsNumber
                                         });
-                                        debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
+                                        debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
                                         dispatch({
                                             type: 'quoteDetail',
                                             payload: newQuoteDetail
@@ -270,10 +279,10 @@ const QuoteSummaryRental = () => {
                             }
                             {
                                 editable && <RiDeleteBin6Fill color='red' className='my-auto cursor-pointer' onClick={() => {
-                                    const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
-                                        draft.serviceCosts?.splice(key, 1);
+                                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                        draft.customServiceCosts?.splice(key, 1);
                                     });
-                                    debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
+                                    debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
                                     dispatch({
                                         type: 'quoteDetail',
                                         payload: newQuoteDetail
@@ -285,20 +294,20 @@ const QuoteSummaryRental = () => {
             }
             {
                 editable && <Button className='mt-2' variant='primary' onClick={() => {
-                    const newQuoteDetail:any = produce(quoteDetail, (draft: any) => {
-                        if (!draft.serviceCosts) {
-                            draft.serviceCosts = [{
+                    const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                        if (!draft.customServiceCosts) {
+                            draft.customServiceCosts = [{
                                 term: '',
                                 amount: 0
                             }]
                         } else {
-                            draft.serviceCosts?.push({
+                            draft.customServiceCosts?.push({
                                 term: '',
                                 amount: 0
                             })
                         }
                     });
-                    debounceUpdateServiceCosts(newQuoteDetail?.serviceCosts)
+                    debounceUpdateCustomServiceCosts(newQuoteDetail?.customServiceCosts)
                     dispatch({
                         type: 'quoteDetail',
                         payload: newQuoteDetail
