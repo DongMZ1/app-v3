@@ -166,9 +166,9 @@ const QuoteSummaryRental = () => {
                 <div className='w-4/12'>{eachUnit?.name}</div>
                 <div className='w-2/12'>{eachUnit?.count}</div>
                 <div className='width-12-percent'>${eachUnit?.rentalPricePerMonthPerUnitYear1?.toFixed(2)}</div>
-                <div className='w-1/12'>{eachUnit?.rentalPriceTotalPerMonthYear1?.toFixed(2)}</div>
+                <div className='w-1/12'>${eachUnit?.rentalPriceTotalPerMonthYear1?.toFixed(2)}</div>
                 <div className='ml-auto width-12-percent'>${eachUnit?.rentalPricePerMonthPerUnitYear2?.toFixed(2)}</div>
-                <div className='w-1/12'>{eachUnit?.rentalPriceTotalPerMonthYear2?.toFixed(2)}</div>
+                <div className='w-1/12'>${eachUnit?.rentalPriceTotalPerMonthYear2?.toFixed(2)}</div>
             </div>)
         }
         <div className='flex pt-2 border-t border-black border-solid'>
