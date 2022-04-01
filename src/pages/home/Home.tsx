@@ -180,7 +180,7 @@ const Home = () => {
           <div className="flex">
             <div className="text-4xl moret">SELECT A PROJECT</div>
             {/*<Button variant='secondary' className="my-2 ml-auto mr-4 font-ssp">Create a group</Button>*/}
-            {(state.currentOrgRole !== 'viewer' && state.currentOrgRole !== 'editor') && state.currentOrgRole &&
+            {(state.currentOrgRole !== 'viewer' && state.currentOrgRole !== 'editor') && state.currentOrgRole && (state?.userInfo as any)?.type?.[0] !== 'external' &&
               <div className='my-auto ml-auto hide-dropdown-list'>
                 <DropdownListInput
                   onSelect={v => chooseProjectQuoteDesignStart(v)}
