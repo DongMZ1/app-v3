@@ -20,13 +20,14 @@ const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
+    const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
     const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
-    const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string }[]>([]);
+    const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string, createdBy:string}[]>([]);
 
     const [selectedUnitToDelete, setselectedUnitToDelete] = useState<any>(undefined);
     const [showSelectedUnitToDelete, setshowSelectedUnitToDelete] = useState(false);
@@ -44,7 +45,7 @@ const AppSideBar = () => {
                 }
             )
             if (res?.success) {
-                setunitOptionList(res?.unitPackages?.map((each: any) => { return { name: each.name, id: each._id } }
+                setunitOptionList(res?.unitPackages?.map((each: any) => { return { name: each.name, id: each._id, createdBy: each?.createdBy } }
 
                 ))
             }
@@ -141,7 +142,7 @@ const AppSideBar = () => {
                                                     } else {
                                                         setunitOptionCheckedList(state => state.filter(e => e !== each))
                                                     }
-                                                }} />{(userRole === 'admin' || userRole === 'owner') && <RiDeleteBin5Line
+                                                }} />{(userRole === 'admin' || userRole === 'owner') && each?.createdBy === fullName && <RiDeleteBin5Line
                                                     onClick={() => {
                                                         setselectedUnitToDelete(each);
                                                         setshowSelectedUnitToDelete(true);

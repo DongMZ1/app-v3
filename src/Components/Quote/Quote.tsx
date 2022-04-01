@@ -22,7 +22,7 @@ import debounce from 'lodash.debounce';
 
 const Quote = () => {
     //add room and add room packages list share the same name and ID
-    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string, categories: any[] }[]>();
+    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string, categories: any[], createdBy: string }[]>();
     const [selectedRoomOptionToDelete, setselectedRoomOptionToDelete] = useState<any>(undefined);
     const [showSelectedRoomOptionToDelete, setshowSelectedRoomOptionToDelete] = useState(false);
 
@@ -40,6 +40,7 @@ const Quote = () => {
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
     const allRentable = !(selectedQuoteUnit?.rooms as any[])?.some(eachRoom => (eachRoom?.categories as any[])?.some(eachCategory => !eachCategory.rentable))
 
@@ -81,6 +82,7 @@ const Quote = () => {
                     return {
                         name: each.name,
                         id: each._id,
+                        createdBy: each.createdBy,
                         categories: each?.categories?.map((each: any) => {
                             return {
                                 budget: each.budget,
@@ -263,7 +265,7 @@ const Quote = () => {
                                                             setroomOptionCheckedList(state => state.filter(e => e !== each))
                                                         }
                                                     }} />
-                                                    {(userRole === 'admin' || userRole === 'owner') && <RiDeleteBin5Line
+                                                    {(userRole === 'admin' || userRole === 'owner') && (fullName === each.createdBy) && <RiDeleteBin5Line
                                                         onClick={() => {
                                                             setselectedRoomOptionToDelete(each);
                                                             setshowSelectedRoomOptionToDelete(true);
@@ -312,8 +314,8 @@ const Quote = () => {
                     {
                         selectedQuoteUnit?.rooms?.map((each: any) =>
                             <Room
-                            setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
-                            setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
+                                setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
+                                setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
                                 updateQuoteDetail={updateQuoteDetail}
                                 RoomOptionList={RoomOptionList}
                                 roomItemOptionsList={roomItemOptionsList}

@@ -25,6 +25,7 @@ type RoomType = {
         name: string;
         id: string;
         categories: any[];
+        createdBy: string;
     }[] | undefined,
     getRoomOptionList: () => Promise<void>,
     setselectedRoomOptionToDelete: React.Dispatch<any>,
@@ -55,6 +56,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
@@ -298,40 +300,40 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                         <div className='flex'>
                             <div className='relative w-32 mr-4 text-sm-important'>
                                 <div onClick={() => setshowAddItemDropdown(state => !state)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Items</div><AiOutlineDown className='my-auto mr-auto' /></div>
-                                    <CSSTransition in={showAddItemDropdown} timeout={300} unmountOnExit classNames='height-800px-animation' >
-                                        <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
-                                            <div className='text-sm font-semibold font-ssp'>
-                                                Custom item
-                                            </div>
-                                            <TextInput placeholder='Enter Custom Item' variant='box' className='mt-2' inputName='customItemName' value={customItemName} onChange={(e) => setcustomItemName((e.target as any).value)} />
-                                            <div className='mt-4 text-sm font-semibold font-ssp'>
-                                                Choose from existing Categories
-                                            </div>
-                                            <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
-                                                setitemKeyword((e.target as any).value);
-                                                setitemOptionCheckedList([]);
-                                            }}
-                                            />
-                                            <div className='w-full overflow-y-auto max-h-60'>
-                                                {roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
-                                                    <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
-                                                        if (v) {
-                                                            setitemOptionCheckedList(state => [...state, each])
-                                                        } else {
-                                                            setitemOptionCheckedList(state => state.filter(e => e !== each))
-                                                        }
-                                                    }} />)}
-                                            </div>
-                                            <div className='flex my-2'>
-                                                <Button onClick={() => {
-                                                    setshowAddItemDropdown(false)
-                                                }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
-                                                <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
-                                                    addItemToRoom();
-                                                }} variant='primary' className='w-36'>Create Items</Button>
-                                            </div>
+                                <CSSTransition in={showAddItemDropdown} timeout={300} unmountOnExit classNames='height-800px-animation' >
+                                    <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
+                                        <div className='text-sm font-semibold font-ssp'>
+                                            Custom item
                                         </div>
-                                    </CSSTransition>
+                                        <TextInput placeholder='Enter Custom Item' variant='box' className='mt-2' inputName='customItemName' value={customItemName} onChange={(e) => setcustomItemName((e.target as any).value)} />
+                                        <div className='mt-4 text-sm font-semibold font-ssp'>
+                                            Choose from existing Categories
+                                        </div>
+                                        <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
+                                            setitemKeyword((e.target as any).value);
+                                            setitemOptionCheckedList([]);
+                                        }}
+                                        />
+                                        <div className='w-full overflow-y-auto max-h-60'>
+                                            {roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).map(each =>
+                                                <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
+                                                    if (v) {
+                                                        setitemOptionCheckedList(state => [...state, each])
+                                                    } else {
+                                                        setitemOptionCheckedList(state => state.filter(e => e !== each))
+                                                    }
+                                                }} />)}
+                                        </div>
+                                        <div className='flex my-2'>
+                                            <Button onClick={() => {
+                                                setshowAddItemDropdown(false)
+                                            }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
+                                            <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
+                                                addItemToRoom();
+                                            }} variant='primary' className='w-36'>Create Items</Button>
+                                        </div>
+                                    </div>
+                                </CSSTransition>
                             </div>
                             <div className='relative w-40 mr-8 text-sm-important'>
                                 <div onClick={() => setshowAddPackageDropdown(state => !state)} className='flex w-full h-8 border border-black border-solid cursor-pointer hover:bg-black hover:border-transparent hover:text-white'><div className='my-auto ml-auto mr-1'>Add Room Packages</div><AiOutlineDown className='my-auto mr-auto' /></div>
@@ -352,7 +354,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                                             setroomPackageOptionCheckedList(state => state.filter(e => e !== each))
                                                         }
                                                     }} />
-                                                    {(userRole === 'admin' || userRole === 'owner') && <RiDeleteBin5Line
+                                                    {(userRole === 'admin' || userRole === 'owner') && (fullName === each.createdBy) && <RiDeleteBin5Line
                                                         onClick={() => {
                                                             setselectedRoomOptionToDelete(each);
                                                             setshowSelectedRoomOptionToDelete(true);
