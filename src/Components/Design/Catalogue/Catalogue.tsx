@@ -16,7 +16,7 @@ const Catalogue = () => {
     const [calaloguePage, setcalaloguePage] = useState(1);
     const dispatch = useDispatch();
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
-    const currency = useSelector((state: Tappstate) => state.quoteDetail?.currency);
+    const currency = useSelector((state: Tappstate) => state.selectedProject?.currency)
     const products = useSelector((state: Tappstate) => state.products);
     const scrollRef = useRef<any>();
     const filterCatalogue = useSelector((state: Tappstate) => state.filterCatalogue);
@@ -91,7 +91,7 @@ const Catalogue = () => {
 
     const dragMiddleLine = (e: React.DragEvent<HTMLDivElement>) => {
         if (e.clientX !== 0 && window.innerWidth - e.clientX > 100) {
-            setdraggableWidth(e.clientX);
+            setdraggableWidth(e.clientX - (e.currentTarget.parentElement?.getBoundingClientRect().left as any));
         }
     }
 

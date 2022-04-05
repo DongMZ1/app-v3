@@ -7,6 +7,8 @@ import { ReactComponent as CopyIcon } from '../../../styles/images/copy-black.sv
 import { ReactComponent as EditPenIcon } from '../../../styles/images/edit-pen.svg'
 import { ReactComponent as FilesIcon } from '../../../styles/images/files-black.svg'
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input';
+import apiRequest from '../../../Service/apiRequest'
+import produce from 'immer'
 
 type ProjectInformationType = {
     close: () => void
@@ -15,6 +17,8 @@ type ProjectInformationType = {
 const ProjectInformation = ({ close }: ProjectInformationType) => {
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
+    const dispatch = useDispatch();
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
     const [discountCode, setdiscountCode] = useState('');
 
@@ -26,6 +30,27 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
 
     const [editNotes, seteditNotes] = useState(false);
     const [notesContent, setnotesContent] = useState('Dexter "The Blade" Jackson (born November 25, 1969) is a retired American IFBB professional bodybuilder and the 2008 Mr. Olympia bodybuilding champion.');
+
+
+    const updateCurrency = async (v: string) => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/project/${currentOrgID}/${selectedProject?._id}`,
+            method: 'PATCH',
+            body: {
+                currency: v
+            }
+        })
+        if (res.success) {
+            const newSelectedProject = produce(selectedProject, (draft: any) => {
+                draft.currency = v
+            })
+            dispatch({
+                type: 'selectedProject',
+                payload: newSelectedProject
+            })
+            localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
+        }
+    }
     return (
         <div className='fixed top-0 right-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
             <div className='w-1/2 h-full' onClick={() => close()}></div>
@@ -47,8 +72,8 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='my-auto mr-6 text-sm font-semibold font-ssp'>Currency:</div>
                     <div className='w-20'>
                         <DropdownListInput
-                            initialValue={quoteDetail?.currency}
-                            onSelect={(value) => { }}
+                            initialValue={selectedProject?.currency}
+                            onSelect={(value) => { updateCurrency(value) }}
                             options={['CAD', 'USD', 'EURO']} />
                     </div>
                 </div>
@@ -56,7 +81,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='my-auto mr-6 text-sm font-semibold font-ssp'>Design Style</div>
                     <EditPenIcon className='my-auto ml-auto cursor-pointer' />
                 </div>
-                <div className='mt-8'>
+                {/* <div className='mt-8'>
                     <div className='my-auto mr-6 text-sm font-semibold font-ssp'>Price modifiers</div>
                     <div className='flex mt-4'>
                         <div className='w-32 mr-8 font-ssp'>
@@ -85,7 +110,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className='flex mt-8'>
                     <div className='my-auto text-sm font-semibold font-ssp'>Files</div>
                     <FilesIcon onClick={() => document.getElementById('project-info-fileupload')?.click()} className='my-auto ml-auto cursor-pointer' />

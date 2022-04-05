@@ -135,6 +135,7 @@ const Project = () => {
                 type: 'selectedProject',
                 payload: newSelectedProject
             })
+            localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
         } else {
             console.log(res?.message);
         }
