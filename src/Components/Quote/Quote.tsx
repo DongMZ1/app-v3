@@ -179,14 +179,16 @@ const Quote = () => {
     }
 
     const changeSetUpFee = (v: number) => {
-        const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            draft.setupFee = v;
-        })
-        dispatch({
-            type: 'selectedQuoteUnit',
-            payload: newSelectedQuoteUnit
-        })
-        debounceChangeSetFeeRemote(v);
+        if (Number(v) < 999999) {
+            const newSelectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                draft.setupFee = v;
+            })
+            debounceChangeSetFeeRemote(v);
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newSelectedQuoteUnit
+            })
+        }
     }
 
     const changeSetFeeRemote = async (v: any) => {
@@ -299,7 +301,9 @@ const Quote = () => {
                         <div className='my-auto text-xl font-moret'>Set up Fee for <b>{selectedQuoteUnit?.name}</b></div>
                         {eachUnitSetUpFeeEditable ?
                             <>
-                                <TextInput prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value={selectedQuoteUnit?.setupFee} onChange={(e) => { changeSetUpFee((e.target as any).value) }} />
+                                <TextInput type='number' prefix={<small>$</small>} variant='box' inputName='setup fee for each unit' className='w-24 h-10 ml-auto mr-4' value={selectedQuoteUnit?.setupFee} onChange={(e) => {
+                                    changeSetUpFee((e.target as any).value)
+                                }} />
                                 <ImCross size={12} className='my-auto cursor-pointer' onClick={() => seteachUnitSetUpFeeEditable(false)} />
                             </>
                             :
