@@ -134,7 +134,7 @@ const AppSideBar = () => {
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
-                                        {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).map(each =>
+                                        {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                             <div className='flex my-2'>
                                                 <Checkbox label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
                                                     if (v) {

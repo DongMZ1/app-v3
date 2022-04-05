@@ -258,7 +258,7 @@ const Quote = () => {
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).map(each =>
+                                            {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <div className='flex my-2'>
                                                     <Checkbox label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
                                                         if (v) {
