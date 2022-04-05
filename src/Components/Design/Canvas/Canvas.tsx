@@ -30,6 +30,7 @@ const Canvas = () => {
     const selectedCanvas = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas;
 
 
+
     const updatePopulatedDesignItemsRemote = async (designItems: any) => {
         const res = await apiRequest({
             url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
@@ -131,6 +132,55 @@ const Canvas = () => {
         }
     }
 
+    const updateCanvasElement = async (item: any) => {
+        if (selectedRoom?.roomID) {
+            if (selectedCanvas?.designItems?.length > 0) {
+                dispatch({
+                    type: 'appLoader',
+                    payload: true
+                })
+                const res = await apiRequest(
+                    {
+                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}`,
+                        method: 'GET'
+                    }
+                )
+                if (res?.success) {
+                    dispatch({
+                        type: 'quoteDetail',
+                        payload: res?.quote
+                    })
+                    let resSelectedQuoteUnit = res?.quote?.data?.filter((eachUnit: any) => eachUnit.unitID === selectedQuoteUnit?.unitID)[0];
+                    const newSelectedQuoteUnit = produce(resSelectedQuoteUnit, (draft: any) => {
+                        const roomIndex = (draft.rooms as any[]).findIndex((each: any) => each.roomID === selectedRoom.roomID);
+                        draft.rooms[roomIndex].selectedCanvas.designItems = [...draft.rooms[roomIndex].selectedCanvas.designItems, item]
+                    })
+                    dispatch({
+                        type: 'selectedQuoteUnit',
+                        payload: newSelectedQuoteUnit
+                    })
+                }
+                dispatch({
+                    type: 'appLoader',
+                    payload: false
+                })
+            } else {
+                const newDesignElements = [...designItems, item]
+                setdesignItems(newDesignElements);
+                dispatch({
+                    type: 'appLoader',
+                    payload: true
+                })
+                await updatePopulatedDesignItemsRemote(newDesignElements);
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+            }
+        }
+    }
+
 
     return <div className={`w-full flex flex-col h-full canvas`}>
         <div className='flex px-4'>
@@ -159,17 +209,16 @@ const Canvas = () => {
         </div>
         <DesignCanvas
             onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
-            designItems={selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : designItems?.length > 0 ? designItems : []}
+            designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : designItems?.length > 0 ? designItems : [])}
             onDownloadImages={() => handleDownloadImages(designItems)}
             onChange={(v) => debounceupdatePopulatedDesignItemsRemote(v?.designItems)}
         />
         {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
-            const newDesignElements = [...designItems, {
+            updateCanvasElement({
                 type: "image",
                 name: n,
                 value: v,
-            }]
-            setdesignItems(newDesignElements);
+            })
         }} />}
     </div>
 }
