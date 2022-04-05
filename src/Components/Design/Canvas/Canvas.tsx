@@ -133,7 +133,7 @@ const Canvas = () => {
     }
 
     const updateCanvasElement = async (item: any) => {
-        if (selectedRoom?.roomID) {
+        if (selectedRoom?.roomID && selectedCanvas) {
             if (selectedCanvas?.designItems?.length > 0) {
                 dispatch({
                     type: 'appLoader',
@@ -151,8 +151,9 @@ const Canvas = () => {
                         payload: res?.quote
                     })
                     let resSelectedQuoteUnit = res?.quote?.data?.filter((eachUnit: any) => eachUnit.unitID === selectedQuoteUnit?.unitID)[0];
+                    const roomIndex = (resSelectedQuoteUnit.rooms as any[]).findIndex((each: any) => each.roomID === selectedRoom.roomID);
+                    await updatePopulatedDesignItemsRemote([...resSelectedQuoteUnit.rooms[roomIndex].selectedCanvas.designItems, item])
                     const newSelectedQuoteUnit = produce(resSelectedQuoteUnit, (draft: any) => {
-                        const roomIndex = (draft.rooms as any[]).findIndex((each: any) => each.roomID === selectedRoom.roomID);
                         draft.rooms[roomIndex].selectedCanvas.designItems = [...draft.rooms[roomIndex].selectedCanvas.designItems, item]
                     })
                     dispatch({
