@@ -67,6 +67,19 @@ const QuoteSummaryRental = () => {
 
     const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
+    const debounceUpdateSetupFee = useCallback(debounce((value: number) => updateQuoteField({ field: 'setupFee', value }), 1000), [currentOrgID, quoteDetail?._id]);
+
+    const updateSetUpfee = (v: number) => {
+        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+            draft.setupFee = v
+        });
+        dispatch({
+            type: 'quoteDetail',
+            payload: newQuoteDetail
+        })
+        debounceUpdateSetupFee(Number(v))
+    }
+
     const updateshipping = (v: string) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
             draft.shipping = v
@@ -203,7 +216,14 @@ const QuoteSummaryRental = () => {
             <div className='flex'>
                 <div className='mr-1'>Setup Fee</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.setupFee?.toFixed(2)}</div>
+                {editable ?
+                    <TextInput prefix={<span>$</span>} className='w-24 h-10 ml-auto' variant='box' inputName='security deposit' value={quoteDetail?.setupFee} onChange={
+                        (e) => {
+                            updateSetUpfee((e.target as any).valueAsNumber)
+                        }
+                    } /> :
+                    <div className='ml-auto'>${quoteDetail?.setupFee?.toFixed(2)}</div>
+                }
             </div>
             <div className='flex mt-3'>
                 <div className='mr-1'>
@@ -339,14 +359,14 @@ const QuoteSummaryRental = () => {
                     <div className='w-2/3'>
                         <TextInput className='w-full' variant='box' inputName='rationale' value={quoteDetail?.additionalDiscount?.description} onChange={(e) => setAdditionalDiscountDescription((e.target as any).value)} />
                     </div>
-                    <div className='my-auto ml-auto'>-{quoteDetail?.additionalDiscount?.percent}%</div>
+                    <div className='my-auto ml-auto'>-{quoteDetail?.additionalDiscount?.percent ? Number(quoteDetail?.additionalDiscount?.percent).toFixed(2) : '0.00'}%</div>
                 </div></> :
             <div className='flex'>
                 <div className='w-1/3'>
-                    <div>Additional Discount : {Number(quoteDetail?.additionalDiscount?.percent).toFixed(2)}%</div>
+                    <div>Additional Discount : {quoteDetail?.additionalDiscount?.percent ? Number(quoteDetail?.additionalDiscount?.percent).toFixed(2) : '0.00'}%</div>
                     <div className='text-xs'>{quoteDetail?.additionalDiscount?.description}</div>
                 </div>
-                <div className='my-auto ml-auto'>-{Number(quoteDetail?.additionalDiscount?.percent).toFixed(2)}%</div>
+                <div className='my-auto ml-auto'>-{quoteDetail?.additionalDiscount?.percent ? Number(quoteDetail?.additionalDiscount?.percent).toFixed(2) : '0.00'}%</div>
             </div>
         }
         {
