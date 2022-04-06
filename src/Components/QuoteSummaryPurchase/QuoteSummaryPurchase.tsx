@@ -61,17 +61,17 @@ const QuoteSummaryPurchase = () => {
     const debounceUpdatePaymentTerms = useCallback(debounce((value: any) => updateQuoteField({ field: 'paymentTerms', value }), 1000), [currentOrgID, quoteDetail?._id]);
     const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
-    const debounceUpdateSetupFee = useCallback(debounce((value: number) => updateQuoteField({ field: 'setupFee', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateSetupFee = useCallback(debounce((value: number | null) => updateQuoteField({ field: 'customSetupFee', value }), 1000), [currentOrgID, quoteDetail?._id]);
 
     const updateSetUpfee = (v: number) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
-            draft.setupFee = v
+            draft.customSetupFee = v
         });
         dispatch({
             type: 'quoteDetail',
             payload: newQuoteDetail
         })
-        debounceUpdateSetupFee(Number(v))
+        debounceUpdateSetupFee(Number(v) === 0 ? null : Number(v))
     }
 
     const updateshipping = (v: string) => {
@@ -167,12 +167,12 @@ const QuoteSummaryPurchase = () => {
                 <div className='my-auto mr-1'>Setup Fee</div>
                 <Tooltip text='' iconColor='blue' />
                 {editable ?
-                    <TextInput type='number' prefix={<span>$</span>} className='w-24 h-10 ml-auto' variant='box' inputName='security deposit' value={quoteDetail?.setupFee} onChange={
+                    <TextInput type='number' prefix={<span>$</span>} className='w-24 h-10 ml-auto' variant='box' inputName='security deposit' value={quoteDetail?.customSetupFee !== null ? quoteDetail?.customSetupFee : quoteDetail?.setupFee} onChange={
                         (e) => {
                             updateSetUpfee((e.target as any).valueAsNumber)
                         }
                     } /> :
-                    <div className='ml-auto'>${quoteDetail?.setupFee?.toFixed(2)}</div>
+                    <div className='ml-auto'>${quoteDetail?.customSetupFee !== null ? quoteDetail.customSetupFee.toFixed(2) : quoteDetail?.setupFee?.toFixed(2)}</div>
                 }
             </div>
             <div className='flex mt-3'>
