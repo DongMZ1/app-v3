@@ -1,5 +1,5 @@
 import './ProjectInformation.scss'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
@@ -9,6 +9,7 @@ import { ReactComponent as FilesIcon } from '../../../styles/images/files-black.
 import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input';
 import apiRequest from '../../../Service/apiRequest'
 import produce from 'immer'
+import debounce from 'lodash.debounce'
 
 type ProjectInformationType = {
     close: () => void
@@ -20,16 +21,15 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
     const dispatch = useDispatch();
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
-    const [discountCode, setdiscountCode] = useState('');
+    // const [discountCode, setdiscountCode] = useState('');
 
-    const [installationUnit, setinstallationUnit] = useState('%');
-    const [installationValue, setinstallationValue] = useState<number | undefined>(quoteDetail?.installation);
+    // const [installationUnit, setinstallationUnit] = useState('%');
+    // const [installationValue, setinstallationValue] = useState<number | undefined>(quoteDetail?.installation);
 
-    const [shippingUnit, setshippingUnit] = useState('CAD')
-    const [shippingValue, setshippingValue] = useState<number | undefined>();
+    // const [shippingUnit, setshippingUnit] = useState('CAD')
+    // const [shippingValue, setshippingValue] = useState<number | undefined>();
 
     const [editNotes, seteditNotes] = useState(false);
-    const [notesContent, setnotesContent] = useState('Dexter "The Blade" Jackson (born November 25, 1969) is a retired American IFBB professional bodybuilder and the 2008 Mr. Olympia bodybuilding champion.');
 
 
     const updateCurrency = async (v: string) => {
@@ -50,6 +50,26 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
             })
             localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
         }
+    }
+
+    const debounceSaveQuoteNotes = useCallback(debounce((notes: string) => saveQuoteNotes(notes), 2000), [currentOrgID, quoteDetail?._id])
+
+    const saveQuoteNotes = async (notes: string) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
+        const res = await apiRequest({
+            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
+            method: 'PATCH',
+            body: {
+                notes
+            }
+        })
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        })
     }
     return (
         <div className='fixed top-0 right-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
@@ -123,7 +143,16 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                 {
                     editNotes ? <textarea className='w-full p-1 text-sm border border-black border-solid font-ssp' onBlur={() => {
                         seteditNotes(false);
-                    }} onChange={e => setnotesContent(e.target.value)} value={notesContent} /> : <div className='text-sm font-ssp'>{notesContent}</div>
+                    }} onChange={e => {
+                        const newQuoteDetail = produce(quoteDetail, (draft: any) => {
+                            draft.notes = e.target.value
+                        })
+                        dispatch({
+                            type: 'quoteDetail',
+                            payload: newQuoteDetail
+                        })
+                        debounceSaveQuoteNotes(e.target.value)
+                    }} value={quoteDetail?.notes} /> : <div className='text-sm font-ssp'>{quoteDetail?.notes}</div>
                 }
                 <div className='mt-6 text-sm font-semibold font-ssp'>
                     Contact Information
