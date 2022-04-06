@@ -113,7 +113,7 @@ const CatelogueFilterItemType = ({
                             value={minWeight}
                             onChange={
                                 (e) => {
-                                    if (e.target.valueAsNumber < maxWeight) {
+                                    if (e.target.valueAsNumber < Number(maxWeight)) {
                                         setminWeight(e.target.valueAsNumber)
                                     }
                                 }
@@ -126,7 +126,7 @@ const CatelogueFilterItemType = ({
                             type="range"
                             value={maxWeight}
                             onChange={(e) => {
-                                if (e.target.valueAsNumber > minWeight) {
+                                if (e.target.valueAsNumber > Number(minWeight)) {
                                     setmaxWeight(e.target.valueAsNumber)
                                 }
                             }}
@@ -145,8 +145,8 @@ const CatelogueFilterItemType = ({
                                 variant='box'
                                 value={minWeight?.toString()}
                                 onChange={(v) => {
-                                    if (((v.target as any).value <= 50000 && (v.target as any).value < maxWeight) || !(v.target as any).value)
-                                        setminWeight((v.target as any).value)
+                                    if (((v.target as any).value <= 50000))
+                                        setminWeight((v.target as any).valueAsNumber)
                                 }}
                                 inputName='widthInput'
                                 type='number'
@@ -158,8 +158,8 @@ const CatelogueFilterItemType = ({
                                 variant='box'
                                 value={maxWeight?.toString()}
                                 onChange={(v) => {
-                                    if (((v.target as any).value <= 50000 && (v.target as any).value > minWeight) || !(v.target as any).value)
-                                        setmaxWeight((v.target as any).value)
+                                    if (((v.target as any).value <= 50000))
+                                        setmaxWeight((v.target as any).valueAsNumber)
                                 }}
                                 inputName='widthInput'
                                 type='number'
@@ -171,7 +171,7 @@ const CatelogueFilterItemType = ({
             </div>
             <div className='flex mt-4'>
                 <Button onClick={() => setshowItemType(false)} variant='secondary' className='w-24 ml-auto mr-4'>Cancel</Button>
-                <Button className='w-24' onClick={() => apply()}>Apply</Button>
+                <Button className='w-24' disabled={minWeight >= maxWeight} onClick={() => { if (maxWeight > minWeight) apply() }}>Apply</Button>
             </div>
         </div>
     </ClickOutsideAnElementHandler>
