@@ -49,6 +49,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
 
     const [saveAsRoomPackageName, setsaveAsRoomPackageName] = useState('');
     const [showSaveAsRoomPackage, setshowSaveAsRoomPackage] = useState(false);
+    const [errorMessage, seterrorMessage] = useState<any>('');
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
@@ -126,8 +127,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         )
         if (res?.success) {
             await getRoomOptionList();
+            setsaveAsRoomPackageName('')
+            setshowSaveAsRoomPackage(false);
         } else {
-            console.log('save as room package failed');
+            seterrorMessage(res?.message)
         }
     }
 
@@ -258,6 +261,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 <div className='mt-2 text-xs font-ssp'>
                     Package Name
                 </div>
+                {errorMessage && <div className='my-1 text-xs font-semibold text-red'>{errorMessage}</div>}
                 <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveAsRoomPackageName} onChange={(e) => setsaveAsRoomPackageName((e.target as any).value)} />
                 <div className='flex my-2'>
                     <Button onClick={() => {
@@ -265,8 +269,6 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                     }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
                     <Button disabled={!saveAsRoomPackageName} onClick={() => {
                         saveAsRoomPackage();
-                        setsaveAsRoomPackageName('')
-                        setshowSaveAsRoomPackage(false);
                     }} variant='primary' className='w-20'>Save</Button>
                 </div>
             </div>
@@ -275,7 +277,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
             <FurnitureInRoomHeader
                 totalPrice={totalPriceOfEachRoom ? totalPriceOfEachRoom.toFixed(2) as any : 0}
                 duplicateRoom={() => duplicateRoom()}
-                saveAsRoomPackage={() => setshowSaveAsRoomPackage(true)}
+                saveAsRoomPackage={() => {
+                    setshowSaveAsRoomPackage(true);
+                    seterrorMessage('');
+                }}
                 deleteRoom={() => deleteRoom()}
                 //filter out room item that already added to this room
                 roomNumber={eachRoom?.count}
