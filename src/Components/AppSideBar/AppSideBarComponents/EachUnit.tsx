@@ -4,7 +4,7 @@ import { Popup } from '@fulhaus/react.ui.popup'
 import { TextInput } from '@fulhaus/react.ui.text-input'
 import { Button } from '@fulhaus/react.ui.button'
 import { useDispatch, useSelector } from 'react-redux'
-import {getQuoteDetailAndUpdateSelectedUnit} from '../../../redux/Actions'
+import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
 import produce from 'immer'
 import NoteModal from '../../NoteModal/NoteModal'
 import { Tappstate } from '../../../redux/reducers'
@@ -12,6 +12,7 @@ import apiRequest from '../../../Service/apiRequest'
 import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender'
 import debounce from 'lodash.debounce'
+import { showMessageAction } from '../../../redux/Actions'
 type eachUnitType = {
     eachUnit: any,
     getUnitPackages: () => Promise<void>
@@ -20,6 +21,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [showNote, setshowNote] = useState(false);
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
+    const [errorMessage, seterrorMessage] = useState<any>('');
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
@@ -220,8 +222,10 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         })
         if (res?.success) {
             getUnitPackages();
+            setsaveUnitPackageName('')
+            setshowSaveAsUnitPackage(false);
         } else {
-            console.log('saveUnitAsRoomPackage failed at EachUnit.tsx')
+            seterrorMessage(res?.message)
         }
     }
     return <>
@@ -233,6 +237,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 <div className='mt-2 text-xs font-ssp'>
                     unit Name
                 </div>
+                {errorMessage && <div className='my-1 text-xs font-semibold text-red'>{errorMessage}</div>}
                 <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveUnitPackageName} onChange={(e) => setsaveUnitPackageName((e.target as any).value)} />
                 <div className='flex my-2'>
                     <Button onClick={() => {
@@ -240,8 +245,6 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                     }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
                     <Button disabled={!saveUnitPackageName} onClick={() => {
                         saveUnitAsUnitPackage();
-                        setsaveUnitPackageName('')
-                        setshowSaveAsUnitPackage(false);
                     }} variant='primary' className='w-20'>Save</Button>
                 </div>
             </div>
@@ -249,7 +252,10 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         <NoteModal show={showNote} close={() => { setshowNote(false); setnotes(eachUnit.notes); }} text={notes} onChange={(text) => setnotes(text)} save={() => { saveNotes() }} unitName={`${eachUnit.name ? eachUnit.name : 'Unknown'}`} />
         <div className='w-full mt-4'>
             <GroupUnit
-                saveUnitAsUnitPackage={() => setshowSaveAsUnitPackage(true)}
+                saveUnitAsUnitPackage={() => {
+                    setshowSaveAsUnitPackage(true);
+                    seterrorMessage('');
+                }}
                 onSelected={eachUnit?.unitID === selectedQuoteUnit?.unitID}
                 onUnitsChange={(count) => updateCount(count)}
                 duplicateUnit={() => duplicateUnit()}
