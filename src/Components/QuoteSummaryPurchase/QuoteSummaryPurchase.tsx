@@ -172,7 +172,7 @@ const QuoteSummaryPurchase = () => {
                             updateSetUpfee((e.target as any).valueAsNumber)
                         }
                     } /> :
-                    <div className='ml-auto'>${quoteDetail?.customSetupFee !== null ? quoteDetail.customSetupFee.toFixed(2) : quoteDetail?.setupFee?.toFixed(2)}</div>
+                    <div className='ml-auto'>${quoteDetail?.customSetupFee !== null ? quoteDetail?.customSetupFee?.toFixed(2) : quoteDetail?.setupFee?.toFixed(2)}</div>
                 }
             </div>
             <div className='flex mt-3'>
