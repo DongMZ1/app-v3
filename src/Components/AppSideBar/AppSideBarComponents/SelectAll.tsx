@@ -82,6 +82,10 @@ const SelectAll = () => {
     )
 
     const handleAddOrRemoveItem = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
         if (addItemPageType === 'ofUnit') {
             if (AddOrRemoveItem === 'addItem') {
                 await addItemToUnit()
@@ -101,6 +105,10 @@ const SelectAll = () => {
         setshowDropDown(false)
         setshowAddItemPage(false);
         setshowGroupUnitRoomMenu(true);
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        })
     }
 
     const removeItemFromRoom = async () => {
