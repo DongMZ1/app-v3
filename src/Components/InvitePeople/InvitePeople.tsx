@@ -132,7 +132,7 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
             userRole={userRole}
             peopleList={peopleList}
             setpeopleList={setpeopleList}
-            projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role[0]} />
+            projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role?.[0]} />
         )}
         {
           !loading && (peopleList?.length === 0 || !peopleList) &&

@@ -164,7 +164,7 @@ const Home = () => {
       <div className="flex px-8 py-4 bg-white border-b border-black border-solid">
         <FulhausIcon />
         <OrganizationSelection clearHomePageScrollState={clearHomePageScrollState} />
-        {(state.currentOrgRole !== 'viewer' && state.currentOrgRole !== 'editor') && state.currentOrgRole && <>
+        {/* {(state.currentOrgRole !== 'viewer' && state.currentOrgRole !== 'editor') && state.currentOrgRole && <>
           <ShareAlt onClick={() => setshowInvitePeople(true)} className="my-auto mr-4 cursor-pointer" />
           <div
             onClick={() => setshowInvitePeople(true)}
@@ -172,7 +172,7 @@ const Home = () => {
           >
             Invite people
           </div>
-        </>}
+        </>} */}
         <LogoutIcon onClick={() => logout()} className='my-auto ml-6 cursor-pointer' />
       </div>
       <div className='pb-12 mx-8percent'>
