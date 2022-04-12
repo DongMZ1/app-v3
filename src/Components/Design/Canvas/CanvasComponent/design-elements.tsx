@@ -71,7 +71,7 @@ const DesignElements: FC<IDesignElements> = ({onSelect }) =>
 
 
     return (
-        <div className="bottom-0 w-full p-2">
+        <div className="bottom-0 w-full p-2 mt-auto">
             <TopBar allDesignElementCategories={allDesignElementCategories} selectedDesignElementCategory={selectedDesignElementCategory} onSelect={setSelectedDesignElementCategory} />
             <div className="flex overflow-scroll">
                 {loading ? <div className="flex items-center justify-center w-full h-32">
