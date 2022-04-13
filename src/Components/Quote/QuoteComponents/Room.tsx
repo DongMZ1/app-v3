@@ -59,6 +59,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
 
@@ -68,7 +69,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         }
     }, [JSON.stringify(eachRoom?.categories)]);
 
-    const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
+    const debounceUpdateRoomCountRemote = useCallback(debounce((count) => updateRoomCountRemote(count), 500), [currentOrgID, quoteID, projectID, unitID, eachRoom.roomID]);
 
     const updateRoomCountRemote = async (count: any) => {
         dispatch({
@@ -77,7 +78,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         });
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
                 body: { count },
                 method: 'PATCH'
             }
@@ -91,7 +92,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         });
     }
 
-    const debounceUpdateCategories = useCallback(debounce((categories: any) => updateCategories(categories), 500), [currentOrgID, quoteID, unitID, eachRoom.roomID]);
+    const debounceUpdateCategories = useCallback(debounce((categories: any) => updateCategories(categories), 500), [currentOrgID, quoteID, unitID, projectID, eachRoom.roomID]);
 
     const updateCategories = async (categories: any) => {
         dispatch({
@@ -99,7 +100,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
             payload: true
         });
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+            url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
             body: {
                 categories
             },
@@ -137,7 +138,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const duplicateRoom = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}/duplicate`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom.roomID}/duplicate`,
                 body: {
                     ...eachRoom,
                     roomID: undefined
@@ -235,7 +236,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const deleteRoom = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
                 method: 'DELETE'
             }
         )

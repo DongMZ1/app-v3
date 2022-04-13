@@ -37,7 +37,7 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
 
     const organizationID = useSelector((state: Tappstate) => state.currentOrgID);
     const dispatch = useDispatch();
-    const projectRole = useGetProjectRole('');
+    // const projectRole = useGetProjectRole('');
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const history = useHistory()
 
@@ -91,11 +91,11 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
                     /*dispatch(fetchProject(organizationID ? organizationID : '', {
                         title: searchkeyWord
                     }));*/
-                    localStorage.setItem('selectedProject', JSON.stringify({ ...projectRes?.project, userRole: projectRole }));
+                    localStorage.setItem('selectedProject', JSON.stringify({ ...projectRes?.project }));
                     localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
                     dispatch({
                         type: 'selectedProject',
-                        payload: { ...projectRes?.project, userRole: projectRole }
+                        payload: { ...projectRes?.project}
                     })
                     close();
                     history.push(`/project/quote`);
@@ -124,11 +124,11 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
                     /* dispatch(fetchProject(organizationID ? organizationID : '', {
                          title: searchkeyWord
                       })); */
-                    localStorage.setItem('selectedProject', JSON.stringify({ ...quoteRes?.project, userRole: projectRole }));
+                    localStorage.setItem('selectedProject', JSON.stringify({ ...quoteRes?.project}));
                     localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
                     dispatch({
                         type: 'selectedProject',
-                        payload: { ...quoteRes?.project, userRole: projectRole }
+                        payload: { ...quoteRes?.project}
                     })
                     close();
                     history.push(`/quote-only`)

@@ -39,6 +39,9 @@ const SelectAll = () => {
     const unitOptionList = quoteDetail?.data?.map((each: any) => each.name);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    
+    
     useEffect(
         () => {
             //if item options is not provided
@@ -205,7 +208,7 @@ const SelectAll = () => {
     const SyncRemoteQuote = () => {
         //if it is a project or quote-only, then get the quote based on projectID
         if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject?.quote?._id}))
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectID, quoteID: selectedProject?.quote?._id}))
         }
         dispatch({
             type: 'selectedQuoteUnit',
@@ -227,7 +230,7 @@ const SelectAll = () => {
         categories: any
     }) => {
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${roomID}`,
+            url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject._id}/${quoteID}/${unitID}/${roomID}`,
             body: {
                 categories
             },

@@ -20,12 +20,13 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const quoteRefID = useSelector((state: Tappstate) => state.quoteDetail)?.quoteRefID;
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     useEffect(
         () => {
             const getAllVersions = async () => {
                 const res = await apiRequest({
-                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteRefID}/versions`,
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteRefID}/versions`,
                     method: 'GET'
                 })
                 if (res?.success) {
@@ -40,7 +41,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
     const revertVersion = async () => {
         if (selectedVersion) {
             const res = await apiRequest({
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/revert`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/revert`,
                 method: 'PATCH',
                 body: {
                     revert_to_quote_id: selectedVersion._id
@@ -51,7 +52,7 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                 //need some backend improvement in the future, fetch quote again, not best approach
                 //if it is a project or quote-only, then get the quote based on projectID
                 if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
-                    dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject?.quote?._id }))
+                    dispatch(getQuoteDetail({ organizationID: currentOrgID, projectID, quoteID: selectedProject?.quote?._id }))
                 }
                 //
                 //make selected unit undefined to avoid mistake

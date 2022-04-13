@@ -22,6 +22,7 @@ const QuoteSummaryPurchase = () => {
     const dispatch = useDispatch();
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
     const updateQuoteField = async ({
@@ -35,7 +36,7 @@ const QuoteSummaryPurchase = () => {
             payload: true
         })
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
+            url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}`,
             method: 'PATCH',
             body: {
                 [field]: value
@@ -44,6 +45,7 @@ const QuoteSummaryPurchase = () => {
         if (res?.success) {
             dispatch(getQuoteDetail({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteDetail?._id,
                 loadingFalse: true
             }))
@@ -55,13 +57,13 @@ const QuoteSummaryPurchase = () => {
             })
         }
     }
-    const debounceUpdateShipping = useCallback(debounce((value: number) => updateQuoteField({ field: 'shipping', value }), 1000), [currentOrgID, quoteDetail?._id]);
-    const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, quoteDetail?._id]);
-    const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id]);
-    const debounceUpdatePaymentTerms = useCallback(debounce((value: any) => updateQuoteField({ field: 'paymentTerms', value }), 1000), [currentOrgID, quoteDetail?._id]);
-    const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateShipping = useCallback(debounce((value: number) => updateQuoteField({ field: 'shipping', value }), 1000), [currentOrgID, quoteDetail?._id, projectID]);
+    const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, quoteDetail?._id, projectID]);
+    const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, quoteDetail?._id, projectID]);
+    const debounceUpdatePaymentTerms = useCallback(debounce((value: any) => updateQuoteField({ field: 'paymentTerms', value }), 1000), [currentOrgID, quoteDetail?._id, projectID]);
+    const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, quoteDetail?._id, projectID]);
 
-    const debounceUpdateSetupFee = useCallback(debounce((value: number | null) => updateQuoteField({ field: 'customSetupFee', value }), 1000), [currentOrgID, quoteDetail?._id]);
+    const debounceUpdateSetupFee = useCallback(debounce((value: number | null) => updateQuoteField({ field: 'customSetupFee', value }), 1000), [currentOrgID, quoteDetail?._id, projectID]);
 
     const updateSetUpfee = (v: number) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {

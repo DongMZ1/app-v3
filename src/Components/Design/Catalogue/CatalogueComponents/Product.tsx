@@ -17,6 +17,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     const dragGhost = (productRef.current as any)?.cloneNode(true);
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     useEffect(() => {
@@ -65,6 +66,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
             if (res?.success) {
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
                     organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
                     quoteID: quoteID,
                     selectedQuoteUnitID: selectedQuoteUnit?.unitID
                 }))

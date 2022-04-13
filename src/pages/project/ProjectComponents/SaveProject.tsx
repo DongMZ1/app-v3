@@ -12,12 +12,13 @@ const SaveProject = () => {
     const [projectSaveName, setprojectSaveName] = useState("");
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
-    const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const saveProject = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/save`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/save`,
                 method: 'PATCH',
                 body: {
                     versionName: projectSaveName

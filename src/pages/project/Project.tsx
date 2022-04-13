@@ -43,13 +43,14 @@ const Project = () => {
     const projectRole = selectedProject?.userRole;
     const projects = useSelector((state: Tappstate) => state.projects);
     const [tabState, settabState] = useState<"Catalogue" | "Canvas">("Catalogue");
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const history = useHistory();
     const dispatch = useDispatch();
 
     useEffect(() => {
         //if it is a project or quote-only, then get the quote based on projectID
         if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, quoteID: selectedProject?.quote?._id }))
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectID, quoteID: selectedProject?.quote?._id }))
         }
     }, [JSON.stringify(selectedProject)])
 

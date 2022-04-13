@@ -15,6 +15,7 @@ const Design = ({ tabState }: { tabState: "Catalogue" | "Canvas" }) => {
   const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
   const quoteID = useSelector((state: Tappstate) => state.quoteDetail?._id);
   const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
+  const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
   const dispatch = useDispatch()
   useEffect(() => {
     const fetchDesign = async () => {
@@ -32,6 +33,7 @@ const Design = ({ tabState }: { tabState: "Catalogue" | "Canvas" }) => {
     if (currentOrgID && quoteID) {
       dispatch(getQuoteDetailAndUpdateSelectedUnit({
         organizationID: currentOrgID,
+        projectID,
         quoteID: quoteID,
         selectedQuoteUnitID: selectedQuoteUnit?.unitID
       }))

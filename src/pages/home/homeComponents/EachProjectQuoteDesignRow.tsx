@@ -18,6 +18,7 @@ type EachProjectQuoteDesignRowProps = {
         createdAt: string;
         createdBy: string;
         unitCount?: number | string,
+        userRole?: string,
         projectAddress: null | {
             apt: string,
             street: string,
@@ -41,7 +42,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     const [showConfirmDeleteModal, setshowConfirmDeleteModal] = useState(false);
     const [renameProjectTitle, setrenameProjectTitle] = useState(thisProject.title);
     const history = useHistory();
-    const projectRole = useGetProjectRole(thisProject._id);
+    // const projectRole = useGetProjectRole(thisProject._id);
     const dispatch = useDispatch();
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const projects = useSelector((state: Tappstate) => state.projects);
@@ -88,7 +89,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
                     setSelectedProjectToInvite({
                         name: thisProject.title,
                         id: thisProject._id,
-                        userRole: projectRole
+                        userRole: thisProject?.userRole
                     })
                 }
                 if (showInvitePeople) { showInvitePeople(); }
@@ -110,11 +111,11 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
 
     const selectThisProject = () => {
         //put selectedProject, projectRole, currentOrgID into localstorage avoid user refresh page on project page
-        localStorage.setItem('selectedProject', JSON.stringify({ ...thisProject, userRole: projectRole }));
+        localStorage.setItem('selectedProject', JSON.stringify({ ...thisProject}));
         localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
         dispatch({
             type: 'selectedProject',
-            payload: { ...thisProject, userRole: projectRole }
+            payload: { ...thisProject}
         })
         history.push(linkURL)
     }
@@ -148,7 +149,7 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
         <div onClick={() => selectThisProject()} className='flex width-13-percent'><div className='my-auto'>{thisProject.createdBy ? thisProject?.createdBy?.length > 22 ? thisProject?.createdBy?.slice(0, 22) + '...' : thisProject?.createdBy : thisProject?.createdBy}</div></div>
         <div className='flex width-8-percent'>
             <div className='my-auto'>{thisProject?.quote?.unitCount ? thisProject?.quote?.unitCount : 0}</div>
-            {(projectRole === ('owner') || (projectRole === 'admin')) && projectRole &&
+            {(thisProject.userRole === ('owner') || (thisProject.userRole === 'admin')) &&
                 <div className='my-auto ml-auto mr-4 hide-dropdown-list'>
                     <DropdownListInput
                         listWrapperClassName={'last-child-red w-max-content'}

@@ -17,6 +17,7 @@ const ProjectFooter = () => {
     const JSONselectedQuoteUnit = useDebounce(JSON.stringify(selectedQuoteUnit), 1500);
     const history = useHistory();
     const dispatch = useDispatch();
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     useEffect(
         () => {
             if (JSONquoteDetail && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')|| window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
@@ -34,7 +35,7 @@ const ProjectFooter = () => {
     const getUnitTotal = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/${selectedQuoteUnit?.unitID}/total`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}/${selectedQuoteUnit?.unitID}/total`,
                 method: 'GET'
             }
         )
@@ -45,7 +46,7 @@ const ProjectFooter = () => {
     const getQuoteTotal = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/total`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}/total`,
                 method: 'GET'
             }
         )
@@ -72,6 +73,7 @@ const ProjectFooter = () => {
                     })
                     dispatch(getQuoteDetail({
                         organizationID: currentOrgID ? currentOrgID : '',
+                        projectID,
                         quoteID: quoteDetail?._id
                     }))
                     setTimeout(() => {

@@ -1,12 +1,13 @@
 import apiRequest from '../../Service/apiRequest'
 const getQuoteDetailAndUpdateSelectedUnit = ({
     organizationID,
+    projectID,
     quoteID,
     selectedQuoteUnitID
-}: { organizationID: string; quoteID: string; selectedQuoteUnitID: string }) => async (dispatch: any) => {
+}: { organizationID: string; projectID: string; quoteID: string; selectedQuoteUnitID: string }) => async (dispatch: any) => {
     const res = await apiRequest(
         {
-            url: `/api/fhapp-service/quote/${organizationID}/${quoteID}`,
+            url: `/api/fhapp-service/quote/${organizationID}/${projectID}/${quoteID}`,
             method: 'GET'
         }
     )

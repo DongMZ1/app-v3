@@ -22,6 +22,7 @@ const AppSideBar = () => {
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
@@ -64,7 +65,7 @@ const AppSideBar = () => {
         for (let eachUnit of allUnitsNames) {
             const res = await apiRequest(
                 {
-                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}`,
                     body: {
                         unitName: eachUnit.name,
                         packageID: eachUnit.id

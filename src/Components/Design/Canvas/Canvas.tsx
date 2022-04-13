@@ -20,6 +20,8 @@ const Canvas = () => {
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch()
 
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
@@ -57,13 +59,14 @@ const Canvas = () => {
             })
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
         }
     }, [selectedRoom?.roomID]);
 
-    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, selectedCanvas?._id]);
+    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, selectedCanvas?._id, selectedProject?._id]);
 
     const updateDesignItems = () => {
         let items: any[] = [];
@@ -117,6 +120,7 @@ const Canvas = () => {
             if (res?.success) {
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
                     organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
                     quoteID: quoteID,
                     selectedQuoteUnitID: selectedQuoteUnit?.unitID
                 }))
@@ -141,7 +145,7 @@ const Canvas = () => {
                 })
                 const res = await apiRequest(
                     {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}`,
+                        url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject?._id}/${quoteID}`,
                         method: 'GET'
                     }
                 )
@@ -175,6 +179,7 @@ const Canvas = () => {
                 await updatePopulatedDesignItemsRemote(newDesignElements);
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
                     organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
                     quoteID: quoteID,
                     selectedQuoteUnitID: selectedQuoteUnit?.unitID
                 }))

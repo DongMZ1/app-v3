@@ -10,6 +10,7 @@ const LockQuote = () => {
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const dispatch = useDispatch()
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const lockQuote = async () => {
         if (currentOrgID && quoteDetail?._id) {
             dispatch({
@@ -17,7 +18,7 @@ const LockQuote = () => {
                 payload: true
             });
             const res = await apiRequest({
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/lockAndUnlockQuote`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}/lockAndUnlockQuote`,
                 body: {
                     approved: true
                 },
@@ -45,7 +46,7 @@ const LockQuote = () => {
                 payload: true
             });
             const res = await apiRequest({
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}/lockAndUnlockQuote`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}/lockAndUnlockQuote`,
                 body: {
                     approved: false
                 },

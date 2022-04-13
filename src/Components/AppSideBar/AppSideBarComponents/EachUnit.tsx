@@ -27,6 +27,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
 
@@ -39,7 +40,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const duplicateUnit = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}/duplicate`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${eachUnit?.unitID}/duplicate`,
                 method: 'POST'
             }
         )
@@ -63,7 +64,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         });
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${eachUnit?.unitID}`,
                 body: {
                     name
                 },
@@ -73,6 +74,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
@@ -111,7 +113,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         });
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${eachUnit?.unitID}`,
                 body: {
                     count: v ? v : 0
                 },
@@ -127,12 +129,12 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
         });
     }
 
-    const debounceUpdateCountRemote = useCallback(debounce((v: number) => updateCountRemote(v), 500), [currentOrgID, quoteID, eachUnit?.unitID])
+    const debounceUpdateCountRemote = useCallback(debounce((v: number) => updateCountRemote(v), 500), [currentOrgID, projectID, quoteID, eachUnit?.unitID])
 
     const saveNotes = async () => {
         const res = await apiRequest(
             {
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${eachUnit?.unitID}`,
                 body: {
                     notes
                 },
@@ -183,7 +185,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
 
     const deleteUnit = async () => {
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${eachUnit?.unitID}`,
+            url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteID}/${eachUnit?.unitID}`,
             method: 'DELETE'
         })
         if (res?.success) {

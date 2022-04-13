@@ -34,12 +34,14 @@ const Quote = () => {
     const [eachUnitSetUpFeeEditable, seteachUnitSetUpFeeEditable] = useState(false);
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
+    const selectedProject = useSelector((state:Tappstate) => state.selectedProject)
     const quoteUnitLength = useSelector((state: Tappstate) => state.quoteDetail)?.data?.length;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
     const allRentable = !(selectedQuoteUnit?.rooms as any[])?.some(eachRoom => (eachRoom?.categories as any[])?.some(eachCategory => !eachCategory.rentable))
@@ -119,7 +121,7 @@ const Quote = () => {
             draft.rooms.forEach((eachRoom: any) => {
                 eachRoom.categories.forEach((eachCategory: any) => eachCategory.rentable = !allRentable)
                 const res = apiRequest({
-                    url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}/${eachRoom.roomID}`,
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject?._id}/${quoteID}/${unitID}/${eachRoom.roomID}`,
                     body: {
                         categories: eachRoom.categories
                     },
@@ -141,7 +143,7 @@ const Quote = () => {
         }
         for (let eachRoom of allRoomsNames) {
             const res = await apiRequest({
-                url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
+                url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject?._id}/${quoteID}/${unitID}`,
                 body: {
                     roomName: eachRoom.name,
                     packageID: eachRoom.id
@@ -197,7 +199,7 @@ const Quote = () => {
             payload: true
         });
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteID}/${unitID}`,
+            url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject?._id}/${quoteID}/${unitID}`,
             method: 'PATCH',
             body: {
                 setupFee: Number(v)
@@ -206,6 +208,7 @@ const Quote = () => {
         if (res.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
@@ -217,7 +220,7 @@ const Quote = () => {
         }
     }
 
-    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID, quoteID, unitID]);
+    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID,selectedProject?._id, quoteID, unitID]);
 
     const deleteRoomPackage = async () => {
         const res = await apiRequest({

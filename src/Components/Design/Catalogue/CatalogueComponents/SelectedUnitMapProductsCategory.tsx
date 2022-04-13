@@ -17,6 +17,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
     const [currentIndex, setcurrentIndex] = useState(0);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
 
     const selectedCanvas = eachRoom?.selectedCanvas;
@@ -54,6 +55,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
@@ -86,6 +88,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
@@ -128,6 +131,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))

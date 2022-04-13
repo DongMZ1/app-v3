@@ -21,6 +21,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
     const dispatch = useDispatch();
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     // const [discountCode, setdiscountCode] = useState('');
 
     // const [installationUnit, setinstallationUnit] = useState('%');
@@ -52,7 +53,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
         }
     }
 
-    const debounceSaveQuoteNotes = useCallback(debounce((notes: string) => saveQuoteNotes(notes), 2000), [currentOrgID, quoteDetail?._id])
+    const debounceSaveQuoteNotes = useCallback(debounce((notes: string) => saveQuoteNotes(notes), 2000), [currentOrgID, quoteDetail?._id, projectID])
 
     const saveQuoteNotes = async (notes: string) => {
         dispatch({
@@ -60,7 +61,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
             payload: true
         })
         const res = await apiRequest({
-            url: `/api/fhapp-service/quote/${currentOrgID}/${quoteDetail?._id}`,
+            url: `/api/fhapp-service/quote/${currentOrgID}/${projectID}/${quoteDetail?._id}`,
             method: 'PATCH',
             body: {
                 notes

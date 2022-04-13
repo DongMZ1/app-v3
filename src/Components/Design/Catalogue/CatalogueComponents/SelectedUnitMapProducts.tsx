@@ -14,6 +14,7 @@ import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
 const SelectedUnitMapProducts = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     if (!selectedQuoteUnit) {
         return <div className='m-auto'>
             <AddUnitIcon />
@@ -50,6 +51,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
 
     const dispatch = useDispatch()
     useEffect(() => {
@@ -72,6 +74,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
@@ -110,6 +113,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
@@ -145,6 +149,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             if (res?.success) {
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
                     organizationID: currentOrgID as any,
+                    projectID,
                     quoteID: quoteID,
                     selectedQuoteUnitID: selectedQuoteUnit?.unitID
                 }))
@@ -186,6 +191,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             if (res?.success) {
                 dispatch(getQuoteDetailAndUpdateSelectedUnit({
                     organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
                     quoteID: quoteID,
                     selectedQuoteUnitID: selectedQuoteUnit?.unitID
                 }))
@@ -221,6 +227,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         if (res?.success) {
             dispatch(getQuoteDetailAndUpdateSelectedUnit({
                 organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
                 quoteID: quoteID,
                 selectedQuoteUnitID: selectedQuoteUnit?.unitID
             }))
