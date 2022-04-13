@@ -45,7 +45,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
             e.currentTarget.style.fontWeight = '700';
             let currentDraftItemsInRoom = selectedQuoteUnit?.rooms?.filter((room: any) => room?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas?.items;
             const res = await apiRequest({
-                url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedRoom?.selectedCanvas?._id}`,
+                url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedRoom?.selectedCanvas?._id}`,
                 method: 'PATCH',
                 body: {
                     items: {

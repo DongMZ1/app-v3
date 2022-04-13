@@ -20,7 +20,7 @@ const Design = ({ tabState }: { tabState: "Catalogue" | "Canvas" }) => {
   useEffect(() => {
     const fetchDesign = async () => {
       const res = await apiRequest({
-        url: `/api/fhapp-service/design/${currentOrgID}/${selectedProject.design}`,
+        url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/${selectedProject.design}`,
         method: 'GET'
       })
     }

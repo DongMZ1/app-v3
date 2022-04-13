@@ -35,7 +35,7 @@ const Canvas = () => {
 
     const updatePopulatedDesignItemsRemote = async (designItems: any) => {
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
             body: { designItems }
         })
@@ -66,7 +66,7 @@ const Canvas = () => {
         }
     }, [selectedRoom?.roomID]);
 
-    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, selectedCanvas?._id, selectedProject?._id]);
+    const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, selectedCanvas?._id, selectedProject?._id, projectID]);
 
     const updateDesignItems = () => {
         let items: any[] = [];
@@ -111,7 +111,7 @@ const Canvas = () => {
                 }
             )
             const res = await apiRequest({
-                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.roomID}/selectCanvasDraft`,
+                url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.roomID}/selectCanvasDraft`,
                 body: {
                     canvas_id: draftID
                 },

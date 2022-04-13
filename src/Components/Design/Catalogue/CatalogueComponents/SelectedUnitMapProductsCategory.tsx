@@ -34,7 +34,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             payload: true
         })
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
             body: {
                 items: {
@@ -78,7 +78,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             draft.items[`${eachCategory?.categoryID}`]?.splice(currentIndex, 1)
         })
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
             body: {
                 items: newselectedCanvas?.items,
@@ -120,7 +120,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
             payload: true
         });
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedCanvas?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedCanvas?._id}`,
             method: 'PATCH',
             body:
             {

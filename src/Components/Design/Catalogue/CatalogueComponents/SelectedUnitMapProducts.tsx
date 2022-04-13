@@ -68,7 +68,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             }
         )
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
             method: 'POST',
         })
         if (res?.success) {
@@ -106,7 +106,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             payload: true
         });
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedDraft?._id}`,
             method: 'PATCH',
             body: { draftName: draftRenameName }
         })
@@ -134,12 +134,12 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             payload: true
         });
         const draftItemNeedToDuplicateRes = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedDraft?._id}`,
             method: 'GET'
         })
         if (draftItemNeedToDuplicateRes?.success) {
             const res = await apiRequest({
-                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
+                url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom?.roomID}/canvas`,
                 method: 'POST',
                 body: {
                     draftName: duplicateDraftName,
@@ -182,7 +182,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                 }
             )
             const res = await apiRequest({
-                url: `/api/fhapp-service/design/${currentOrgID}/${quoteID}/${unitID}/${eachRoom?.roomID}/selectCanvasDraft`,
+                url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/${quoteID}/${unitID}/${eachRoom?.roomID}/selectCanvasDraft`,
                 body: {
                     canvas_id: draftID
                 },
@@ -215,7 +215,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             }
         )
         const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/canvases/${selectedDraft?._id}`,
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedDraft?._id}`,
             method: 'DELETE',
             body: {
                 quote_id: quoteID,
