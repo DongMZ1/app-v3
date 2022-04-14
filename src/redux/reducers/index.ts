@@ -14,6 +14,7 @@ export type Tappstate = {
   currentOrgRole: string | undefined;
   allOrganizations: any[] | undefined;
   selectedProject: undefined | any;
+  selectedProjectDetail: undefined | any;
   quoteDetail: undefined | any;
   selectedQuoteUnit: undefined | any;
   filterCatalogue: any;
@@ -36,6 +37,7 @@ const initialState = {
   modalMessage: "",
   showModal: false,
   selectedProject: undefined,
+  selectedProjectDetail: undefined,
   quoteDetail: undefined,
   selectedQuoteUnit: undefined,
   filterCatalogue: {},

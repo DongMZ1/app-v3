@@ -7,3 +7,4 @@ export {default as renameSpecificProjectAction} from './renameSpecificProjectAct
 export {default as fetchMoreProject} from './fetchMoreProject'
 export {default as getQuoteDetail} from './getQuoteDetail'
 export {default as getQuoteDetailAndUpdateSelectedUnit} from './getQuoteDetailAndUpdateSelectedUnit'
+export {default as getProjectDetail} from './getProjectDetail'

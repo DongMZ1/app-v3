@@ -7,7 +7,7 @@ import { ActionModal } from "@fulhaus/react.ui.action-modal";
 import { useSelector, useDispatch } from 'react-redux'
 import { CSSTransition } from 'react-transition-group';
 import { Tappstate } from '../../redux/reducers';
-import { deleteSpecificProject, getQuoteDetail } from '../../redux/Actions'
+import { deleteSpecificProject, getQuoteDetail, getProjectDetail } from '../../redux/Actions'
 import InvitePeople from '../../Components/InvitePeople/InvitePeople';
 import apiRequest from '../../Service/apiRequest'
 import produce from 'immer'
@@ -87,6 +87,15 @@ const Project = () => {
             }
         }, []
     )
+
+    useEffect(() => {
+       if(selectedProject?._id && currentOrgID){
+           dispatch(getProjectDetail({
+               organizationID: currentOrgID,
+               projectID: selectedProject?._id
+           }))
+       }
+    }, [selectedProject?._id])
 
     const exitPage = () => {
         //clear selected quote unit and quote detail when exit the page
