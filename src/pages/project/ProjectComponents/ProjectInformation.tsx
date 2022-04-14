@@ -18,6 +18,7 @@ type ProjectInformationType = {
 const ProjectInformation = ({ close }: ProjectInformationType) => {
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail);
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
+    const selectedProjectDetail = useSelector((state: Tappstate) => state.selectedProjectDetail);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
     const dispatch = useDispatch();
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
@@ -156,34 +157,40 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     }} value={quoteDetail?.notes} /> : <div className='text-sm font-ssp'>{quoteDetail?.notes}</div>
                 }
                 <div className='mt-6 text-sm font-semibold font-ssp'>
-                    Contact Information
+                    Project Information
                 </div>
                 <div className='flex mt-4 font-ssp'>
                     <div className='w-1/2'>
                         <div className='text-xs'>Client Name</div>
-                        <div className='mt-1 text-sm'>Albert Schuey</div>
+                        <div className='mt-1 text-sm'>{selectedProjectDetail?.clientInformation?.name}</div>
                     </div>
                     <div className='w-1/2'>
                         <div className='text-xs'>Email</div>
-                        <div className='mt-1 text-sm'>aschuey@theassociates.com</div>
+                        <div className='mt-1 text-sm'>{selectedProjectDetail?.clientInformation?.email}</div>
                     </div>
                 </div>
                 <div className='flex mt-4 font-ssp'>
                     <div className='w-1/2'>
                         <div className='text-xs'>Project Address</div>
                         <div className='mt-1 text-sm'>
-                            {selectedProject?.projectAddress?.apt ? 'Apt.' + selectedProject?.projectAddress?.apt + ', ' : ''}{selectedProject?.projectAddress?.street ? selectedProject?.projectAddress?.street + ', ' : ''}
-                            {selectedProject?.projectAddress?.city ? selectedProject?.projectAddress?.city + ', ' : ''}
-                            {selectedProject?.projectAddress?.state ? selectedProject?.projectAddress?.state + ', ' : ''}
-                            {selectedProject?.projectAddress?.country ? selectedProject?.projectAddress?.country + ', ' : ''}
-                            {selectedProject?.projectAddress ? <br /> : ''}
-                            {selectedProject?.projectAddress?.postalCode ? selectedProject?.projectAddress?.postalCode + ', ' : ''}
+                            {selectedProjectDetail?.projectAddress?.apt ? 'Apt.' + selectedProjectDetail?.projectAddress?.apt + ', ' : ''}{selectedProjectDetail?.projectAddress?.street ? selectedProjectDetail?.projectAddress?.street + ', ' : ''}
+                            {selectedProjectDetail?.projectAddress?.city ? selectedProjectDetail?.projectAddress?.city + ', ' : ''}
+                            {selectedProjectDetail?.projectAddress?.state ? selectedProjectDetail?.projectAddress?.state + ', ' : ''}
+                            {selectedProjectDetail?.projectAddress?.country ? selectedProjectDetail?.projectAddress?.country + ', ' : ''}
+                            {selectedProjectDetail?.projectAddress ? <br /> : ''}
+                            {selectedProjectDetail?.projectAddress?.postalCode ? selectedProjectDetail?.projectAddress?.postalCode + ', ' : ''}
                         </div>
                     </div>
                     <div className='w-1/2'>
                         <div className='text-xs'>Phone</div>
-                        <div className='mt-1 text-sm'>123-456-7890</div>
+                        <div className='mt-1 text-sm'>{selectedProjectDetail?.clientInformation?.phone}</div>
                     </div>
+                </div>
+                <div className='mt-6 text-sm font-semibold font-ssp'>
+                    Contact Information
+                </div>
+                <div className='mt-6 text-sm font-semibold font-ssp'>
+                    Bill Information
                 </div>
             </div>
         </div>
