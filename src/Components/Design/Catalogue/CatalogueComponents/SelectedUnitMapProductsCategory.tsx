@@ -145,7 +145,7 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
         }
     }
 
-    const debounceUpdateCurrentFurnitureNumberRemote = useCallback(debounce((items: any) => updateCurrentFurnitureNumberRemote(items), 500), [currentOrgID, quoteID, selectedQuoteUnit?.unitID, selectedCanvas?._id]);
+    const debounceUpdateCurrentFurnitureNumberRemote = useCallback(debounce((items: any) => updateCurrentFurnitureNumberRemote(items), 500), [currentOrgID, quoteID, selectedQuoteUnit?.unitID, selectedCanvas?._id, projectID]);
 
 
     const showProductDetail = () => {
