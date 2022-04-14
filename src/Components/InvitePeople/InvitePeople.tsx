@@ -132,7 +132,7 @@ const InvitePeople = ({ close, projectName, projectID, userRole }: InvitePeopleP
             userRole={userRole}
             peopleList={peopleList}
             setpeopleList={setpeopleList}
-            projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role?.[0]} />
+            projectID={projectID} name={`${each.lastName} ${each.firstName}`} email={each.email} eachUserID={each._id} role={each?.role} />
         )}
         {
           !loading && (peopleList?.length === 0 || !peopleList) &&
@@ -197,7 +197,7 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
           if (res?.success) {
             const newPeopleList = produce(peopleList, (draftState: any) => {
               if (draftState.filter((each: any) => each._id === eachUserID).length > 0) {
-                draftState.filter((each: any) => each._id === eachUserID)[0].role[0] = v;
+                draftState.filter((each: any) => each._id === eachUserID)[0].role = v;
               }
             })
             setpeopleList(newPeopleList);
@@ -219,7 +219,7 @@ const InvitePeopleUserRow = ({ name, email, role, projectID, eachUserID, peopleL
           if (res?.success) {
             const newPeopleList = produce(peopleList, (draftState: any) => {
               if (draftState.filter((each: any) => each._id === eachUserID).length > 0) {
-                draftState.filter((each: any) => each._id === eachUserID)[0].role[0] = v;
+                draftState.filter((each: any) => each._id === eachUserID)[0].role = v;
               }
             })
             setpeopleList(newPeopleList);
