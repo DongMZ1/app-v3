@@ -22,14 +22,19 @@ import debounce from 'lodash.debounce';
 
 const Quote = () => {
     //add room and add room packages list share the same name and ID
-    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string, categories: any[], createdBy: string }[]>();
+    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string, categories: any[], createdBy: string }[]>([]);
     const [selectedRoomOptionToDelete, setselectedRoomOptionToDelete] = useState<any>(undefined);
     const [showSelectedRoomOptionToDelete, setshowSelectedRoomOptionToDelete] = useState(false);
 
     const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>();
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
-    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
+    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<{
+        name: string;
+        id: string;
+        categories: any[];
+        createdBy: string;
+    }[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('')
     const [eachUnitSetUpFeeEditable, seteachUnitSetUpFeeEditable] = useState(false);
 
@@ -137,9 +142,9 @@ const Quote = () => {
     }
     const addRooms = async () => {
         let newRooms: any = [];
-        let allRoomsNames = roomOptionCheckedList;
+        let allRoomsNames : any = roomOptionCheckedList;
         if (customRoomName) {
-            allRoomsNames = allRoomsNames.concat({ name: customRoomName, id: null });
+            allRoomsNames = allRoomsNames.concat({ name: customRoomName, id: null});
         }
         for (let eachRoom of allRoomsNames) {
             const res = await apiRequest({
@@ -257,11 +262,11 @@ const Quote = () => {
                                         </div>
                                         <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='room package keywords' value={roomPackageKeyword} onChange={(e) => {
                                             setroomPackageKeyword((e.target as any).value);
-                                            setroomOptionCheckedList([]);
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                            {[...roomOptionCheckedList, ...RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomOptionCheckedList.includes(each))]
+                                            .sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <div className='flex my-2'>
                                                     <Checkbox label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
                                                         if (v) {
