@@ -26,7 +26,7 @@ type RoomType = {
         id: string;
         categories: any[];
         createdBy: string;
-    }[] | undefined,
+    }[],
     getRoomOptionList: () => Promise<void>,
     setselectedRoomOptionToDelete: React.Dispatch<any>,
     setshowSelectedRoomOptionToDelete: React.Dispatch<React.SetStateAction<boolean>>
@@ -44,6 +44,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         name: string;
         id: string | null;
         categories: any[];
+        createdBy: string;
     }[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
@@ -347,11 +348,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                     <div className='absolute z-50 p-4 overflow-y-auto bg-white border border-black border-solid w-96'>
                                         <TextInput placeholder='Search existing room packages' variant='box' className='mt-2' inputName='add package keywords' value={roomPackageKeyword} onChange={(e) => {
                                             setroomPackageKeyword((e.target as any).value);
-                                            setroomPackageOptionCheckedList([]);
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                            {[...roomPackageOptionCheckedList ,...RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomPackageOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <div className='flex my-2'>
                                                     <Checkbox label={each.name} checked={roomPackageOptionCheckedList.includes(each)} onChange={(v) => {
                                                         if (v) {
