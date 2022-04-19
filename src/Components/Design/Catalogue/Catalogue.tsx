@@ -98,7 +98,7 @@ const Catalogue = () => {
     return <>
         <SelectedProductDetail />
         <div className={`flex h-full catalogue`}>
-            <div style={draggableWidth ? { width: draggableWidth } : {}} className={`flex flex-col ${isExpand ? 'w-full' : 'w-1/2'} overflow-hidden`}>
+            <div style={draggableWidth ? { width: draggableWidth } : {}} className={`flex flex-col ${isExpand ? 'w-full' : 'w-1/2'} `}>
                 <CatalogueFilter isExpand={isExpand} setisExpand={setisExpand} setdraggableWidth={setdraggableWidth} />
                 <div ref={scrollRef} id='catalogue-product-ref' className='flex flex-wrap h-full overflow-auto' onScroll={() => debounceFetchMoreProducts()}>
                     {

@@ -34,14 +34,14 @@ const Quote = () => {
     const [eachUnitSetUpFeeEditable, seteachUnitSetUpFeeEditable] = useState(false);
 
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
-    const selectedProject = useSelector((state:Tappstate) => state.selectedProject)
+    const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const quoteUnitLength = useSelector((state: Tappstate) => state.quoteDetail)?.data?.length;
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteDetail = useSelector((state: Tappstate) => state.quoteDetail)
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
     const allRentable = !(selectedQuoteUnit?.rooms as any[])?.some(eachRoom => (eachRoom?.categories as any[])?.some(eachCategory => !eachCategory.rentable))
@@ -220,7 +220,7 @@ const Quote = () => {
         }
     }
 
-    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID,selectedProject?._id, quoteID, unitID]);
+    const debounceChangeSetFeeRemote = useCallback(debounce((v: any) => changeSetFeeRemote(v), 500), [currentOrgID, selectedProject?._id, quoteID, unitID]);
 
     const deleteRoomPackage = async () => {
         const res = await apiRequest({
@@ -319,16 +319,18 @@ const Quote = () => {
                         }
                     </div>
                     {
-                        selectedQuoteUnit?.rooms?.map((each: any) =>
-                            <Room
-                                setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
-                                setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
-                                updateQuoteDetail={updateQuoteDetail}
-                                RoomOptionList={RoomOptionList}
-                                roomItemOptionsList={roomItemOptionsList}
-                                eachRoom={each}
-                                getRoomOptionList={getRoomOptionList}
-                            />)
+                        selectedQuoteUnit?.rooms?.map((each: any, key: number) =>
+                            <div key={key}>
+                                <Room
+                                    setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
+                                    setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
+                                    updateQuoteDetail={updateQuoteDetail}
+                                    RoomOptionList={RoomOptionList}
+                                    roomItemOptionsList={roomItemOptionsList}
+                                    eachRoom={each}
+                                    getRoomOptionList={getRoomOptionList}
+                                />
+                            </div>)
                     }
                     {selectedQuoteUnit?.rooms?.length === 0 &&
                         <div className='m-auto'>
