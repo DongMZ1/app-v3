@@ -66,14 +66,14 @@ const DesignElements: FC<IDesignElements> = ({ onSelect }) => {
     return (
         <div className="fixed bottom-0 left-0 w-screen p-2 bg-cream">
             <TopBar allDesignElementCategories={allDesignElementCategories} selectedDesignElementCategory={selectedDesignElementCategory} onSelect={setSelectedDesignElementCategory} />
-            <div className="w-full overflow-scroll whitespace-nowrap">
+            <div className="flex w-full overflow-scroll">
                 {loading ? <div className="flex items-center justify-center w-full h-32">
                     <Loader />
                 </div> :
                     <>
                         <UploadButton onUpload={setUploadedImage} />
                         {allDesignElements?.filter((allDesignElement: any) => selectedDesignElementCategory?._id === "all" || allDesignElement?.category?._id === selectedDesignElementCategory?._id)?.map((designElement: any) =>
-                            <div key={designElement._id} className="inline-block ml-8 border-2 border-black cursor-pointer w-36 h-36 hover:border-primaryHover" onClick={() => {
+                            <div key={designElement._id} className="flex ml-8 border-2 border-black cursor-pointer design-element-0-0-auto w-36 h-36 hover:border-primaryHover" onClick={() => {
                                 onSelect(designElement?.imageURL, designElement?.category?.name)
                             }}>
                                 <img className="object-contain w-full h-full " src={designElement?.imageURL} alt={`${designElement.category?.name} design element`} />

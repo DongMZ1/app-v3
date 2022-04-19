@@ -17,9 +17,10 @@ const UploadButton: FC<IUploadPad> = ({ onUpload }) => {
 
 
   return (
-    <div className="items-center justify-center inline-block border-2 border-black border-dashed cursor-pointer w-36 h-36 hover:border-primaryHover">
-        <FiPlus className="w-10 h-10 m-auto" />
+    <div onClick={() => document.getElementById('#upload-new-design-element')?.click()} className="flex items-center justify-center border-2 border-black border-dashed cursor-pointer design-element-0-0-auto w-36 h-36 hover:border-primaryHover">
+      <FiPlus className="w-10 h-10 m-auto" />
       <input
+        id='#upload-new-design-element'
         className='inset-0 hidden opacity-0 cursor-pointer'
         type='file'
         accept='.png, .jpg, .jpeg'
