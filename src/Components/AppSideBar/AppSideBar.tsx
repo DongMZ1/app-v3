@@ -11,7 +11,7 @@ import { SwitchTransition, CSSTransition, Transition } from 'react-transition-gr
 import { TextInput } from '@fulhaus/react.ui.text-input';
 import { Checkbox } from '@fulhaus/react.ui.checkbox'
 import { Button } from '@fulhaus/react.ui.button'
-import {showMessageAction} from '../../redux/Actions'
+import { showMessageAction } from '../../redux/Actions'
 import { Loader } from '@fulhaus/react.ui.loader'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { ActionModal } from '@fulhaus/react.ui.action-modal';
@@ -22,13 +22,13 @@ const AppSideBar = () => {
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
-    const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string | null }[]>([]);
-    const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string, createdBy:string}[]>([]);
+    const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string, createdBy: string }[]>([]);
+    const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string, createdBy: string }[]>([]);
 
     const [selectedUnitToDelete, setselectedUnitToDelete] = useState<any>(undefined);
     const [showSelectedUnitToDelete, setshowSelectedUnitToDelete] = useState(false);
@@ -57,9 +57,9 @@ const AppSideBar = () => {
         let allUnitsNames = unitOptionCheckedList
         //add costum names
         if (customUnitName) {
-            allUnitsNames = unitOptionCheckedList.concat({
+            allUnitsNames = (unitOptionCheckedList as any).concat({
                 name: customUnitName,
-                id: null
+                id: null,
             });
         }
         for (let eachUnit of allUnitsNames) {
@@ -99,9 +99,9 @@ const AppSideBar = () => {
             method: 'DELETE'
         });
         if (res?.success) {
-           await getUnitPackages();
-           setshowSelectedUnitToDelete(false);
-        }else{
+            await getUnitPackages();
+            setshowSelectedUnitToDelete(false);
+        } else {
             dispatch(showMessageAction(true, res?.message));
         }
     }
@@ -131,24 +131,26 @@ const AppSideBar = () => {
                                     </div>
                                     <TextInput placeholder='Search existing unit packages' variant='box' className='mt-2' inputName='unit package keywords' value={unitPackageKeyword} onChange={(e) => {
                                         setunitPackageKeyword((e.target as any).value);
-                                        setunitOptionCheckedList([]);
                                     }}
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
-                                        {unitOptionList?.filter(eachUnit => eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)).map(each =>
-                                            <div className='flex my-2'>
-                                                <Checkbox label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
-                                                    if (v) {
-                                                        setunitOptionCheckedList(state => [...state, each])
-                                                    } else {
-                                                        setunitOptionCheckedList(state => state.filter(e => e !== each))
-                                                    }
-                                                }} />{(userRole === 'admin' || userRole === 'owner') && each?.createdBy === fullName && <RiDeleteBin5Line
-                                                    onClick={() => {
-                                                        setselectedUnitToDelete(each);
-                                                        setshowSelectedUnitToDelete(true);
-                                                    }}
-                                                    className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}</div>)}
+                                        {[...unitOptionCheckedList, ...unitOptionList?.filter(eachUnit =>
+                                            eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).filter(each => !unitOptionCheckedList.includes(each))
+                                        ].sort((a, b) => a.name.localeCompare(b.name))
+                                            .map(each =>
+                                                <div className='flex my-2'>
+                                                    <Checkbox label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
+                                                        if (v) {
+                                                            setunitOptionCheckedList(state => [...state, each])
+                                                        } else {
+                                                            setunitOptionCheckedList(state => state.filter(e => e !== each))
+                                                        }
+                                                    }} />{(userRole === 'admin' || userRole === 'owner') && each?.createdBy === fullName && <RiDeleteBin5Line
+                                                        onClick={() => {
+                                                            setselectedUnitToDelete(each);
+                                                            setshowSelectedUnitToDelete(true);
+                                                        }}
+                                                        className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}</div>)}
                                     </div>
                                     <div className='flex my-2'>
                                         <Button onClick={() => {
