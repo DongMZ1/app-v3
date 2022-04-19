@@ -302,7 +302,7 @@ const QuoteSummaryPurchase = () => {
                     Total Quote Before Tax
                 </div>
                 <div className='ml-auto'>
-                    {quoteDetail?.upfrontTotalQuoteBeforeTax?.toFixed(2)}
+                    ${quoteDetail?.upfrontTotalQuoteBeforeTax?.toFixed(2)}
                 </div>
             </div>
             {
@@ -346,7 +346,7 @@ const QuoteSummaryPurchase = () => {
                     Total Quote After Estimated Tax
                 </div>
                 <div className='ml-auto'>
-                    {quoteDetail?.upfrontTotalQuoteAfterEstimatedTax}
+                    ${Number(quoteDetail?.upfrontTotalQuoteAfterEstimatedTax).toFixed(2)}
                 </div>
             </div>
         </div>
