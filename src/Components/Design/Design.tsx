@@ -40,7 +40,7 @@ const Design = ({ tabState }: { tabState: "Catalogue" | "Canvas" }) => {
     }
   }, [currentOrgID, quoteID])
   return (
-    <div className="w-full design">
+    <div className="flex-1 design">
       {tabState === 'Catalogue' && <Catalogue />}
       {tabState === 'Canvas' && <Canvas />}
     </div>

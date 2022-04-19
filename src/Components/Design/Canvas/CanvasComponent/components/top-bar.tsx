@@ -17,7 +17,7 @@ const TopBar: FC<ITopBar> = ({allDesignElementCategories, selectedDesignElementC
 
 
     return (
-            <div className="flex items-center overflow-scroll">
+            <div className="flex items-center w-full overflow-scroll flex-nowrap">
                 <p>Design Elements</p>
                 <Button
                     variant={selectedDesignElementCategory?._id === "all" ? 'primary' : 'secondary'}

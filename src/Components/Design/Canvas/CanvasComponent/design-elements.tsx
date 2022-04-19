@@ -15,8 +15,7 @@ export type IDesignElements = {
 }
 
 
-const DesignElements: FC<IDesignElements> = ({onSelect }) =>
-{
+const DesignElements: FC<IDesignElements> = ({ onSelect }) => {
 
     const [allDesignElements, setAllDesignElements] = useState<any>();
     const [allDesignElementCategories, setAllDesignElementCategories] = useState<any>();
@@ -25,28 +24,24 @@ const DesignElements: FC<IDesignElements> = ({onSelect }) =>
     const [uploadedImageCategory, setUploadedImageCategory] = useState<string>();
     const [loading, setLoading] = useState<boolean>(false);
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         getAllDesignElements();
 
     }, []);
 
-    const getAllDesignElements = async() =>
-    {
+    const getAllDesignElements = async () => {
         setLoading(true);
         const allDesignElementsResponse = await getDesignElements();
-        if (allDesignElementsResponse.success)
-        {
-            setAllDesignElements(allDesignElementsResponse?.response?.data?.elements); 
-            setAllDesignElementCategories(allDesignElementsResponse?.response?.data?.categories); 
+        if (allDesignElementsResponse.success) {
+            setAllDesignElements(allDesignElementsResponse?.response?.data?.elements);
+            setAllDesignElementCategories(allDesignElementsResponse?.response?.data?.categories);
         }
 
-        setLoading(false);      
+        setLoading(false);
     }
 
-    const convertImageFileToBase64 = async (imageFile:File) => {
-        return new Promise((resolve, reject) =>
-        {
+    const convertImageFileToBase64 = async (imageFile: File) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(imageFile);
             reader.onload = () => resolve((reader.result as string).split("base64,")[1]);
@@ -54,10 +49,8 @@ const DesignElements: FC<IDesignElements> = ({onSelect }) =>
         });
     }
 
-    const handleAddDesignElement = async () =>
-    {
-        if (uploadedImage && uploadedImageCategory)
-        {
+    const handleAddDesignElement = async () => {
+        if (uploadedImage && uploadedImageCategory) {
             setLoading(true);
             const imageBase64: any = await convertImageFileToBase64(uploadedImage);
             const setDesignElementResponse = await setDesignElement({ imageURL: imageBase64, category: uploadedImageCategory });
@@ -67,33 +60,33 @@ const DesignElements: FC<IDesignElements> = ({onSelect }) =>
             setLoading(false);
         }
     }
-    
+
 
 
     return (
-        <div className="bottom-0 w-full p-2 mt-auto">
+        <div className="fixed bottom-0 left-0 w-screen p-2 bg-cream">
             <TopBar allDesignElementCategories={allDesignElementCategories} selectedDesignElementCategory={selectedDesignElementCategory} onSelect={setSelectedDesignElementCategory} />
-            <div className="flex overflow-scroll">
+            <div className="w-full overflow-scroll whitespace-nowrap">
                 {loading ? <div className="flex items-center justify-center w-full h-32">
                     <Loader />
-                </div> : 
-                                    <Fragment>
-                                    <UploadButton onUpload={setUploadedImage} />
-
-                {allDesignElements?.filter((allDesignElement:any)=>selectedDesignElementCategory?._id === "all" || allDesignElement?.category?._id === selectedDesignElementCategory?._id )?.map((designElement: any) =>
-                    <div key={designElement._id} className="relative flex items-center justify-center ml-8 border-2 border-black cursor-pointer w-36 h-36 hover:border-primaryHover" onClick={()=>{
-                        onSelect(designElement?.imageURL, designElement?.category?.name)}}>
-                        <img className="object-contain w-full h-full" src={designElement?.imageURL} alt={`${designElement.category?.name} design element`} />
-                    </div>)}
-                </Fragment>
+                </div> :
+                    <>
+                        <UploadButton onUpload={setUploadedImage} />
+                        {allDesignElements?.filter((allDesignElement: any) => selectedDesignElementCategory?._id === "all" || allDesignElement?.category?._id === selectedDesignElementCategory?._id)?.map((designElement: any) =>
+                            <div key={designElement._id} className="inline-block ml-8 border-2 border-black cursor-pointer w-36 h-36 hover:border-primaryHover" onClick={() => {
+                                onSelect(designElement?.imageURL, designElement?.category?.name)
+                            }}>
+                                <img className="object-contain w-full h-full " src={designElement?.imageURL} alt={`${designElement.category?.name} design element`} />
+                            </div>)}
+                    </>
                 }
             </div>
             {uploadedImage && <UploadPopup
                 uploadedImage={uploadedImage}
                 uploadedImageCategory={uploadedImageCategory}
                 allDesignElementCategories={allDesignElementCategories}
-                onChangeImageCategory={(v)=>setUploadedImageCategory(v)}
-                onClose={()=>setUploadedImage(undefined)}
+                onChangeImageCategory={(v) => setUploadedImageCategory(v)}
+                onClose={() => setUploadedImage(undefined)}
                 onAdd={handleAddDesignElement} />}
         </div>
     )

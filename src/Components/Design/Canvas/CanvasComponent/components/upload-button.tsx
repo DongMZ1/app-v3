@@ -2,16 +2,13 @@ import { FC, ChangeEvent } from 'react';
 import { FiPlus } from 'react-icons/fi';
 
 
-interface IUploadPad
-{
+interface IUploadPad {
   onUpload: (file: File) => void;
 }
 
-const UploadButton: FC<IUploadPad> = ({ onUpload }) =>
-{
+const UploadButton: FC<IUploadPad> = ({ onUpload }) => {
 
-  const handleUpload = async (event: ChangeEvent) =>
-  {
+  const handleUpload = async (event: ChangeEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const files = [...(event.target as any).files];
@@ -20,10 +17,10 @@ const UploadButton: FC<IUploadPad> = ({ onUpload }) =>
 
 
   return (
-    <div className="relative border-2 border-dashed flex justify-center items-center w-36 h-36 border-black cursor-pointer hover:border-primaryHover">
-      <FiPlus className="w-10 h-10" />
+    <div className="items-center justify-center inline-block border-2 border-black border-dashed cursor-pointer w-36 h-36 hover:border-primaryHover">
+        <FiPlus className="w-10 h-10 m-auto" />
       <input
-        className='absolute inset-0 cursor-pointer opacity-0'
+        className='inset-0 hidden opacity-0 cursor-pointer'
         type='file'
         accept='.png, .jpg, .jpeg'
         onChange={handleUpload}

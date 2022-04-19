@@ -172,7 +172,7 @@ const AppSideBar = () => {
                     </div>
                 }
                 <div className='flex px-4 mt-2'>
-                    <div className='text-sm font-ssp'>Total Units: {totalUnitCount}</div>
+                    <div className='text-sm font-para-text'>Total Units: {totalUnitCount}</div>
                     {!editable &&
                         <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
                             <AiOutlineLeft size={22} />
