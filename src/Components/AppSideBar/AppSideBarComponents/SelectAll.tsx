@@ -39,9 +39,9 @@ const SelectAll = () => {
     const unitOptionList = quoteDetail?.data?.map((each: any) => each.name);
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
-    
-    
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
+
+
     useEffect(
         () => {
             //if item options is not provided
@@ -208,7 +208,7 @@ const SelectAll = () => {
     const SyncRemoteQuote = () => {
         //if it is a project or quote-only, then get the quote based on projectID
         if ((selectedProject?.type === 'project' || selectedProject?.type === 'quote') && currentOrgID) {
-            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectID, quoteID: selectedProject?.quote?._id}))
+            dispatch(getQuoteDetail({ organizationID: currentOrgID, projectID, quoteID: selectedProject?.quote?._id }))
         }
         dispatch({
             type: 'selectedQuoteUnit',
@@ -316,9 +316,11 @@ const SelectAll = () => {
                                 setshowDropDown(false);
                             }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
                             <Button disabled={groupCheckList.length === 0} onClick={() => {
-                                setshowselectPage(false);
-                                setaddItemPageType('ofGroup');
-                                setshowAddItemPage(true);
+                                if (groupCheckList.length !== 0) {
+                                    setshowselectPage(false);
+                                    setaddItemPageType('ofGroup');
+                                    setshowAddItemPage(true);
+                                }
                             }} variant='primary' className='w-20'>Next</Button>
                         </div>
                     </>
@@ -352,9 +354,11 @@ const SelectAll = () => {
                                 setshowDropDown(false);
                             }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
                             <Button disabled={unitCheckedList.length === 0} onClick={() => {
-                                setshowselectPage(false);
-                                setaddItemPageType('ofUnit');
-                                setshowAddItemPage(true);
+                                if (unitCheckedList.length !== 0) {
+                                    setshowselectPage(false);
+                                    setaddItemPageType('ofUnit');
+                                    setshowAddItemPage(true);
+                                }
                             }} variant='primary' className='w-20'>Next</Button>
                         </div>
                     </>
@@ -373,15 +377,15 @@ const SelectAll = () => {
                                 <div onClick={() => setroomTypeCheckList(roomTypeOptionList)} className='my-1 cursor-pointer text-link'>Select All</div>
                         }
                         <div className='overflow-y-auto max-h-64'>
-                        {roomTypeOptionList.map(each =>
-                            <Checkbox className='my-2' label={each} checked={roomTypeCheckedList.includes(each)} onChange={(v) => {
-                                if (v) {
-                                    setroomTypeCheckList(state => [...state, each])
-                                } else {
-                                    setroomTypeCheckList(state => state.filter(e => e !== each))
-                                }
-                            }} />)
-                        }
+                            {roomTypeOptionList.map(each =>
+                                <Checkbox className='my-2' label={each} checked={roomTypeCheckedList.includes(each)} onChange={(v) => {
+                                    if (v) {
+                                        setroomTypeCheckList(state => [...state, each])
+                                    } else {
+                                        setroomTypeCheckList(state => state.filter(e => e !== each))
+                                    }
+                                }} />)
+                            }
                         </div>
                         <div className='flex my-2'>
                             <Button onClick={() => {
@@ -391,9 +395,11 @@ const SelectAll = () => {
                                 setshowDropDown(false);
                             }} className='w-20 mr-4' variant='secondary'>Cancel</Button>
                             <Button disabled={roomTypeCheckedList.length === 0} onClick={() => {
-                                setshowselectPage(false);
-                                setaddItemPageType('ofRoomType');
-                                setshowAddItemPage(true);
+                                if (roomTypeCheckedList.length !== 0) {
+                                    setshowselectPage(false);
+                                    setaddItemPageType('ofRoomType');
+                                    setshowAddItemPage(true);
+                                }
                             }} variant='primary' className='w-20'>Next</Button>
                         </div>
                     </>
