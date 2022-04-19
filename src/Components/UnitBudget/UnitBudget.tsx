@@ -36,7 +36,7 @@ const UnitBudget = () => {
                     const roomItemCount = eachRoom?.categories?.map((category: any) => category?.qty).reduce((a: any, b: any) => a + b, 0)
                     const roomTotalPrice = eachRoom?.categories?.map((category: any) => category?.qty * category?.budget).reduce((a: any, b: any) => a + b, 0)
                     return <div className='mt-4'>
-                        <FurnitureInRoomHeader totalPrice={roomTotalPrice} editable={false} roomName={eachRoom.name} totalItems={roomItemCount} roomNumber={eachRoom.count ? eachRoom.count : 0} />
+                        <FurnitureInRoomHeader totalPrice={parseFloat(roomTotalPrice).toFixed(2) as any} editable={false} roomName={eachRoom.name} totalItems={roomItemCount} roomNumber={eachRoom.count ? eachRoom.count : 0} />
                         <CSSTransition in={showPerItemCost} timeout={300} unmountOnExit classNames='opacity-animation'>
                             <div>
                                 {
@@ -68,8 +68,8 @@ const EachCategory = ({ eachCategory, showImage, eachRoom }: {
         furnitureBrandName={eachRoom?.selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.[currentIndex]?.name}
         imageUrl={eachRoom?.selectedCanvas?.items?.[`${eachCategory?.categoryID}`]?.map((eachProduct: any) => eachProduct?.imageURLs?.[0])}
         editable={false}
-        buyMSRP={eachCategory.budget}
-        rentMSRP={eachCategory.budget}
+        buyMSRP={parseFloat(eachCategory.budget).toFixed(2) as any}
+        rentMSRP={parseFloat(eachCategory.budget).toFixed(2) as any}
         number={eachCategory.qty ? eachCategory.qty : 0}
         buy={!eachCategory.rentable}
         showImages={showImage}

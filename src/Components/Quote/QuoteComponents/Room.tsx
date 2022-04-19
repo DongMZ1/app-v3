@@ -58,7 +58,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
-    const totalPriceOfEachRoom = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
+    const totalPriceOfEachRoom : any = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
@@ -276,7 +276,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
         </Popup>
         <div className='w-full mt-6'>
             <FurnitureInRoomHeader
-                totalPrice={totalPriceOfEachRoom ? totalPriceOfEachRoom.toFixed(2) as any : 0}
+                totalPrice={totalPriceOfEachRoom ? parseFloat(totalPriceOfEachRoom).toFixed(2) as any : 0}
                 duplicateRoom={() => duplicateRoom()}
                 saveAsRoomPackage={() => {
                     setshowSaveAsRoomPackage(true);

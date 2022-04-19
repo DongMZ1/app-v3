@@ -243,7 +243,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
         }
     }
     return <><div className='mb-6'>
-        <FurnitureInRoomHeader totalProductPrice={Number(calculateTotalRoomProductsPrice().toFixed(2))} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={eachRoom?.totalAmount?.toFixed(2)} >
+        <FurnitureInRoomHeader totalProductPrice={Number(calculateTotalRoomProductsPrice().toFixed(2))} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={parseFloat(eachRoom?.totalAmount).toFixed(2) as any} >
             <>
                 {
                     eachRoom?.categories?.map(

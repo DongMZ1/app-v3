@@ -50,15 +50,15 @@ const App = () => {
         url: '/api/fhapp-service/organization',
         method: 'POST'
       })
-      if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
-        dispatch(
-          showMessageAction(
-            true,
-            "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
-          )
-        )
-        return;
-      }
+      // if (res?.message === "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization") {
+      //   dispatch(
+      //     showMessageAction(
+      //       true,
+      //       "An internal user cannot create an organization, contact a Fulhaus admin to invite you to Fulhaus organization"
+      //     )
+      //   )
+      //   return;
+      // }
       if (res?.success) {
         dispatch(getUserRole());
       } else {

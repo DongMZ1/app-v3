@@ -403,7 +403,7 @@ const QuoteSummaryRental = () => {
                         </div>
                     </div>
                     <div className='my-auto ml-auto'>
-                        {quoteDetail?.tax} %
+                        {quoteDetail?.tax?.toFixed(2)} %
                     </div>
                 </div>
         }
