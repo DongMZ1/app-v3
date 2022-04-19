@@ -103,19 +103,21 @@ const EachProjectQuoteDesignRow = ({ thisProject, showInvitePeople, setSelectedP
     }
 
     const renameThisProject = async () => {
-        dispatch(renameSpecificProjectAction(
-            renameProjectTitle, currentOrgID, thisProject._id, projects
-        ))
+        if (renameProjectTitle) {
+            dispatch(renameSpecificProjectAction(
+                renameProjectTitle, currentOrgID, thisProject._id, projects
+            ))
+        }
         setshowRenameProject(false);
     }
 
     const selectThisProject = () => {
         //put selectedProject, projectRole, currentOrgID into localstorage avoid user refresh page on project page
-        localStorage.setItem('selectedProject', JSON.stringify({ ...thisProject}));
+        localStorage.setItem('selectedProject', JSON.stringify({ ...thisProject }));
         localStorage.setItem('currentOrgID', currentOrgID ? currentOrgID : '');
         dispatch({
             type: 'selectedProject',
-            payload: { ...thisProject}
+            payload: { ...thisProject }
         })
         history.push(linkURL)
     }

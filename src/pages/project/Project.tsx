@@ -43,7 +43,7 @@ const Project = () => {
     const projectRole = selectedProject?.userRole;
     const projects = useSelector((state: Tappstate) => state.projects);
     const [tabState, settabState] = useState<"Catalogue" | "Canvas">("Catalogue");
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -89,12 +89,12 @@ const Project = () => {
     )
 
     useEffect(() => {
-       if(selectedProject?._id && currentOrgID){
-           dispatch(getProjectDetail({
-               organizationID: currentOrgID,
-               projectID: selectedProject?._id
-           }))
-       }
+        if (selectedProject?._id && currentOrgID) {
+            dispatch(getProjectDetail({
+                organizationID: currentOrgID,
+                projectID: selectedProject?._id
+            }))
+        }
     }, [selectedProject?._id])
 
     const exitPage = () => {
@@ -128,26 +128,28 @@ const Project = () => {
     }
 
     const renameProject = async () => {
-        const res = await apiRequest(
-            {
-                url: `/api/fhapp-service/project/${currentOrgID}/${selectedProject._id}`,
-                method: 'PATCH',
-                body: {
-                    title: projectTitle
+        if (projectTitle) {
+            const res = await apiRequest(
+                {
+                    url: `/api/fhapp-service/project/${currentOrgID}/${selectedProject._id}`,
+                    method: 'PATCH',
+                    body: {
+                        title: projectTitle
+                    }
                 }
+            )
+            if (res?.success) {
+                const newSelectedProject = produce(selectedProject, (draftState: any) => {
+                    draftState.title = projectTitle;
+                })
+                dispatch({
+                    type: 'selectedProject',
+                    payload: newSelectedProject
+                })
+                localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
+            } else {
+                console.log(res?.message);
             }
-        )
-        if (res?.success) {
-            const newSelectedProject = produce(selectedProject, (draftState: any) => {
-                draftState.title = projectTitle;
-            })
-            dispatch({
-                type: 'selectedProject',
-                payload: newSelectedProject
-            })
-            localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
-        } else {
-            console.log(res?.message);
         }
         setshowRenameProject(false);
     }
