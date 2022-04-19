@@ -19,7 +19,7 @@ import { RiDeleteBin5Line } from 'react-icons/ri'
 
 type RoomType = {
     eachRoom: any,
-    roomItemOptionsList: { name: string; id: string; }[] | undefined
+    roomItemOptionsList: { name: string; id: string; }[]
     updateQuoteDetail: (newselectedQuoteUnit: any) => void,
     RoomOptionList: {
         name: string;
@@ -318,11 +318,10 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         </div>
                                         <TextInput placeholder='Search categories' variant='box' className='mt-2' inputName='Categories keywords' value={itemKeyword} onChange={(e) => {
                                             setitemKeyword((e.target as any).value);
-                                            setitemOptionCheckedList([]);
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                            {[...itemOptionCheckedList, ...roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).filter(each => !itemOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
                                                     if (v) {
                                                         setitemOptionCheckedList(state => [...state, each])
@@ -333,6 +332,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         </div>
                                         <div className='flex my-2'>
                                             <Button onClick={() => {
+                                                setitemOptionCheckedList([]);
                                                 setshowAddItemDropdown(false)
                                             }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
                                             <Button disabled={itemOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
@@ -370,7 +370,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         </div>
                                         <div className='flex my-2'>
                                             <Button onClick={() => {
-                                                setshowAddPackageDropdown(false)
+                                                setroomPackageOptionCheckedList([]);
+                                                setshowAddPackageDropdown(false);
                                             }} className='mr-4 w-36' variant='secondary'>Cancel</Button>
                                             <Button disabled={roomPackageOptionCheckedList.length === 0 && customItemName === ''} onClick={() => {
                                                 addRoomPackagesToRoom();

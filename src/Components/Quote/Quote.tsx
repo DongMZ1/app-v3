@@ -26,7 +26,7 @@ const Quote = () => {
     const [selectedRoomOptionToDelete, setselectedRoomOptionToDelete] = useState<any>(undefined);
     const [showSelectedRoomOptionToDelete, setshowSelectedRoomOptionToDelete] = useState(false);
 
-    const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>();
+    const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>([]);
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
     const [roomOptionCheckedList, setroomOptionCheckedList] = useState<{
@@ -59,9 +59,7 @@ const Quote = () => {
     )
     useEffect(
         () => {
-            if (!roomItemOptionsList) {
-                getRoomItemOptionsList();
-            }
+            getRoomItemOptionsList();
         }, []
     )
 
@@ -142,9 +140,9 @@ const Quote = () => {
     }
     const addRooms = async () => {
         let newRooms: any = [];
-        let allRoomsNames : any = roomOptionCheckedList;
+        let allRoomsNames: any = roomOptionCheckedList;
         if (customRoomName) {
-            allRoomsNames = allRoomsNames.concat({ name: customRoomName, id: null});
+            allRoomsNames = allRoomsNames.concat({ name: customRoomName, id: null });
         }
         for (let eachRoom of allRoomsNames) {
             const res = await apiRequest({
@@ -266,23 +264,23 @@ const Quote = () => {
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
                                             {[...roomOptionCheckedList, ...RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomOptionCheckedList.includes(each))]
-                                            .sort((a, b) => a.name.localeCompare(b.name)).map(each =>
-                                                <div className='flex my-2'>
-                                                    <Checkbox label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
-                                                        if (v) {
-                                                            setroomOptionCheckedList(state => [...state, each])
-                                                        } else {
-                                                            setroomOptionCheckedList(state => state.filter(e => e !== each))
-                                                        }
-                                                    }} />
-                                                    {(userRole === 'admin' || userRole === 'owner') && (fullName === each.createdBy) && <RiDeleteBin5Line
-                                                        onClick={() => {
-                                                            setselectedRoomOptionToDelete(each);
-                                                            setshowSelectedRoomOptionToDelete(true);
-                                                        }}
-                                                        className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
-                                                </div>
-                                            )}
+                                                .sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                                    <div className='flex my-2'>
+                                                        <Checkbox label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
+                                                            if (v) {
+                                                                setroomOptionCheckedList(state => [...state, each])
+                                                            } else {
+                                                                setroomOptionCheckedList(state => state.filter(e => e !== each))
+                                                            }
+                                                        }} />
+                                                        {(userRole === 'admin' || userRole === 'owner') && (fullName === each.createdBy) && <RiDeleteBin5Line
+                                                            onClick={() => {
+                                                                setselectedRoomOptionToDelete(each);
+                                                                setshowSelectedRoomOptionToDelete(true);
+                                                            }}
+                                                            className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
+                                                    </div>
+                                                )}
                                         </div>
                                         <div className='flex my-2'>
                                             <Button onClick={() => {
