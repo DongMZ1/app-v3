@@ -8,10 +8,10 @@ const fetchMoreProject =
     options?: { title?: string; page: number }
   ) =>
   async (dispatch: any) => {
-    dispatch({
-      type: "homePageLoader",
-      payload: true,
-    });
+    // dispatch({
+    //   type: "homePageLoader",
+    //   payload: true,
+    // });
     const projectRes = await apiRequest({
       url: `/api/fhapp-service/projects/${organizationID}?page=${
         options?.page
@@ -29,10 +29,10 @@ const fetchMoreProject =
         "fetch more project failed, please check fetchMoreProject.tsx"
       );
     }
-    dispatch({
-      type: "homePageLoader",
-      payload: false,
-    });
+    // dispatch({
+    //   type: "homePageLoader",
+    //   payload: false,
+    // });
   };
 
 export default fetchMoreProject;
