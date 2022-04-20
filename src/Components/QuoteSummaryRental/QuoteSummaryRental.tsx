@@ -426,12 +426,12 @@ const QuoteSummaryRental = () => {
             <div className='flex mt-2'>
                 <div className='mr-1'>Buy Back After Year 1</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1?.toFixed(2) : 0}</div>
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear1 ? quoteDetail.buyBackPriceAfterYear1?.toFixed(2) : '0.00'}</div>
             </div>
             <div className='flex mt-2'>
                 <div className='mr-1'>Buy Back After Year 2</div>
                 <Tooltip text='' iconColor='blue' />
-                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2?.toFixed(2) : 0}</div>
+                <div className='ml-auto'>${quoteDetail?.buyBackPriceAfterYear2 ? quoteDetail.buyBackPriceAfterYear2?.toFixed(2) : '0.00'}</div>
             </div>
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
