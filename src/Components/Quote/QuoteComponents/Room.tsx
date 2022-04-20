@@ -59,8 +59,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
-    const totalPriceOfEachRoom : any = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const totalPriceOfEachRoom: any = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
 
@@ -291,17 +291,14 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
             >
                 <>
-                    <TransitionGroup>
-                        {
-                            eachRoom.categories?.map((eachCategory: any) =>
-                                <CSSTransition key={eachCategory.name} timeout={300} classNames='opacity-animation'>
-                                    <Category
-                                        eachRoom={eachRoom}
-                                        eachCategory={eachCategory}
-                                        updateQuoteDetail={updateQuoteDetail}
-                                    /></CSSTransition>)
-                        }
-                    </TransitionGroup>
+                    {
+                        eachRoom.categories?.map((eachCategory: any) =>
+                            <Category
+                                eachRoom={eachRoom}
+                                eachCategory={eachCategory}
+                                updateQuoteDetail={updateQuoteDetail}
+                            />)
+                    }
                     <div className='h-1 '></div>
                     {userRole !== 'viewer' && (!quoteDetail?.approved) &&
                         <div className='flex'>
@@ -351,7 +348,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {[...roomPackageOptionCheckedList ,...RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomPackageOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                            {[...roomPackageOptionCheckedList, ...RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomPackageOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <div className='flex my-2'>
                                                     <Checkbox label={each.name} checked={roomPackageOptionCheckedList.includes(each)} onChange={(v) => {
                                                         if (v) {
@@ -461,7 +458,7 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) =
         buy={!eachCategory.rentable}
         rentMSRP={eachCategory.budget}
         buyMSRP={eachCategory.budget}
-        onMSRPChange={(MSRP) => categoryPriceChange(MSRP)}
+        onMSRPChange={(MSRP) => categoryPriceChange(Number(MSRP))}
         onRentableChange={(rentable) => updateRentable(rentable)}
         editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
         DeleteFurniture={() => deleteCatogory()}

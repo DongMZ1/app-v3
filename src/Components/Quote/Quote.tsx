@@ -323,17 +323,16 @@ const Quote = () => {
                     </div>
                     {
                         selectedQuoteUnit?.rooms?.map((each: any, key: number) =>
-                            <div key={key}>
-                                <Room
-                                    setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
-                                    setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
-                                    updateQuoteDetail={updateQuoteDetail}
-                                    RoomOptionList={RoomOptionList}
-                                    roomItemOptionsList={roomItemOptionsList}
-                                    eachRoom={each}
-                                    getRoomOptionList={getRoomOptionList}
-                                />
-                            </div>)
+                            <Room
+                                setselectedRoomOptionToDelete={setselectedRoomOptionToDelete}
+                                setshowSelectedRoomOptionToDelete={setshowSelectedRoomOptionToDelete}
+                                updateQuoteDetail={updateQuoteDetail}
+                                RoomOptionList={RoomOptionList}
+                                roomItemOptionsList={roomItemOptionsList}
+                                eachRoom={each}
+                                getRoomOptionList={getRoomOptionList}
+                            />
+                        )
                     }
                     {selectedQuoteUnit?.rooms?.length === 0 &&
                         <div className='m-auto'>
