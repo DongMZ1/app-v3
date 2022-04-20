@@ -318,7 +318,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {[...itemOptionCheckedList, ...roomItemOptionsList?.filter(each => !eachRoom?.categories.map((each: any) => each.name).includes(each)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).filter(each => !itemOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                            {[...itemOptionCheckedList, ...roomItemOptionsList?.filter(each => !eachRoom?.categories.map((eachC: any) => eachC.name).includes(each.name)).filter(eachUnit => eachUnit.name.toLowerCase().includes(itemKeyword.toLowerCase())).filter(each => !itemOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <Checkbox className='my-2' label={each.name} checked={itemOptionCheckedList.includes(each)} onChange={(v) => {
                                                     if (v) {
                                                         setitemOptionCheckedList(state => [...state, each])
