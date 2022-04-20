@@ -210,6 +210,7 @@ const Canvas = () => {
             }
         </div>
         <DesignCanvas
+            showElementsBar={showDesignElementsOption}
             onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
             designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : [])}
             onDownloadImages={() => handleDownloadImages(selectedCanvas?.designItems)}
