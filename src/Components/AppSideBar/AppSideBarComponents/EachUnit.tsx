@@ -268,7 +268,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 onSelectedChange={() => onSelectUnit()}
                 unitName={name}
                 //check if it is selected, if not then give it a unit count
-                units={eachUnit?.count}
+                units={eachUnit.count}
                 hasNotes={notes}
                 openNotesModal={() => setshowNote(true)}
                 darkmod={darkMode}

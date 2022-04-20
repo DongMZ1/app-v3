@@ -32,7 +32,7 @@ const AppSideBar = () => {
 
     const [selectedUnitToDelete, setselectedUnitToDelete] = useState<any>(undefined);
     const [showSelectedUnitToDelete, setshowSelectedUnitToDelete] = useState(false);
-    const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + b, 0);
+    const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + (b ? b : 0), 0);
     const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase')) && (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && (!quoteDetail?.approved);
     useEffect(() => {
         getUnitPackages()
@@ -174,7 +174,7 @@ const AppSideBar = () => {
                     </div>
                 }
                 <div className='flex px-4 mt-2'>
-                    <div className='text-sm font-para-text'>Total Units: {totalUnitCount}</div>
+                    <div className='text-sm font-para-text'>Total Units: {isNaN(totalUnitCount) ? 'Not Able To Calculate' : totalUnitCount}</div>
                     {!editable &&
                         <div className='my-auto ml-auto cursor-pointer' onClick={() => setshowEntendSideBar(false)}>
                             <AiOutlineLeft size={22} />
