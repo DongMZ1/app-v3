@@ -15,6 +15,7 @@ import { Popup } from '@fulhaus/react.ui.popup';
 import debounce from 'lodash.debounce';
 import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender';
+import useGetOrgRole from '../../../Hooks/useGetOrgRole'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 
 type RoomType = {
@@ -59,6 +60,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
+    const orgRole = useGetOrgRole();
     const totalPriceOfEachRoom: any = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
@@ -363,6 +365,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                                             setshowSelectedRoomOptionToDelete(true);
                                                         }}
                                                         className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
+                                                    {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
                                                 </div>)}
                                         </div>
                                         <div className='flex my-2'>

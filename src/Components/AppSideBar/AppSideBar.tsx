@@ -147,12 +147,16 @@ const AppSideBar = () => {
                                                         } else {
                                                             setunitOptionCheckedList(state => state.filter(e => e !== each))
                                                         }
-                                                    }} />{(userRole === 'admin' || userRole === 'owner') && each?.createdBy === fullName && <RiDeleteBin5Line
+                                                    }} />
+                                                    {(userRole === 'admin' || userRole === 'owner') && each?.createdBy === fullName && <RiDeleteBin5Line
                                                         onClick={() => {
                                                             setselectedUnitToDelete(each);
                                                             setshowSelectedUnitToDelete(true);
                                                         }}
-                                                        className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}</div>)}
+                                                        className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
+
+                                                    {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
+                                                </div>)}
                                     </div>
                                     <div className='flex my-2'>
                                         <Button onClick={() => {

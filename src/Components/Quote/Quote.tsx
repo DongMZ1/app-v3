@@ -18,6 +18,7 @@ import { ActionModal } from '@fulhaus/react.ui.action-modal';
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { showMessageAction } from '../../redux/Actions'
 import apiRequest from '../../Service/apiRequest';
+import useGetOrgRole from '../../Hooks/useGetOrgRole'
 import debounce from 'lodash.debounce';
 
 const Quote = () => {
@@ -38,6 +39,7 @@ const Quote = () => {
     const [roomPackageKeyword, setroomPackageKeyword] = useState('')
     const [eachUnitSetUpFeeEditable, seteachUnitSetUpFeeEditable] = useState(false);
 
+    const orgRole = useGetOrgRole();
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject)
     const quoteUnitLength = useSelector((state: Tappstate) => state.quoteDetail)?.data?.length;
@@ -279,6 +281,7 @@ const Quote = () => {
                                                                 setshowSelectedRoomOptionToDelete(true);
                                                             }}
                                                             className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
+                                                            {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
                                                     </div>
                                                 )}
                                         </div>
