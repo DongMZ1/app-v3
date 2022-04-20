@@ -21,30 +21,21 @@ const Canvas = () => {
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const selectedProject = useSelector((state: Tappstate) => state.selectedProject);
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch()
 
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const [showRoomOptions, setshowRoomOptions] = useState(false);
-    const [designItems, setdesignItems] = useState<any[]>([]);
     const [showDesignElementsOption, setshowDesignElementsOption] = useState(false);
 
     const selectedCanvas = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas;
 
-
-
-    const updatePopulatedDesignItemsRemote = async (designItems: any) => {
-        const res = await apiRequest({
-            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedCanvas?._id}`,
-            method: 'PATCH',
-            body: { designItems }
-        })
-    }
-
-    useEffect(
-        () => updateDesignItems(),
-        [JSON.stringify(selectedCanvas?.items)]
-    );
+    useEffect(() => {
+        if (selectedCanvas?._id && selectedCanvas?.designItems?.length === 0 && selectedCanvas?.items) {
+            //if there is no design items, then initilite design items
+            initialDesignItems();
+        }
+    }, [selectedCanvas?._id])
 
     useEffect(() => {
         setselectedRoom(undefined);
@@ -68,9 +59,19 @@ const Canvas = () => {
 
     const debounceupdatePopulatedDesignItemsRemote = useCallback(debounce((designItems: any) => updatePopulatedDesignItemsRemote(designItems), 2000), [currentOrgID, selectedCanvas?._id, selectedProject?._id, projectID]);
 
-    const updateDesignItems = () => {
+    //when user drag items around, we add a debounce function to allow db save the items'location
+    const updatePopulatedDesignItemsRemote = async (designItems: any) => {
+        const res = await apiRequest({
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/canvases/${selectedCanvas?._id}`,
+            method: 'PATCH',
+            body: { designItems }
+        })
+    }
+
+    const initialDesignItems = async () => {
         let items: any[] = [];
         let selectedRoomCanvasItems: any = selectedCanvas?.items;
+        //map everything inside items to design items
         if (selectedRoomCanvasItems) {
             for (let variable in selectedRoomCanvasItems) {
                 for (let product of selectedRoomCanvasItems[variable]) {
@@ -94,7 +95,17 @@ const Canvas = () => {
                 }
             }
         }
-        setdesignItems(items);
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
+        await updatePopulatedDesignItemsRemote(items);
+        dispatch(getQuoteDetailAndUpdateSelectedUnit({
+            organizationID: currentOrgID ? currentOrgID : '',
+            projectID,
+            quoteID: quoteID,
+            selectedQuoteUnitID: selectedQuoteUnit?.unitID
+        }))
     }
 
     const onRoomSelect = (eachRoom: any) => {
@@ -138,53 +149,38 @@ const Canvas = () => {
 
     const updateCanvasElement = async (item: any) => {
         if (selectedRoom?.roomID && selectedCanvas) {
-            if (selectedCanvas?.designItems?.length > 0) {
-                dispatch({
-                    type: 'appLoader',
-                    payload: true
-                })
-                const res = await apiRequest(
-                    {
-                        url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject?._id}/${quoteID}`,
-                        method: 'GET'
-                    }
-                )
-                if (res?.success) {
-                    dispatch({
-                        type: 'quoteDetail',
-                        payload: res?.quote
-                    })
-                    let resSelectedQuoteUnit = res?.quote?.data?.filter((eachUnit: any) => eachUnit.unitID === selectedQuoteUnit?.unitID)[0];
-                    const roomIndex = (resSelectedQuoteUnit.rooms as any[]).findIndex((each: any) => each.roomID === selectedRoom.roomID);
-                    await updatePopulatedDesignItemsRemote([...resSelectedQuoteUnit.rooms[roomIndex].selectedCanvas.designItems, item])
-                    const newSelectedQuoteUnit = produce(resSelectedQuoteUnit, (draft: any) => {
-                        draft.rooms[roomIndex].selectedCanvas.designItems = [...draft.rooms[roomIndex].selectedCanvas.designItems, item]
-                    })
-                    dispatch({
-                        type: 'selectedQuoteUnit',
-                        payload: newSelectedQuoteUnit
-                    })
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
+            const res = await apiRequest(
+                {
+                    url: `/api/fhapp-service/quote/${currentOrgID}/${selectedProject?._id}/${quoteID}`,
+                    method: 'GET'
                 }
+            )
+            if (res?.success) {
                 dispatch({
-                    type: 'appLoader',
-                    payload: false
+                    type: 'quoteDetail',
+                    payload: res?.quote
                 })
-            } else {
-                const newDesignElements = [...designItems, item]
-                setdesignItems(newDesignElements);
+                let resSelectedQuoteUnit = res?.quote?.data?.filter((eachUnit: any) => eachUnit.unitID === selectedQuoteUnit?.unitID)[0];
+                const roomIndex = (resSelectedQuoteUnit.rooms as any[]).findIndex((each: any) => each.roomID === selectedRoom.roomID);
+                await updatePopulatedDesignItemsRemote([...resSelectedQuoteUnit.rooms[roomIndex].selectedCanvas.designItems, item])
+                const newSelectedQuoteUnit = produce(resSelectedQuoteUnit, (draft: any) => {
+                    draft.rooms[roomIndex].selectedCanvas.designItems = [...draft.rooms[roomIndex].selectedCanvas.designItems, item]
+                })
                 dispatch({
-                    type: 'appLoader',
-                    payload: true
+                    type: 'selectedQuoteUnit',
+                    payload: newSelectedQuoteUnit
                 })
-                await updatePopulatedDesignItemsRemote(newDesignElements);
-                dispatch(getQuoteDetailAndUpdateSelectedUnit({
-                    organizationID: currentOrgID ? currentOrgID : '',
-                    projectID,
-                    quoteID: quoteID,
-                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
-                }))
             }
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
         }
+
     }
 
 
@@ -215,8 +211,8 @@ const Canvas = () => {
         </div>
         <DesignCanvas
             onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
-            designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : designItems?.length > 0 ? designItems : [])}
-            onDownloadImages={() => handleDownloadImages(designItems)}
+            designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : [])}
+            onDownloadImages={() => handleDownloadImages(selectedCanvas?.designItems)}
             onChange={(v) => debounceupdatePopulatedDesignItemsRemote(v?.designItems)}
         />
         {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
