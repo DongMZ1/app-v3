@@ -43,7 +43,7 @@ const StartNewProject = ({ type, close, duplicateProjInfo, searchkeyWord }: Star
 
     let FormIsValid = false;
     if (type === 'project') {
-        FormIsValid = !!(projectTitle && budget && clientName && clientEmail && streetName && postalCode && province && city && currency && country);
+        FormIsValid = (!!(projectTitle && budget && clientName && clientEmail && streetName && postalCode && province && city && currency && country))&& budget >= 0;
     }
     if (type === 'design') {
         FormIsValid = !!projectTitle;
