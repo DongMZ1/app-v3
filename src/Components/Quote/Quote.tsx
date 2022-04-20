@@ -240,7 +240,7 @@ const Quote = () => {
 
     return <>
         <ActionModal modalClassName='font-moret' showModal={showSelectedRoomOptionToDelete} message={`Delete Unit Package => ${selectedRoomOptionToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedRoomOptionToDelete?.name} ?`} onCancel={() => setshowSelectedRoomOptionToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteRoomPackage()} />
-        <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto quote'>
+        <div className='flex flex-col flex-1 h-full px-6 py-4 overflow-y-auto quote'>
             {(selectedQuoteUnit) ?
                 <>
                     {userRole !== 'viewer' && (!quoteDetail?.approved) &&
