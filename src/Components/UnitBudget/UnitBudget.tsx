@@ -15,7 +15,7 @@ const UnitBudget = () => {
     const totalItems = selectedQuoteUnit?.count * selectedQuoteUnit?.rooms?.map(
         (eachRoom: any) => eachRoom?.count * eachRoom?.categories?.map((category: any) => category?.qty).reduce((a: any, b: any) => a + b, 0)
     ).reduce((a: any, b: any) => a + b, 0);
-    return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto unit-budget'>
+    return <div className='flex flex-col flex-1 h-full px-6 py-4 overflow-y-auto unit-budget'>
         <div className='flex'>
             <div className='text-2xl font-moret'>{selectedQuoteUnit?.name}</div>
             <div className='my-auto ml-auto mr-8 text-sm font-semibold font-ssp'>Total {totalItems} items</div>

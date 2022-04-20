@@ -125,7 +125,7 @@ const QuoteSummaryRental = () => {
         return <UnitBudget />
     }
 
-    return <div className='flex flex-col w-full h-full px-6 py-4 overflow-y-auto text-sm quote-summary-rental font-ssp'>
+    return <div className='flex flex-col flex-1 h-full px-6 py-4 overflow-y-auto text-sm quote-summary-rental font-ssp'>
         <div className='flex'>
             <div className='my-auto text-2xl font-moret'>Rental Summary</div>
             {
