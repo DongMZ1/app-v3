@@ -402,16 +402,18 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) =
     const dispatch = useDispatch();
 
     const categoryPriceChange = (MSRP: number) => {
-        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-            const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-            const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
-            draft.rooms[roomIndex].categories[categoriesIndex].budget = MSRP
-        });
-        dispatch({
-            type: 'selectedQuoteUnit',
-            payload: newselectedQuoteUnit
-        });
-        updateQuoteDetail(newselectedQuoteUnit);
+        if (MSRP >= 0) {
+            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+                const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+                const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
+                draft.rooms[roomIndex].categories[categoriesIndex].budget = MSRP
+            });
+            dispatch({
+                type: 'selectedQuoteUnit',
+                payload: newselectedQuoteUnit
+            });
+            updateQuoteDetail(newselectedQuoteUnit);
+        }
     }
 
     const deleteCatogory = () => {
@@ -458,7 +460,7 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) =
         buy={!eachCategory.rentable}
         rentMSRP={eachCategory.budget}
         buyMSRP={eachCategory.budget}
-        onMSRPChange={(MSRP) => categoryPriceChange(Number(MSRP))}
+        onMSRPChange={(MSRP) => categoryPriceChange(MSRP)}
         onRentableChange={(rentable) => updateRentable(rentable)}
         editable={userRole !== 'viewer' && (!quoteDetail?.approved)}
         DeleteFurniture={() => deleteCatogory()}

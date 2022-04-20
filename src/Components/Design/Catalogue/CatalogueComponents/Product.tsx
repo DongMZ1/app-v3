@@ -106,6 +106,7 @@ const Product = ({ eachProduct, isExpand, draggableWidth }: ProductProp) => {
     return <div className={`${isExpand ? 'w-1/6' : 'w-1/3'} ${draggableWidth ? draggableWidth > 1100 ? 'w-1/5' : (draggableWidth > 900 ? 'w-1/4' : '') : ''} px-4`}>
         <div ref={productRef} draggable onDragStart={(e) => productOnDragStart(e)} onDragEnd={(e) => productOnDragEnd(e)}>
             <AppV3FurnitureCard
+                imageClassName='min-height-4rem max-height-16rem'
                 imageURLs={eachProduct?.imageURLs}
                 inStock={eachProduct?.stockQty > 0}
                 stocks={eachProduct?.stockQty}
