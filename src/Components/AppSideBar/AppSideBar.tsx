@@ -15,6 +15,7 @@ import { showMessageAction } from '../../redux/Actions'
 import { Loader } from '@fulhaus/react.ui.loader'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { ActionModal } from '@fulhaus/react.ui.action-modal';
+import useGetOrgRole from '../../Hooks/useGetOrgRole'
 
 const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
@@ -23,6 +24,7 @@ const AppSideBar = () => {
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const dispatch = useDispatch();
     const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
+    const orgRole = useGetOrgRole();
     const [showEntendSideBar, setshowEntendSideBar] = useState(false);
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
