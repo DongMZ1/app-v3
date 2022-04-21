@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Tappstate } from '../../../redux/reducers'
 import { ClickOutsideAnElementHandler } from '@fulhaus/react.ui.click-outside-an-element-handler';
 import { CSSTransition } from 'react-transition-group'
+import type { TDesignItem } from '@fulhaus/react.ui.design-canvas';
 import apiRequest from '../../../Service/apiRequest';
 import handleDownloadImages from '../../../Service/downloadImage';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
@@ -82,6 +83,7 @@ const Canvas = () => {
                                 type: "image",
                                 name: product?.name + (i >= 1 ? `--${i}` : ''),
                                 value: product?.imageURLs[0],
+                                productID: product?._id
                             })
                         }
                     }
@@ -90,6 +92,7 @@ const Canvas = () => {
                             type: "image",
                             name: product?.name,
                             value: product?.imageURLs[0],
+                            productID: product?._id
                         })
                     }
                 }
@@ -183,6 +186,23 @@ const Canvas = () => {
 
     }
 
+    const onRemoveImageBackground = async (imageId: string, designItems: TDesignItem[]) => {
+        if (designItems.filter(each => each.id === imageId)?.length > 0 && (designItems.filter(each => each.id === imageId)?.[0] as any)?.productID) {
+            const res = await apiRequest({
+                url: `/api/product/image/remove-background`,
+                method: 'POST',
+                body: {
+                    imageURL: designItems.filter(each => each.id === imageId)[0].value,
+                    productID: (designItems.filter(each => each.id === imageId)[0] as any).productID
+                }
+            })
+        }
+    }
+
+    const onCropImage = (imageId: string, designItems: TDesignItem[]) => {
+        console.log(designItems)
+    }
+
 
     return <div className={`w-full flex flex-col h-full canvas`}>
         <div className='flex px-4'>
@@ -215,6 +235,8 @@ const Canvas = () => {
             designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : [])}
             onDownloadImages={() => handleDownloadImages(selectedCanvas?.designItems)}
             onChange={(v) => debounceupdatePopulatedDesignItemsRemote(v?.designItems)}
+            onRemoveImageBackground={(imageID, designItems) => onRemoveImageBackground(imageID, designItems)}
+            onCropImage={(imageID, designItems) => onCropImage(imageID, designItems)}
         />
         {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
             updateCanvasElement({
