@@ -189,7 +189,7 @@ const Canvas = () => {
     const onRemoveImageBackground = async (imageId: string, designItems: TDesignItem[]) => {
         if (designItems.filter(each => each.id === imageId)?.length > 0 && (designItems.filter(each => each.id === imageId)?.[0] as any)?.productID) {
             const res = await apiRequest({
-                url: `/api/product/image/remove-background`,
+                url: `/api/products-service/product/image/remove-background`,
                 method: 'POST',
                 body: {
                     imageURL: designItems.filter(each => each.id === imageId)[0].value,
