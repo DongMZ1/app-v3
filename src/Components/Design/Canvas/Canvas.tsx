@@ -9,7 +9,7 @@ import { CSSTransition } from 'react-transition-group'
 import apiRequest from '../../../Service/apiRequest';
 import handleDownloadImages from '../../../Service/downloadImage';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
-import DesignElements from './CanvasComponent/design-elements'
+import DesignElements from './CanvasDesignElements/design-elements'
 import produce from 'immer';
 import debounce from 'lodash.debounce';
 type CanvasState = {
