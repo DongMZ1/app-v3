@@ -21,21 +21,27 @@ import apiRequest from '../../Service/apiRequest';
 import useGetOrgRole from '../../Hooks/useGetOrgRole'
 import debounce from 'lodash.debounce';
 
+type TroomPackage = {
+    name: string,
+    id: string,
+    categories: any[],
+    createdBy: string,
+    default: boolean
+}
+
+type TcategoryItem = { name: string; id: string; }
+
+export type {TroomPackage, TcategoryItem};
 const Quote = () => {
     //add room and add room packages list share the same name and ID
-    const [RoomOptionList, setRoomOptionList] = useState<{ name: string, id: string, categories: any[], createdBy: string }[]>([]);
+    const [RoomOptionList, setRoomOptionList] = useState<TroomPackage[]>([]);
     const [selectedRoomOptionToDelete, setselectedRoomOptionToDelete] = useState<any>(undefined);
     const [showSelectedRoomOptionToDelete, setshowSelectedRoomOptionToDelete] = useState(false);
 
-    const [roomItemOptionsList, setroomItemOptionsList] = useState<{ name: string, id: string }[]>([]);
+    const [roomItemOptionsList, setroomItemOptionsList] = useState<TcategoryItem[]>([]);
     const [showAddRoomDropdown, setshowAddRoomDropdown] = useState(false);
     const [customRoomName, setcustomRoomName] = useState('');
-    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<{
-        name: string;
-        id: string;
-        categories: any[];
-        createdBy: string;
-    }[]>([]);
+    const [roomOptionCheckedList, setroomOptionCheckedList] = useState<TroomPackage[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('')
     const [eachUnitSetUpFeeEditable, seteachUnitSetUpFeeEditable] = useState(false);
 
@@ -90,6 +96,7 @@ const Quote = () => {
                         name: each.name,
                         id: each._id,
                         createdBy: each.createdBy,
+                        default: each.default,
                         categories: each?.categories?.map((each: any) => {
                             return {
                                 budget: each.budget,
@@ -265,10 +272,10 @@ const Quote = () => {
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {[...roomOptionCheckedList, ...RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomOptionCheckedList.includes(each))]
+                                            {[...roomOptionCheckedList, ...RoomOptionList?.filter(eachUnit => eachUnit?.name?.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomOptionCheckedList.some(e => e.id === each.id))]
                                                 .sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                     <div className='flex my-2'>
-                                                        <Checkbox label={each?.name} checked={roomOptionCheckedList.includes(each)} onChange={(v) => {
+                                                        <Checkbox label={each?.name} checked={roomOptionCheckedList.some(e => e.id === each.id)} onChange={(v) => {
                                                             if (v) {
                                                                 setroomOptionCheckedList(state => [...state, each])
                                                             } else {
@@ -281,7 +288,7 @@ const Quote = () => {
                                                                 setshowSelectedRoomOptionToDelete(true);
                                                             }}
                                                             className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
-                                                            {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
+                                                        {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
                                                     </div>
                                                 )}
                                         </div>

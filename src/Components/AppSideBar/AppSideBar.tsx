@@ -17,6 +17,12 @@ import { RiDeleteBin5Line } from 'react-icons/ri'
 import { ActionModal } from '@fulhaus/react.ui.action-modal';
 import useGetOrgRole from '../../Hooks/useGetOrgRole'
 
+type TunitPackage = {
+    name: string;
+    id: string;
+    createdBy: string;
+    default: boolean;
+}
 const AppSideBar = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject)?.userRole;
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
@@ -29,14 +35,15 @@ const AppSideBar = () => {
     const [showAddUnitDropdown, setshowAddUnitDropdown] = useState(false);
     const [customUnitName, setcustomUnitName] = useState('');
     const [unitPackageKeyword, setunitPackageKeyword] = useState('');
-    const [unitOptionCheckedList, setunitOptionCheckedList] = useState<{ name: string, id: string, createdBy: string }[]>([]);
-    const [unitOptionList, setunitOptionList] = useState<{ name: string, id: string, createdBy: string }[]>([]);
+    const [unitOptionCheckedList, setunitOptionCheckedList] = useState<TunitPackage[]>([]);
+    const [unitOptionList, setunitOptionList] = useState<TunitPackage[]>([]);
 
     const [selectedUnitToDelete, setselectedUnitToDelete] = useState<any>(undefined);
     const [showSelectedUnitToDelete, setshowSelectedUnitToDelete] = useState(false);
     const totalUnitCount = quoteDetail?.data?.map((each: any) => each.count)?.reduce((a: any, b: any) => a + (b ? b : 0), 0);
     const editable = userRole !== 'viewer' && (!window.location.href.includes('/quote-summary-rental')) && (!window.location.href.includes('/quote-summary-purchase')) && (!window.location.href.includes('/project/design')) && (!window.location.href.includes('/design-only')) && (!quoteDetail?.approved);
     useEffect(() => {
+        //get the initial unit package when onloading
         getUnitPackages()
     }, [currentOrgID])
     const getUnitPackages = async () => {
@@ -48,8 +55,7 @@ const AppSideBar = () => {
                 }
             )
             if (res?.success) {
-                setunitOptionList(res?.unitPackages?.map((each: any) => { return { name: each.name, id: each._id, createdBy: each?.createdBy } }
-
+                setunitOptionList(res?.unitPackages?.map((each: any) => { return { name: each.name, id: each._id, createdBy: each?.createdBy, default: each?.default } }
                 ))
             }
         }
@@ -107,6 +113,45 @@ const AppSideBar = () => {
             dispatch(showMessageAction(true, res?.message));
         }
     }
+
+    const setThisUnitPackageAsDefault = async (each: TunitPackage, v: boolean) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
+        const res = await apiRequest({
+            url: `/api/fhapp-service/package/unit/${currentOrgID}`,
+            method: 'POST',
+            body: {
+                default: v
+            }
+        })
+        if (res?.success) {
+            //check both unit list and checked unit list and update them
+            let newUnitOptionList = [...unitOptionList].filter(eachUnitInNewUnitOptionList => eachUnitInNewUnitOptionList.id !== each.id)
+            newUnitOptionList.push({
+                name: each.name,
+                id: each.id,
+                createdBy: each.createdBy,
+                default: v
+            });
+            setunitOptionList(newUnitOptionList);
+            if (unitOptionCheckedList.some(e => e.id === each.id)) {
+                let newUnitOptionCheckedList = [...unitOptionCheckedList].filter(eachUnitInNewUnitOptionCheckedList => eachUnitInNewUnitOptionCheckedList.id !== each.id)
+                newUnitOptionCheckedList.push({
+                    name: each.name,
+                    id: each.id,
+                    createdBy: each.createdBy,
+                    default: v
+                });
+                setunitOptionCheckedList(newUnitOptionCheckedList)
+            }
+        }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        })
+    }
     return (<>
         <ActionModal modalClassName='font-moret' showModal={showSelectedUnitToDelete} message={`Delete Unit Package => ${selectedUnitToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedUnitToDelete?.name} ?`} onCancel={() => setshowSelectedUnitToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteUnitPackage()} />
         <CSSTransition in={!showEntendSideBar} mountOnEnter unmountOnExit timeout={300} classNames='display-none-animation'>
@@ -137,11 +182,11 @@ const AppSideBar = () => {
                                     />
                                     <div className='w-full overflow-y-auto max-h-60'>
                                         {[...unitOptionCheckedList, ...unitOptionList?.filter(eachUnit =>
-                                            eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).filter(each => !unitOptionCheckedList.includes(each))
+                                            eachUnit?.name.toLowerCase().includes(unitPackageKeyword.toLowerCase())).filter(each => !unitOptionCheckedList.some(e => e.id === each.id))
                                         ].sort((a, b) => a.name.localeCompare(b.name))
                                             .map(each =>
                                                 <div className='flex my-2'>
-                                                    <Checkbox label={each?.name} checked={unitOptionCheckedList.includes(each)} onChange={(v) => {
+                                                    <Checkbox label={each?.name} checked={unitOptionCheckedList.some(e => e.id === each.id)} onChange={(v) => {
                                                         if (v) {
                                                             setunitOptionCheckedList(state => [...state, each])
                                                         } else {
@@ -155,7 +200,7 @@ const AppSideBar = () => {
                                                         }}
                                                         className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
 
-                                                    {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
+                                                    {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={each?.default} onChange={(v) => setThisUnitPackageAsDefault(each, v)} />}
                                                 </div>)}
                                     </div>
                                     <div className='flex my-2'>

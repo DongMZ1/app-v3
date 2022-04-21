@@ -17,17 +17,12 @@ import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender';
 import useGetOrgRole from '../../../Hooks/useGetOrgRole'
 import { RiDeleteBin5Line } from 'react-icons/ri'
-
+import type { TroomPackage, TcategoryItem } from '../Quote'
 type RoomType = {
     eachRoom: any,
-    roomItemOptionsList: { name: string; id: string; }[]
+    roomItemOptionsList: TcategoryItem[]
     updateQuoteDetail: (newselectedQuoteUnit: any) => void,
-    RoomOptionList: {
-        name: string;
-        id: string;
-        categories: any[];
-        createdBy: string;
-    }[],
+    RoomOptionList: TroomPackage[],
     getRoomOptionList: () => Promise<void>,
     setselectedRoomOptionToDelete: React.Dispatch<any>,
     setshowSelectedRoomOptionToDelete: React.Dispatch<React.SetStateAction<boolean>>
@@ -37,16 +32,11 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
 
     const [showAddItemDropdown, setshowAddItemDropdown] = useState(false);
     const [customItemName, setcustomItemName] = useState('');
-    const [itemOptionCheckedList, setitemOptionCheckedList] = useState<{ name: string; id: string; }[]>([]);
+    const [itemOptionCheckedList, setitemOptionCheckedList] = useState<TcategoryItem[]>([]);
     const [itemKeyword, setitemKeyword] = useState('');
 
     const [showAddPackageDropdown, setshowAddPackageDropdown] = useState(false);
-    const [roomPackageOptionCheckedList, setroomPackageOptionCheckedList] = useState<{
-        name: string;
-        id: string | null;
-        categories: any[];
-        createdBy: string;
-    }[]>([]);
+    const [roomPackageOptionCheckedList, setroomPackageOptionCheckedList] = useState<TroomPackage[]>([]);
     const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
     const [saveAsRoomPackageName, setsaveAsRoomPackageName] = useState('');
@@ -350,9 +340,9 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                                         }}
                                         />
                                         <div className='w-full overflow-y-auto max-h-60'>
-                                            {[...roomPackageOptionCheckedList, ...RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomPackageOptionCheckedList.includes(each))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
+                                            {[...roomPackageOptionCheckedList, ...RoomOptionList?.filter(eachPackage => eachPackage.name.toLowerCase().includes(roomPackageKeyword.toLowerCase())).filter(each => !roomPackageOptionCheckedList.some(e => e.id === each.id))].sort((a, b) => a.name.localeCompare(b.name)).map(each =>
                                                 <div className='flex my-2'>
-                                                    <Checkbox label={each.name} checked={roomPackageOptionCheckedList.includes(each)} onChange={(v) => {
+                                                    <Checkbox label={each.name} checked={roomPackageOptionCheckedList.some(e => e.id === each.id)} onChange={(v) => {
                                                         if (v) {
                                                             setroomPackageOptionCheckedList(state => [...state, each])
                                                         } else {
