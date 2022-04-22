@@ -40,6 +40,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const [roomPackageKeyword, setroomPackageKeyword] = useState('');
 
     const [saveAsRoomPackageName, setsaveAsRoomPackageName] = useState('');
+    const [saveAsRoomPackageDefault, setsaveAsRoomPackageDefault] = useState(false);
     const [showSaveAsRoomPackage, setshowSaveAsRoomPackage] = useState(false);
     const [errorMessage, seterrorMessage] = useState<any>('');
 
@@ -114,7 +115,8 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 url: `/api/fhapp-service/package/room/${currentOrgID}`,
                 body: {
                     name: saveAsRoomPackageName,
-                    categories: eachRoom.categories
+                    categories: eachRoom.categories,
+                    default: (orgRole === 'owner' || orgRole === 'admin') ? saveAsRoomPackageDefault : undefined
                 },
                 method: 'POST'
             }
@@ -257,6 +259,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                 </div>
                 {errorMessage && <div className='my-1 text-xs font-semibold text-red'>{errorMessage}</div>}
                 <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveAsRoomPackageName} onChange={(e) => setsaveAsRoomPackageName((e.target as any).value)} />
+                {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className='mt-2 text-sm font-moret' label='default unit package' checked={saveAsRoomPackageDefault} onChange={v => setsaveAsRoomPackageDefault(v)} />}
                 <div className='flex my-2'>
                     <Button onClick={() => {
                         setshowSaveAsRoomPackage(false);
