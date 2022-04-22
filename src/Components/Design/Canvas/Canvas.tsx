@@ -188,6 +188,10 @@ const Canvas = () => {
 
     const onRemoveImageBackground = async (imageId: string, designItems: TDesignItem[]) => {
         if (designItems.filter(each => each.id === imageId)?.length > 0 && (designItems.filter(each => each.id === imageId)?.[0] as any)?.productID) {
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
             const res = await apiRequest({
                 url: `/api/products-service/product/image/remove-background`,
                 method: 'POST',
@@ -195,6 +199,26 @@ const Canvas = () => {
                     imageURL: designItems.filter(each => each.id === imageId)[0].value,
                     productID: (designItems.filter(each => each.id === imageId)[0] as any).productID
                 }
+            })
+            if (res?.success) {
+                const newDesignItems = produce(designItems, (draft: TDesignItem[]) => {
+                    draft.forEach(each => {
+                        if (each.id === imageId) {
+                            each.value = res?.imageURL
+                        }
+                    })
+                })
+                await updatePopulatedDesignItemsRemote(newDesignItems);
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+            }
+            dispatch({
+                type: 'appLoader',
+                payload: false
             })
         }
     }
