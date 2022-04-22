@@ -13,6 +13,8 @@ import useDebounce from '../../../Hooks/useDebounce';
 import useIsFirstRender from '../../../Hooks/useIsFirstRender'
 import debounce from 'lodash.debounce'
 import { showMessageAction } from '../../../redux/Actions'
+import useGetOrgRole from '../../../Hooks/useGetOrgRole'
+import { Checkbox } from '@fulhaus/react.ui.checkbox'
 type eachUnitType = {
     eachUnit: any,
     getUnitPackages: () => Promise<void>
@@ -22,14 +24,16 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
     const [name, setname] = useState(eachUnit?.name);
     const [notes, setnotes] = useState(eachUnit?.notes);
     const [errorMessage, seterrorMessage] = useState<any>('');
+    const [unitPackageDefault, setunitPackageDefault] = useState(false);
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state?.quoteDetail)?._id;
     const quoteDetail = useSelector((state: Tappstate) => state?.quoteDetail);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit)
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
+    const orgRole = useGetOrgRole();
 
     const [saveUnitPackageName, setsaveUnitPackageName] = useState('');
     const [showSaveAsUnitPackage, setshowSaveAsUnitPackage] = useState(false);
@@ -160,27 +164,20 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             type: 'selectedQuoteUnit',
             payload: undefined
         })
-        if (true) {
-            dispatch({
-                type: 'appLoader',
-                payload: true
-            })
-            setTimeout(() => {
-                dispatch({
-                    type: 'selectedQuoteUnit',
-                    payload: eachUnit
-                })
-                dispatch({
-                    type: 'appLoader',
-                    payload: false
-                })
-            }, 1200)
-        } else {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
+        setTimeout(() => {
             dispatch({
                 type: 'selectedQuoteUnit',
                 payload: eachUnit
             })
-        }
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
+        }, 1200)
     }
 
     const deleteUnit = async () => {
@@ -218,7 +215,8 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
             body: {
                 name: saveUnitPackageName,
                 rooms: eachUnit.rooms,
-                setupFee: Number(eachUnit?.setupFee)
+                setupFee: Number(eachUnit?.setupFee),
+                default: (orgRole === 'owner' || orgRole === 'admin') ? unitPackageDefault : undefined
             },
             method: 'POST'
         })
@@ -241,6 +239,7 @@ const EachUnit = ({ eachUnit, getUnitPackages }: eachUnitType) => {
                 </div>
                 {errorMessage && <div className='my-1 text-xs font-semibold text-red'>{errorMessage}</div>}
                 <TextInput className='mt-2' inputName='save as room package input' variant='box' value={saveUnitPackageName} onChange={(e) => setsaveUnitPackageName((e.target as any).value)} />
+                {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className='mt-2 text-sm font-moret' label='default unit package' checked={unitPackageDefault} onChange={v => setunitPackageDefault(v)} />}
                 <div className='flex my-2'>
                     <Button onClick={() => {
                         setshowSaveAsUnitPackage(false);
