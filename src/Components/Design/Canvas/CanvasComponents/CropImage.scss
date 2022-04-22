@@ -1,0 +1,9 @@
+.crop-image {
+    background-color: white;
+    border: 1px solid black;
+    .height-70vh {
+        height: 70vh;
+        width: 80vw;
+        object-fit: contain;
+    }
+}

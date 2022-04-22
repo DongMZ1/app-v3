@@ -13,9 +13,9 @@ import { getQuoteDetailAndUpdateSelectedUnit } from '../../../redux/Actions'
 import DesignElements from './CanvasDesignElements/design-elements'
 import produce from 'immer';
 import debounce from 'lodash.debounce';
-type CanvasState = {
-    tabState: string;
-}
+import { Popup } from '@fulhaus/react.ui.popup';
+import CropImage from './CanvasComponents/CropImage'
+
 const Canvas = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
@@ -28,6 +28,10 @@ const Canvas = () => {
     const [selectedRoom, setselectedRoom] = useState<any>(undefined);
     const [showRoomOptions, setshowRoomOptions] = useState(false);
     const [showDesignElementsOption, setshowDesignElementsOption] = useState(false);
+
+    const [cropImageDesignItems, setcropImageDesignItems] = useState<TDesignItem[]>([]);
+    const [cropImageID, setcropImageID] = useState<string | undefined>(undefined);
+    const [showCropImage, setshowCropImage] = useState(false);
 
     const selectedCanvas = selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.selectedCanvas;
 
@@ -224,52 +228,61 @@ const Canvas = () => {
     }
 
     const onCropImage = (imageId: string, designItems: TDesignItem[]) => {
-        console.log(designItems)
+        if (imageId) {
+            setcropImageID(imageId);
+            setcropImageDesignItems(designItems);
+            setshowCropImage(true);
+        }
     }
 
 
-    return <div className={`w-full flex flex-col h-full canvas`}>
-        <div className='flex px-4'>
-            <div className='relative mr-8'>
-                <div onClick={() => { if (selectedQuoteUnit) { setshowRoomOptions(true) } }} className='flex px-2 py-1 text-lg font-semibold cursor-pointer font-moret'>
-                    {selectedQuoteUnit ? (selectedRoom?.name ? selectedRoom?.name : 'SELECT A ROOM TO GET START') : 'SELECT A UNIT TO GET START'} <MdKeyboardArrowDown className='my-auto ml-2' /></div>
-                {selectedQuoteUnit &&
-                    <CSSTransition in={showRoomOptions} timeout={300} unmountOnExit classNames='opacity-animation'>
-                        <div className='absolute z-50 bg-white border border-black border-solid w-72'>
-                            <ClickOutsideAnElementHandler noStyle onClickedOutside={() => setshowRoomOptions(false)}>
-                                {
-                                    selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div onClick={() => onRoomSelect(eachRoom)} className='flex w-full px-2 py-2 text-sm cursor-pointer font-ssp hover:bg-gray-200'>
-                                        {eachRoom?.name}
-                                    </div>
-                                    )
-                                }
-                            </ClickOutsideAnElementHandler>
-                        </div></CSSTransition>}
-            </div>
-            {
-                selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={() => goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
-                    <div className='m-auto'>{eachCanvas?.draftName}</div>
+    return <>
+        <Popup horizontalAlignment='center' verticalAlignment='center' show={showCropImage} onClose={() => setshowCropImage(false)}>
+              <CropImage onClose={() => setshowCropImage(false)} cropImageID={cropImageID} cropImageDesignItems={cropImageDesignItems} />
+        </Popup>
+        <div className={`w-full flex flex-col h-full canvas`}>
+            <div className='flex px-4'>
+                <div className='relative mr-8'>
+                    <div onClick={() => { if (selectedQuoteUnit) { setshowRoomOptions(true) } }} className='flex px-2 py-1 text-lg font-semibold cursor-pointer font-moret'>
+                        {selectedQuoteUnit ? (selectedRoom?.name ? selectedRoom?.name : 'SELECT A ROOM TO GET START') : 'SELECT A UNIT TO GET START'} <MdKeyboardArrowDown className='my-auto ml-2' /></div>
+                    {selectedQuoteUnit &&
+                        <CSSTransition in={showRoomOptions} timeout={300} unmountOnExit classNames='opacity-animation'>
+                            <div className='absolute z-50 bg-white border border-black border-solid w-72'>
+                                <ClickOutsideAnElementHandler noStyle onClickedOutside={() => setshowRoomOptions(false)}>
+                                    {
+                                        selectedQuoteUnit?.rooms?.map((eachRoom: any) => <div onClick={() => onRoomSelect(eachRoom)} className='flex w-full px-2 py-2 text-sm cursor-pointer font-ssp hover:bg-gray-200'>
+                                            {eachRoom?.name}
+                                        </div>
+                                        )
+                                    }
+                                </ClickOutsideAnElementHandler>
+                            </div></CSSTransition>}
                 </div>
-                )
-            }
+                {
+                    selectedQuoteUnit?.rooms?.filter((each: any) => each?.roomID === selectedRoom?.roomID)?.[0]?.canvases?.map((eachCanvas: any) => <div onClick={() => goThisDraft(eachCanvas)} className={`flex px-4 my-1 border border-solid mr-6 ${eachCanvas?._id === selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black cursor-pointer '}`}>
+                        <div className='m-auto'>{eachCanvas?.draftName}</div>
+                    </div>
+                    )
+                }
+            </div>
+            <DesignCanvas
+                showElementsBar={showDesignElementsOption}
+                onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
+                designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : [])}
+                onDownloadImages={() => handleDownloadImages(selectedCanvas?.designItems)}
+                onChange={(v) => debounceupdatePopulatedDesignItemsRemote(v?.designItems)}
+                onRemoveImageBackground={(imageID, designItems) => onRemoveImageBackground(imageID, designItems)}
+                onCropImage={(imageID, designItems) => onCropImage(imageID, designItems)}
+            />
+            {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
+                updateCanvasElement({
+                    type: "image",
+                    name: n,
+                    value: v,
+                })
+            }} />}
         </div>
-        <DesignCanvas
-            showElementsBar={showDesignElementsOption}
-            onAddDesignElements={() => setshowDesignElementsOption(state => !state)}
-            designItems={(selectedCanvas?.designItems?.length > 0 ? selectedCanvas?.designItems : [])}
-            onDownloadImages={() => handleDownloadImages(selectedCanvas?.designItems)}
-            onChange={(v) => debounceupdatePopulatedDesignItemsRemote(v?.designItems)}
-            onRemoveImageBackground={(imageID, designItems) => onRemoveImageBackground(imageID, designItems)}
-            onCropImage={(imageID, designItems) => onCropImage(imageID, designItems)}
-        />
-        {showDesignElementsOption && <DesignElements onSelect={(v, n) => {
-            updateCanvasElement({
-                type: "image",
-                name: n,
-                value: v,
-            })
-        }} />}
-    </div>
+    </>
 }
 
 export default Canvas
