@@ -288,7 +288,6 @@ const Quote = () => {
                                                                 setshowSelectedRoomOptionToDelete(true);
                                                             }}
                                                             className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
-                                                        {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={false} onChange={(v) => { }} />}
                                                     </div>
                                                 )}
                                         </div>

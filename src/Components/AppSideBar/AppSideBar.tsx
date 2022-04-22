@@ -114,44 +114,6 @@ const AppSideBar = () => {
         }
     }
 
-    const setThisUnitPackageAsDefault = async (each: TunitPackage, v: boolean) => {
-        dispatch({
-            type: 'appLoader',
-            payload: true
-        })
-        const res = await apiRequest({
-            url: `/api/fhapp-service/package/unit/${currentOrgID}`,
-            method: 'POST',
-            body: {
-                default: v
-            }
-        })
-        if (res?.success) {
-            //check both unit list and checked unit list and update them
-            let newUnitOptionList = [...unitOptionList].filter(eachUnitInNewUnitOptionList => eachUnitInNewUnitOptionList.id !== each.id)
-            newUnitOptionList.push({
-                name: each.name,
-                id: each.id,
-                createdBy: each.createdBy,
-                default: v
-            });
-            setunitOptionList(newUnitOptionList);
-            if (unitOptionCheckedList.some(e => e.id === each.id)) {
-                let newUnitOptionCheckedList = [...unitOptionCheckedList].filter(eachUnitInNewUnitOptionCheckedList => eachUnitInNewUnitOptionCheckedList.id !== each.id)
-                newUnitOptionCheckedList.push({
-                    name: each.name,
-                    id: each.id,
-                    createdBy: each.createdBy,
-                    default: v
-                });
-                setunitOptionCheckedList(newUnitOptionCheckedList)
-            }
-        }
-        dispatch({
-            type: 'appLoader',
-            payload: false
-        })
-    }
     return (<>
         <ActionModal modalClassName='font-moret' showModal={showSelectedUnitToDelete} message={`Delete Unit Package => ${selectedUnitToDelete?.name}`} subText={`Are you sure you want to permanently delete unit package ${selectedUnitToDelete?.name} ?`} onCancel={() => setshowSelectedUnitToDelete(false)} submitButtonLabel={'Delete'} cancelButtonLabel={'Cancel'} onSubmit={() => deleteUnitPackage()} />
         <CSSTransition in={!showEntendSideBar} mountOnEnter unmountOnExit timeout={300} classNames='display-none-animation'>
@@ -199,8 +161,6 @@ const AppSideBar = () => {
                                                             setshowSelectedUnitToDelete(true);
                                                         }}
                                                         className='my-auto ml-auto mr-4 cursor-pointer' color='red' />}
-
-                                                    {(orgRole === 'owner' || orgRole === 'admin') && <Checkbox className={`${userRole === 'admin' || userRole === 'owner' ? '' : 'ml-auto'} my-auto`} checked={each?.default} onChange={(v) => setThisUnitPackageAsDefault(each, v)} />}
                                                 </div>)}
                                     </div>
                                     <div className='flex my-2'>
