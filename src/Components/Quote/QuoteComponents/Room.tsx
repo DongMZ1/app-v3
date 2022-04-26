@@ -53,6 +53,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const orgRole = useGetOrgRole();
     const totalPriceOfEachRoom: any = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
+    const totalItemsInRoomCount = eachRoom?.count * eachRoom?.categories?.map((category: any) => category?.qty)?.reduce((a: any, b: any) => a + b, 0)
     const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
     const isFirstRendering = useIsFirstRender();
@@ -278,6 +279,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
                     setshowSaveAsRoomPackage(true);
                     seterrorMessage('');
                 }}
+                totalItems={totalItemsInRoomCount}
                 deleteRoom={() => deleteRoom()}
                 //filter out room item that already added to this room
                 roomNumber={eachRoom?.count}
