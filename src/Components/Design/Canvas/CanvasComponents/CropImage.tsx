@@ -11,6 +11,7 @@ import apiRequest from '../../../../Service/apiRequest';
 import { useDispatch, useSelector } from 'react-redux';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
 import { Tappstate } from '../../../../redux/reducers'
+import { v4 as uuidv4 } from 'uuid';
 type TCropImage = {
     cropImageID: string | undefined
     cropImageDesignItems: TDesignItem[]
@@ -71,16 +72,13 @@ const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulated
     }, [cropImageURL])
 
     const cropImage = async () => {
-        dispatch({
-            type: 'appLoader',
-            payload: true
-        })
         const base64Canvas = getCroppedImg(imgRef.current as any, crop, 'cropped-image.jpeg');
+        const uniqueUUID = uuidv4()
         const res = await apiRequest({
             url: `/upload-file/upload-file-to-s3`,
             method: 'POST',
             body: {
-                fileName: `${cropImageID}--copy`,
+                fileName: `${cropImageID}--copy--${uniqueUUID}`,
                 bucketName: `moodboard-cropped-images`,
                 base64: base64Canvas
             }
@@ -108,10 +106,6 @@ const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulated
                 payload: true
             })
         }
-        dispatch({
-            type: 'appLoader',
-            payload: false
-        })
     }
 
     const getCopyImage = async () => {
