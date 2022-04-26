@@ -238,7 +238,12 @@ const Canvas = () => {
 
     return <>
         <Popup horizontalAlignment='center' verticalAlignment='center' show={showCropImage} onClose={() => setshowCropImage(false)}>
-              <CropImage onClose={() => setshowCropImage(false)} cropImageID={cropImageID} cropImageDesignItems={cropImageDesignItems} />
+            <CropImage
+                onClose={() => setshowCropImage(false)}
+                cropImageID={cropImageID}
+                cropImageDesignItems={cropImageDesignItems}
+                updatePopulatedDesignItemsRemote={updatePopulatedDesignItemsRemote}
+            />
         </Popup>
         <div className={`w-full flex flex-col h-full canvas`}>
             <div className='flex px-4'>

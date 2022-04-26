@@ -8,10 +8,14 @@ import { Button } from '@fulhaus/react.ui.button'
 import { APP_API_URL } from '../../../../Constant/url.constant';
 import { Loader } from '@fulhaus/react.ui.loader';
 import apiRequest from '../../../../Service/apiRequest';
+import { useDispatch, useSelector } from 'react-redux';
+import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
+import { Tappstate } from '../../../../redux/reducers'
 type TCropImage = {
     cropImageID: string | undefined
     cropImageDesignItems: TDesignItem[]
     onClose: () => void
+    updatePopulatedDesignItemsRemote: (designItems: any) => Promise<void>
 }
 function getCroppedImg(image: HTMLImageElement, crop: any, fileName: any) {
     //image is HTMLImage element from react ref, we create a new canvas(image) to reproduce cropped image, then convert it to base64
@@ -51,14 +55,27 @@ function getCroppedImg(image: HTMLImageElement, crop: any, fileName: any) {
     // });
 }
 
-const CropImage = ({ cropImageID, cropImageDesignItems, onClose }: TCropImage) => {
+const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulatedDesignItemsRemote }: TCropImage) => {
     const [crop, setCrop] = useState<Crop>()
     const [copyedImageBolbURL, setcopyedImageBolbURL] = useState<undefined | any>()
     const imgRef = useRef(null);
+    const dispatch = useDispatch();
+    const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
+    const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
+    const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const cropImageURL = cropImageDesignItems.filter(each => each.id === cropImageID)?.[0]?.value;
+
+    useEffect(() => {
+        getCopyImage()
+    }, [cropImageURL])
+
     const cropImage = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
         const base64Canvas = getCroppedImg(imgRef.current as any, crop, 'cropped-image.jpeg');
-        console.log(base64Canvas)
         const res = await apiRequest({
             url: `/upload-file/upload-file-to-s3`,
             method: 'POST',
@@ -69,13 +86,33 @@ const CropImage = ({ cropImageID, cropImageDesignItems, onClose }: TCropImage) =
             }
         })
         if (res?.success) {
-
+            let newDesignItems = [...cropImageDesignItems]
+            newDesignItems.filter(each => each.id === cropImageID)[0].value = res.imageURL;
+            //once the image is croped, we no longer allow this image to remove its background
+            newDesignItems.filter(each => each.id === cropImageID)[0].productID = undefined;
+            await updatePopulatedDesignItemsRemote(newDesignItems);
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+            onClose();
+        } else {
+            dispatch({
+                type: 'modalMessage',
+                payload: res?.message
+            })
+            dispatch({
+                type: 'showModal',
+                payload: true
+            })
         }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        })
     }
-
-    useEffect(() => {
-        getCopyImage()
-    }, [cropImageURL])
 
     const getCopyImage = async () => {
         const res = await fetch(`${APP_API_URL}/download-image?imageURL=${cropImageURL}`)
