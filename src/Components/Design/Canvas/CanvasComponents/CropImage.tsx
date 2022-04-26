@@ -38,7 +38,7 @@ function getCroppedImg(image: HTMLImageElement, crop: any, fileName: any) {
         crop.width,
         crop.height
     );
-    const base64Canvas = canvas.toDataURL("image/jpeg").split(';base64,')[1]
+    const base64Canvas = canvas.toDataURL("image/png").split(';base64,')[1]
     return base64Canvas;
 
     // return new Promise((resolve, reject) => {
