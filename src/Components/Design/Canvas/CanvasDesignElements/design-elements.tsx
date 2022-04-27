@@ -8,6 +8,8 @@ import setDesignElement from "./api-requests/set-design-element";
 import UploadPopup from "./components/upload-popup";
 import { Loader } from "@fulhaus/react.ui.loader";
 import { TiDeleteOutline } from 'react-icons/ti'
+import apiRequest from "../../../../Service/apiRequest";
+import { useDispatch } from 'react-redux'
 
 
 
@@ -24,6 +26,7 @@ const DesignElements: FC<IDesignElements> = ({ onSelect }) => {
     const [uploadedImage, setUploadedImage] = useState<File>();
     const [uploadedImageCategory, setUploadedImageCategory] = useState<string>();
     const [loading, setLoading] = useState<boolean>(false);
+    const dispatch = useDispatch()
 
     useEffect(() => {
         getAllDesignElements();
@@ -62,8 +65,22 @@ const DesignElements: FC<IDesignElements> = ({ onSelect }) => {
         }
     }
 
-    const deleteSelectedDesignElement = async () => {
-
+    const deleteSelectedDesignElement = async (designElementID: string) => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
+        const res = await apiRequest({
+            url: `/api/fhapp-service/design/canvas/design-element/${designElementID}`,
+            method: 'DELETE'
+        })
+        if (res?.success) {
+            await getAllDesignElements();
+        }
+        dispatch({
+            type: 'appLoader',
+            payload: false
+        })
     }
 
 
@@ -82,8 +99,8 @@ const DesignElements: FC<IDesignElements> = ({ onSelect }) => {
                                 <div className="absolute right-0 flex w-10 h-10 bg-transparent">
                                     <TiDeleteOutline onClick={(e) => {
                                         //stop click image
+                                        deleteSelectedDesignElement(designElement._id);
                                         e.stopPropagation();
-                                        deleteSelectedDesignElement();
                                     }} className="w-6 h-6 mb-auto ml-auto cursor-pointer" />
                                 </div>
                                 <img onClick={() => {
