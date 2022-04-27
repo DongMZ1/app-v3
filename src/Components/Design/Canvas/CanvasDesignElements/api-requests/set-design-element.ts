@@ -11,7 +11,9 @@ const setDesignElement = async ({id, imageURL, category}:ISetDesignElement) =>
 {
     try
     {
-        const response = await axios.post(`${APP_API_URL}/api/fhapp-service/design/canvas/design-element`, {id, imageURL, category});
+        const response = await axios.post(`${APP_API_URL}/api/fhapp-service/design/canvas/design-element`, {id, imageURL, category}, {
+            withCredentials: true,
+          });
         return {
             success: true,
             response

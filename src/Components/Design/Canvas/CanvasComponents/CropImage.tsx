@@ -59,6 +59,7 @@ function getCroppedImg(image: HTMLImageElement, crop: any, fileName: any) {
 const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulatedDesignItemsRemote }: TCropImage) => {
     const [crop, setCrop] = useState<Crop>()
     const [copyedImageBolbURL, setcopyedImageBolbURL] = useState<undefined | any>()
+    const [cropping, setcropping] = useState(false);
     const imgRef = useRef(null);
     const dispatch = useDispatch();
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
@@ -72,39 +73,43 @@ const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulated
     }, [cropImageURL])
 
     const cropImage = async () => {
-        const base64Canvas = getCroppedImg(imgRef.current as any, crop, 'cropped-image.jpeg');
-        const uniqueUUID = uuidv4()
-        const res = await apiRequest({
-            url: `/upload-file/upload-file-to-s3`,
-            method: 'POST',
-            body: {
-                fileName: `${cropImageID}--copy--${uniqueUUID}`,
-                bucketName: `moodboard-cropped-images`,
-                base64: base64Canvas
+        if (!cropping) {
+            setcropping(true);
+            const base64Canvas = getCroppedImg(imgRef.current as any, crop, 'cropped-image.jpeg');
+            const uniqueUUID = uuidv4()
+            const res = await apiRequest({
+                url: `/upload-file/upload-file-to-s3`,
+                method: 'POST',
+                body: {
+                    fileName: `${cropImageID}--copy--${uniqueUUID}`,
+                    bucketName: `moodboard-cropped-images`,
+                    base64: base64Canvas
+                }
+            })
+            if (res?.success) {
+                let newDesignItems = [...cropImageDesignItems]
+                newDesignItems.filter(each => each.id === cropImageID)[0].value = res.imageURL;
+                //once the image is croped, we no longer allow this image to remove its background
+                newDesignItems.filter(each => each.id === cropImageID)[0].productID = undefined;
+                await updatePopulatedDesignItemsRemote(newDesignItems);
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+                onClose();
+            } else {
+                dispatch({
+                    type: 'modalMessage',
+                    payload: res?.message
+                })
+                dispatch({
+                    type: 'showModal',
+                    payload: true
+                })
             }
-        })
-        if (res?.success) {
-            let newDesignItems = [...cropImageDesignItems]
-            newDesignItems.filter(each => each.id === cropImageID)[0].value = res.imageURL;
-            //once the image is croped, we no longer allow this image to remove its background
-            newDesignItems.filter(each => each.id === cropImageID)[0].productID = undefined;
-            await updatePopulatedDesignItemsRemote(newDesignItems);
-            dispatch(getQuoteDetailAndUpdateSelectedUnit({
-                organizationID: currentOrgID ? currentOrgID : '',
-                projectID,
-                quoteID: quoteID,
-                selectedQuoteUnitID: selectedQuoteUnit?.unitID
-            }))
-            onClose();
-        } else {
-            dispatch({
-                type: 'modalMessage',
-                payload: res?.message
-            })
-            dispatch({
-                type: 'showModal',
-                payload: true
-            })
+            setcropping(false);
         }
     }
 
@@ -120,14 +125,19 @@ const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulated
     return <div className='flex flex-col p-4 crop-image'>
         {copyedImageBolbURL ?
             <div className='mx-auto'>
-                <ReactCrop
-                    crop={crop}
-                    onChange={(c => {
-                        setCrop(c)
-                    })}
-                >
-                    <img ref={imgRef} className='height-70vh' alt='croped-img' src={copyedImageBolbURL} />
-                </ReactCrop>
+                {cropping ?
+                    <div className='flex items-center justify-center height-70vh'>
+                        <div className='text-xl font-moret'>Cropping...</div>
+                    </div> :
+                    <ReactCrop
+                        crop={crop}
+                        onChange={(c => {
+                            setCrop(c)
+                        })}
+                    >
+                        <img ref={imgRef} className='height-70vh' alt='croped-img' src={copyedImageBolbURL} />
+                    </ReactCrop>
+                }
             </div>
             : <div className='flex items-center justify-center height-70vh'>
                 <Loader />
@@ -135,7 +145,7 @@ const CropImage = ({ cropImageID, cropImageDesignItems, onClose, updatePopulated
         <div className='flex w-full'>
             <div className='w-1/2 my-auto text-sm font-semibold text-red font-ssp'>Warning: Once the image is cropped, you are not able to restore it or remove its background.</div>
             <Button variant='secondary' onClick={onClose} className='w-24 ml-auto mr-8'>Cancel</Button>
-            <Button className='w-24' onClick={() => cropImage()}>Crop</Button>
+            <Button className='w-24' disabled={cropping} onClick={() => cropImage()}>Crop</Button>
         </div>
     </div>
 }
