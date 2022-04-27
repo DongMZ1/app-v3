@@ -7,6 +7,7 @@ import TopBar from "./components/top-bar";
 import setDesignElement from "./api-requests/set-design-element";
 import UploadPopup from "./components/upload-popup";
 import { Loader } from "@fulhaus/react.ui.loader";
+import { TiDeleteOutline } from 'react-icons/ti'
 
 
 
@@ -61,22 +62,33 @@ const DesignElements: FC<IDesignElements> = ({ onSelect }) => {
         }
     }
 
+    const deleteSelectedDesignElement = async () => {
+
+    }
+
 
 
     return (
         <div className="fixed bottom-0 left-0 w-screen p-2 bg-cream">
             <TopBar allDesignElementCategories={allDesignElementCategories} selectedDesignElementCategory={selectedDesignElementCategory} onSelect={setSelectedDesignElementCategory} />
             <div className="flex w-full overflow-scroll">
-                {loading ? <div className="flex items-center justify-center w-full h-32">
+                {loading ? <div className="flex items-center justify-center w-full h-36">
                     <Loader />
                 </div> :
                     <>
                         <UploadButton onUpload={setUploadedImage} />
                         {allDesignElements?.filter((allDesignElement: any) => selectedDesignElementCategory?._id === "all" || allDesignElement?.category?._id === selectedDesignElementCategory?._id)?.map((designElement: any) =>
-                            <div key={designElement._id} className="flex ml-8 border-2 border-black cursor-pointer design-element-0-0-auto w-36 h-36 hover:border-primaryHover" onClick={() => {
-                                onSelect(designElement?.imageURL, designElement?.category?.name)
-                            }}>
-                                <img className="object-contain w-full h-full " src={designElement?.imageURL} alt={`${designElement.category?.name} design element`} />
+                            <div key={designElement._id} className="relative flex ml-8 border-2 border-black design-element-0-0-auto hover:border-primaryHover">
+                                <div className="absolute right-0 flex w-10 h-10 bg-transparent">
+                                    <TiDeleteOutline onClick={(e) => {
+                                        //stop click image
+                                        e.stopPropagation();
+                                        deleteSelectedDesignElement();
+                                    }} className="w-6 h-6 mb-auto ml-auto cursor-pointer" />
+                                </div>
+                                <img onClick={() => {
+                                    onSelect(designElement?.imageURL, designElement?.category?.name)
+                                }} className="object-contain cursor-pointer w-36 h-36 " src={designElement?.imageURL} alt={`${designElement.category?.name} design element`} />
                             </div>)}
                     </>
                 }
