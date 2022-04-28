@@ -52,7 +52,7 @@ const Room = ({ eachRoom, roomItemOptionsList, updateQuoteDetail, RoomOptionList
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
     const fullName = useSelector((state: Tappstate) => state?.userInfo?.fullName);
     const orgRole = useGetOrgRole();
-    const totalPriceOfEachRoom: any = eachRoom?.categories?.map((each: any) => each?.qty * each?.budget)?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
+    const totalPriceOfEachRoom: any = eachRoom?.categories?.map((each: any) => each?.qty * (each?.budget > 0 ? each?.budget : 0))?.reduce((a: number, b: number) => a + b, 0) * eachRoom?.count;
     const totalItemsInRoomCount = eachRoom?.count * eachRoom?.categories?.map((category: any) => category?.qty)?.reduce((a: any, b: any) => a + b, 0)
     const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     const dispatch = useDispatch();
@@ -399,18 +399,16 @@ const Category = ({ eachCategory, eachRoom, updateQuoteDetail }: CategoryType) =
     const dispatch = useDispatch();
 
     const categoryPriceChange = (MSRP: number) => {
-        if (MSRP >= 0) {
-            const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
-                const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
-                const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
-                draft.rooms[roomIndex].categories[categoriesIndex].budget = MSRP
-            });
-            dispatch({
-                type: 'selectedQuoteUnit',
-                payload: newselectedQuoteUnit
-            });
-            updateQuoteDetail(newselectedQuoteUnit);
-        }
+        const newselectedQuoteUnit = produce(selectedQuoteUnit, (draft: any) => {
+            const roomIndex = draft.rooms.findIndex((each: any) => each?.roomID === eachRoom.roomID)
+            const categoriesIndex = draft.rooms[roomIndex]?.categories?.findIndex((each: any) => each?.name === eachCategory.name);
+            draft.rooms[roomIndex].categories[categoriesIndex].budget = MSRP
+        });
+        dispatch({
+            type: 'selectedQuoteUnit',
+            payload: newselectedQuoteUnit
+        });
+        updateQuoteDetail(newselectedQuoteUnit);
     }
 
     const deleteCatogory = () => {
