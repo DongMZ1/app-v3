@@ -1,4 +1,4 @@
-import {APP_API_URL} from '../Constant/url.constant'
+import { APP_API_URL, APP_ACCOUNTS_URL } from '../Constant/url.constant'
 interface IApiRequest {
   url: string;
   method: "GET" | "POST" | "PATCH" | "DELETE";
@@ -38,8 +38,11 @@ const apiRequest = async ({
 
   try {
     const RESPONSE = await fetch(apiURL, params);
+    if ((Response as any)?.status === 401) {
+      window.location.assign(`${APP_ACCOUNTS_URL}/login?redirectURL=${window.location.href}`)
+    }
     return RESPONSE.json();
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(`apiRequest: ${error.message}`);
     return {
       success: false,
