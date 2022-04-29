@@ -11,6 +11,7 @@ import { BsPlusLg } from 'react-icons/bs'
 import SelectedUnitMapProductsCategory from './SelectedUnitMapProductsCategory';
 import apiRequest from '../../../../Service/apiRequest';
 import { getQuoteDetailAndUpdateSelectedUnit } from '../../../../redux/Actions'
+import SmartPopulate from './SmartPopulate';
 const SelectedUnitMapProducts = () => {
     const selectedQuoteUnit = useSelector((state: Tappstate) => state.selectedQuoteUnit);
     const userRole = useSelector((state: Tappstate) => state.selectedProject)?.userRole;
@@ -46,6 +47,9 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
     const [duplicateDraftName, setduplicateDraftName] = useState('');
 
     const [selectedDraft, setselectedDraft] = useState<any>();
+
+    const [showSmartPopulate, setshowSmartPopulate] = useState(false);
+    const [smartPopulateRoomID, setsmartPopulateRoomID] = useState<undefined | string>(undefined);
 
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
@@ -242,57 +246,69 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
             console.log('Delete Draft fail at SelectedUnitMapProduct.tsx')
         }
     }
-    return <><div className='mb-6'>
-        <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice().toFixed(2) as any} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={parseFloat(eachRoom?.totalAmount).toFixed(2) as any} >
-            <>
-                {
-                    eachRoom?.categories?.map(
-                        (eachCategory: any) =>
-                            <SelectedUnitMapProductsCategory eachCategory={eachCategory} eachRoom={eachRoom} />
-                    )
-                }
-                {userRole !== 'viewer' &&
-                    <div className='flex'>
-                        <div className='flex flex-wrap mt-2'>
-                            {eachRoom?.canvases?.map((each: any) =>
-                                <div className='my-1'>
-                                    <div className={`flex px-4 py-1 border h-8 border-solid mr-6 ${each?._id === eachRoom?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
-                                        <div onClick={() => goThisDraft(each?._id)} className='my-auto text-sm font-semibold cursor-pointer'>{each?.draftName}</div>
-                                        <div className='relative px-2 my-auto font-semibold show-draft-menu'>
-                                            <div className='cursor-pointer'>···</div>
-                                            <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
-                                                <div className='py-2 pl-4 pr-6 text-black' onClick={() => {
-                                                    setselectedDraft(each);
-                                                    setdraftRenameName(each?.draftName);
-                                                    setshowConfirmRenameDraft(true);
-                                                }}>Rename</div>
-                                                <div className='py-2 pl-4 pr-6 text-black' onClick={() => {
-                                                    setselectedDraft(each);
-                                                    setduplicateDraftName(each?.draftName);
-                                                    setshowConfirmDuplicateDraft(true);
-                                                }}>Duplicate</div>
-                                                {eachRoom?.canvases?.length > 1 &&
-                                                    <div className='py-2 pl-4 pr-6 text-red' onClick={() => {
-                                                        setselectedDraft(each);
-                                                        setshowConfirmDeleteDraft(true)
-                                                    }}>Delete</div>
-                                                }
+
+    const openSmartPopulate = () => {
+        setshowSmartPopulate(true);
+    }
+    return <>
+        {
+            <Popup horizontalAlignment='center' verticalAlignment='center' show={showSmartPopulate} onClose={() => setshowSmartPopulate(false)}>
+                <SmartPopulate eachRoom={eachRoom} onClose={() => setshowSmartPopulate(false)} />
+            </Popup>
+        }
+        <div className='mb-6'>
+            <FurnitureInRoomHeader totalProductPrice={calculateTotalRoomProductsPrice().toFixed(2) as any} editable={false} roomNumber={eachRoom?.count} roomName={eachRoom?.name} totalPrice={parseFloat(eachRoom?.totalAmount).toFixed(2) as any} >
+                <>
+                    {
+                        eachRoom?.categories?.map(
+                            (eachCategory: any) =>
+                                <SelectedUnitMapProductsCategory eachCategory={eachCategory} eachRoom={eachRoom} />
+                        )
+                    }
+                    {userRole !== 'viewer' &&
+                        <div className='flex'>
+                            <div className='flex flex-wrap mt-2'>
+                                {eachRoom?.canvases?.map((each: any) =>
+                                    <>
+                                        <div className='my-1'>
+                                            <div className={`flex px-4 py-1 border h-8 border-solid mr-6 ${each?._id === eachRoom?.selectedCanvas?._id ? 'text-white border-link bg-link' : 'text-black bg-transparent border-black'}`}>
+                                                <div onClick={() => goThisDraft(each?._id)} className='my-auto text-sm font-semibold cursor-pointer'>{each?.draftName}</div>
+                                                <div className='relative px-2 my-auto font-semibold show-draft-menu'>
+                                                    <div className='cursor-pointer'>···</div>
+                                                    <div className='z-50 text-sm font-normal bg-white border border-black border-solid cursor-pointer draft-menu'>
+                                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => {
+                                                            setselectedDraft(each);
+                                                            setdraftRenameName(each?.draftName);
+                                                            setshowConfirmRenameDraft(true);
+                                                        }}>Rename</div>
+                                                        <div className='py-2 pl-4 pr-6 text-black' onClick={() => {
+                                                            setselectedDraft(each);
+                                                            setduplicateDraftName(each?.draftName);
+                                                            setshowConfirmDuplicateDraft(true);
+                                                        }}>Duplicate</div>
+                                                        {eachRoom?.canvases?.length > 1 &&
+                                                            <div className='py-2 pl-4 pr-6 text-red' onClick={() => {
+                                                                setselectedDraft(each);
+                                                                setshowConfirmDeleteDraft(true)
+                                                            }}>Delete</div>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            )
-                            }
-                            <BsPlusLg onClick={() => createCanvaForRoom()} className='my-auto cursor-pointer' />
+                                    </>
+                                )
+                                }
+                                <BsPlusLg onClick={() => createCanvaForRoom()} className='my-auto cursor-pointer' />
+                            </div>
+                            <div onClick={() => openSmartPopulate()} className='flex h-8 mt-2 mb-auto ml-auto text-sm font-semibold text-white cursor-pointer bg-primaryHover w-36 font-ssp'>
+                                <div className='m-auto'>Smart Populate</div>
+                            </div>
                         </div>
-                        <div onClick={() => window.open('https://ludwig.vercel.app/?step=1')} className='flex h-8 mt-2 mb-auto ml-auto text-sm font-semibold text-white cursor-pointer bg-primaryHover w-36 font-ssp'>
-                              <div className='m-auto'>Ludwig Design ...</div>
-                        </div>
-                    </div>
-                }
-            </>
-        </FurnitureInRoomHeader>
-    </div>
+                    }
+                </>
+            </FurnitureInRoomHeader>
+        </div>
         <Popup horizontalAlignment='center' verticalAlignment='center' onClose={() => setshowConfirmDeleteDraft(false)} show={showConfirmDeleteDraft}>
             <div className='px-8 py-4 border border-black border-solid w-96 bg-cream'>
                 <div className='mx-2 text-base text-center font-moret'>

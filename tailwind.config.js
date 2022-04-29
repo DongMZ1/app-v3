@@ -41,6 +41,7 @@ module.exports = {
       link: FulhausColors.colors.link,
       linkSelected: FulhausColors.colors.linkSelected,
       disabled: FulhausColors.colors.disabled,
+      alert: '#F16020'
     },
     spacing: {
       px: '1px',
@@ -79,6 +80,7 @@ module.exports = {
       72: '18rem',
       80: '20rem',
       96: '24rem',
+      160: '40rem'
     },
     animation: {
       none: 'none',
@@ -273,6 +275,7 @@ module.exports = {
         '"Noto Color Emoji"',
       ],
       'serif': ['ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+      'neu': ['Neuzeit Grotesk'],
       'mono': [
         'ui-monospace',
         'SFMono-Regular',
@@ -289,7 +292,7 @@ module.exports = {
       'moret': [
         '"Moret-Book"', 'serif'
       ],
-      'para-text':[
+      'para-text': [
         'ParalucentText-Book', 'sans-serif'
       ],
       'para-med': [
