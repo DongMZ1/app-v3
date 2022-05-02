@@ -26,6 +26,7 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
     const [step, setstep] = useState<'Step 1' | 'Step 2'>('Step 1');
     const [roomType, setroomType] = useState<'bed' | 'living' | 'dining'>('bed');
     const [loading, setloading] = useState(false);
+    const dispatch = useDispatch()
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
     const unitID = useSelector((state: Tappstate) => state.selectedQuoteUnit)?.unitID;
@@ -33,7 +34,26 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
     const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
 
     const pupolate = async () => {
-        setloading(true)
+        setloading(true);
+        const imageIn64 = await convertImageFileToBase64(file);
+        const categories: string[] = eachRoom?.categories?.map((each: any) => each?.name)
+        const res = await apiRequest({
+            url: `/api/fhapp-service/design/${currentOrgID}/${projectID}/${quoteID}/${selectedQuoteUnit?.unitID}/${eachRoom?.roomID}/smartPopulation`,
+            method: 'POST',
+            body: {
+                image: imageIn64,
+                roomType,
+                categories: categories
+            }
+        })
+        if (res?.success) {
+            dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                organizationID: currentOrgID ? currentOrgID : '',
+                projectID,
+                quoteID: quoteID,
+                selectedQuoteUnitID: selectedQuoteUnit?.unitID
+            }))
+        }
     }
 
     return <div className='relative flex flex-col items-center justify-center border border-black border-solid bg-cream w-80vw h-80vh'>
