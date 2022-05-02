@@ -26,6 +26,7 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
     const [step, setstep] = useState<'Step 1' | 'Step 2'>('Step 1');
     const [roomType, setroomType] = useState<'bed' | 'living' | 'dining'>('bed');
     const [loading, setloading] = useState(false);
+    const [message, setmessage] = useState('');
     const dispatch = useDispatch()
     const currentOrgID = useSelector((state: Tappstate) => state?.currentOrgID);
     const quoteID = useSelector((state: Tappstate) => state.quoteDetail)?._id;
@@ -35,6 +36,10 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
 
     const pupolate = async () => {
         setloading(true);
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
         const imageIn64 = await convertImageFileToBase64(file);
         const categories: string[] = eachRoom?.categories?.map((each: any) => each?.name)
         const res = await apiRequest({
@@ -47,12 +52,34 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
             }
         })
         if (res?.success) {
-            dispatch(getQuoteDetailAndUpdateSelectedUnit({
-                organizationID: currentOrgID ? currentOrgID : '',
-                projectID,
-                quoteID: quoteID,
-                selectedQuoteUnitID: selectedQuoteUnit?.unitID
-            }))
+            if (res?.message === "No item available on Ludwig") {
+                setmessage("No Categories can be populated");
+                setTimeout(() => {
+                    setmessage('')
+                }, 5000)
+                setstep("Step 1");
+                setfile(undefined);
+            } else {
+                dispatch(getQuoteDetailAndUpdateSelectedUnit({
+                    organizationID: currentOrgID ? currentOrgID : '',
+                    projectID,
+                    quoteID: quoteID,
+                    selectedQuoteUnitID: selectedQuoteUnit?.unitID
+                }))
+                onClose()
+            }
+        } else {
+            setmessage("Smart Populate Failed, Please Contact IT For Support.");
+            setTimeout(() => {
+                setmessage('')
+            }, 5000)
+            setstep("Step 1");
+            setfile(undefined);
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
+            setloading(false);
         }
     }
 
@@ -62,36 +89,44 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
             loading && <Loader />
         }
         {!loading && <>
-            {step === 'Step 1' && <>
-                <input accept="image/*" type='file' onChange={(e) => setfile(e.target.files?.[0])} className='hidden' id='smart-populate-image-upload' ></input>
-                {
-                    file && <div className="flex mb-8 border border-black border-solid">
-                        <><img className="object-contain h-64 w-80 " alt='smart-populate-preview-img' src={URL.createObjectURL(file)} />
-                            <div className="flex h-64 px-6 bg-white w-80">
-                                <div className="my-auto text-sm">{file?.name}</div> <RiDeleteBin5Line onClick={() => setfile(undefined)} className="my-auto ml-auto cursor-pointer" color="red" />
-                            </div></>
-                    </div>
-                }
-                {file ? <div>
-                    <button onClick={() => setstep('Step 2')} className="flex h-12 font-sans font-semibold text-white w-160 bg-alert"><div className="m-auto">Next</div></button>
-                </div> :
-                    <div>
-                        <Button onClick={() => {
-                            document.getElementById('smart-populate-image-upload')?.click()
-                        }} className="h-12 w-160"><span className="px-8 py-1">UPLOAD IMAGE FROM COMPUTER</span></Button>
-                    </div>
-                }
-            </>}
-            {
-                step === 'Step 2' && <div className="w-160">
-                    <div className="flex w-full text-4xl font-moret"><div className="mx-auto">Which Room are you looking to populate</div></div>
-                    <div className="flex w-full mt-8">
-                        <div onClick={() => setroomType('living')} className={`flex w-40 ${roomType === 'living' ? ' bg-black text-white' : ''} h-12 border border-black border-solid cursor-pointer`}><div className="m-auto text-sm font-bold font-neu">LIVING ROOM</div></div>
-                        <div onClick={() => setroomType('dining')} className={`flex mx-auto w-40 ${roomType === 'dining' ? ' bg-black text-white' : ''} h-12 border border-black border-solid cursor-pointer`}><div className="m-auto text-sm font-bold font-neu">DINING ROOM</div></div>
-                        <div onClick={() => setroomType('bed')} className={`flex w-40 ${roomType === 'bed' ? ' bg-black text-white' : ''} h-12 border border-black border-solid cursor-pointer`}><div className="m-auto text-sm font-bold font-neu">BEDROOM</div></div>
-                    </div>
-                    <button onClick={() => pupolate()} className="flex h-12 mt-8 font-sans font-semibold text-white w-160 bg-alert"><div className="m-auto">POPULATE</div></button>
+            {message ?
+                <div className="text-xl font-moret">
+                    {message}
                 </div>
+                :
+                <>
+                    {step === 'Step 1' && <>
+                        <input accept="image/*" type='file' onChange={(e) => setfile(e.target.files?.[0])} className='hidden' id='smart-populate-image-upload' ></input>
+                        {
+                            file && <div className="flex mb-8 border border-black border-solid">
+                                <><img className="object-contain h-64 w-80 " alt='smart-populate-preview-img' src={URL.createObjectURL(file)} />
+                                    <div className="flex h-64 px-6 bg-white w-80">
+                                        <div className="my-auto text-sm">{file?.name}</div> <RiDeleteBin5Line onClick={() => setfile(undefined)} className="my-auto ml-auto cursor-pointer" color="red" />
+                                    </div></>
+                            </div>
+                        }
+                        {file ? <div>
+                            <button onClick={() => setstep('Step 2')} className="flex h-12 font-sans font-semibold text-white w-160 bg-alert"><div className="m-auto">Next</div></button>
+                        </div> :
+                            <div>
+                                <Button onClick={() => {
+                                    document.getElementById('smart-populate-image-upload')?.click()
+                                }} className="h-12 w-160"><span className="px-8 py-1">UPLOAD IMAGE FROM COMPUTER</span></Button>
+                            </div>
+                        }
+                    </>}
+                    {
+                        step === 'Step 2' && <div className="w-160">
+                            <div className="flex w-full text-4xl font-moret"><div className="mx-auto">Which Room are you looking to populate</div></div>
+                            <div className="flex w-full mt-8">
+                                <div onClick={() => setroomType('living')} className={`flex w-40 ${roomType === 'living' ? ' bg-black text-white' : ''} h-12 border border-black border-solid cursor-pointer`}><div className="m-auto text-sm font-bold font-neu">LIVING ROOM</div></div>
+                                <div onClick={() => setroomType('dining')} className={`flex mx-auto w-40 ${roomType === 'dining' ? ' bg-black text-white' : ''} h-12 border border-black border-solid cursor-pointer`}><div className="m-auto text-sm font-bold font-neu">DINING ROOM</div></div>
+                                <div onClick={() => setroomType('bed')} className={`flex w-40 ${roomType === 'bed' ? ' bg-black text-white' : ''} h-12 border border-black border-solid cursor-pointer`}><div className="m-auto text-sm font-bold font-neu">BEDROOM</div></div>
+                            </div>
+                            <button onClick={() => pupolate()} className="flex h-12 mt-8 font-sans font-semibold text-white w-160 bg-alert"><div className="m-auto">POPULATE</div></button>
+                        </div>
+                    }
+                </>
             }
         </>}
     </div>
