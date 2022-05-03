@@ -41,10 +41,14 @@ const SelectedUnitMapProductsCategory = ({ eachCategory, eachRoom }: SelectedUni
                     ...selectedCanvas.items,
                     [eachCategory?.categoryID]: selectedCanvas.items?.[`${eachCategory?.categoryID}`] ? selectedCanvas.items?.[`${eachCategory?.categoryID}`]?.concat({
                         ...draggedProduct,
+                        //remove featureVector, it s too big and useless
+                        featureVector: undefined,
                         qty: 1
                     }) : [
                         {
                             ...draggedProduct,
+                            //remove featureVector, it s too big and useless
+                            featureVector: undefined,
                             qty: 1
                         },
                     ]
