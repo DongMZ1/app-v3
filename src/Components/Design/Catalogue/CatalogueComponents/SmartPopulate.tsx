@@ -53,10 +53,15 @@ const SmartPopulate = ({ onClose, eachRoom }: TSmartPopulate) => {
         })
         if (res?.success) {
             if (res?.message === "No item available on Ludwig") {
+                setloading(false);
+                dispatch({
+                    type: 'appLoader',
+                    payload: false
+                })
                 setmessage("No Categories can be populated");
                 setTimeout(() => {
                     setmessage('')
-                }, 5000)
+                }, 3000)
                 setstep("Step 1");
                 setfile(undefined);
             } else {
