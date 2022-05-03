@@ -267,7 +267,7 @@ const SelectedUnitMapProductsRoom = ({ eachRoom, userRole }: SelectedUnitMapProd
                     }
                     {userRole !== 'viewer' &&
                         <div className='flex'>
-                            <div className='flex flex-wrap mt-2'>
+                            <div className='flex flex-wrap flex-1 mt-2'>
                                 {eachRoom?.canvases?.map((each: any) =>
                                     <>
                                         <div className='my-1'>
