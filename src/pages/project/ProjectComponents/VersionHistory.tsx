@@ -94,12 +94,14 @@ const VersionHistory = ({ close }: VersionHistoryType) => {
                             setshowConfirmSave(true);
                         }} className='flex px-2 py-2 text-sm border-b border-black border-solid cursor-pointer'>
                             <div className='my-auto'>{eachVersion.versionName}</div>
-                            <RiDeleteBin6Line onClick={(e) => {
-                                e.stopPropagation()
-                                setselectedVersion(eachVersion);
-                                setshowConfirmDelete(true);
-                            }} color='red' className='my-auto ml-auto mr-4' />
-                            <AiOutlineRight className='my-auto cursor-pointer' />
+                            {(selectedProject?.userRole === 'admin' || selectedProject?.userRole === 'owner') &&
+                                <RiDeleteBin6Line onClick={(e) => {
+                                    e.stopPropagation()
+                                    setselectedVersion(eachVersion);
+                                    setshowConfirmDelete(true);
+                                }} color='red' className='my-auto ml-auto mr-4' />
+                            }
+                            <AiOutlineRight className={`my-auto cursor-pointer ${(selectedProject?.userRole === 'admin' || selectedProject?.userRole === 'owner') ? '' : 'ml-auto'}`} />
                         </div>)
                 }
                 {
