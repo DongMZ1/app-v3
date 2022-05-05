@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
 import { getQuoteDetail } from '../../../redux/Actions';
 import useDebounce from '../../../Hooks/useDebounce';
-import {APP_API_URL} from '../../../Constant/url.constant'
+import { APP_API_URL } from '../../../Constant/url.constant'
 const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
@@ -57,11 +57,24 @@ const ProjectFooter = () => {
     }
 
     const exportPDF = async () => {
+        dispatch({
+            type: 'appLoader',
+            payload: true
+        })
         const res = await fetch(`${APP_API_URL}/api/fhapp-service/quote/generate/pdf/${projectID}`);
-        if(res.ok){
+        if (res.ok) {
             const resBolb = await res.blob();
             const url = window.URL.createObjectURL(resBolb);
             window.open(url);
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
+        } else {
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
         }
     }
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
