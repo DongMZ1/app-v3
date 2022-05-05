@@ -79,14 +79,10 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
             }
         })
         if (res.success) {
-            const newSelectedProject = produce(selectedProject, (draft: any) => {
-                draft.currency = v
-            })
             dispatch({
-                type: 'selectedProject',
-                payload: newSelectedProject
+                type: 'selectedProjectDetail',
+                payload: res?.modifiedProject
             })
-            localStorage.setItem('selectedProject', JSON.stringify(newSelectedProject));
         }
     }
 
@@ -130,7 +126,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     <div className='my-auto mr-6 text-sm font-semibold font-ssp'>Currency:</div>
                     <div className='w-20'>
                         <DropdownListInput
-                            initialValue={selectedProject?.currency}
+                            initialValue={selectedProjectDetail?.currency}
                             onSelect={(value) => { updateCurrency(value) }}
                             options={['CAD', 'USD', 'EURO']} />
                     </div>
@@ -178,7 +174,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                     selectedProjectDetail?.fileURLs?.map((each: any) => <div onClick={() => window.open(each?.fileURL)} className='flex w-full px-4 py-1 mt-1 text-sm border border-black border-solid cursor-pointer font-ssp'>
                         <div>
                             {
-                                (each?.fileURL as string).split('/').pop()
+                                (each?.fileURL as string)?.split('/')?.pop()
                             }
                         </div>
                         <div className='ml-auto mr-8'>
@@ -188,7 +184,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                         </div>
                         <div className='mr-8'>
                             {
-                                (each?.updatedAt as string).slice(0, 10)
+                                (each?.updatedAt as string)?.slice(0, 10)
                             }
                         </div>
                     </div>)
