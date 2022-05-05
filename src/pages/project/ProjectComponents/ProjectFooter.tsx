@@ -5,7 +5,8 @@ import apiRequest from '../../../Service/apiRequest';
 import debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
 import { getQuoteDetail } from '../../../redux/Actions';
-import useDebounce from '../../../Hooks/useDebounce'
+import useDebounce from '../../../Hooks/useDebounce';
+import {APP_API_URL} from '../../../Constant/url.constant'
 const ProjectFooter = () => {
     const [unitTotal, setunitTotal] = useState(0);
     const [quoteTotal, setquoteTotal] = useState(0);
@@ -17,17 +18,17 @@ const ProjectFooter = () => {
     const JSONselectedQuoteUnit = useDebounce(JSON.stringify(selectedQuoteUnit), 1500);
     const history = useHistory();
     const dispatch = useDispatch();
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     useEffect(
         () => {
-            if (JSONquoteDetail && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')|| window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
+            if (JSONquoteDetail && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
                 getQuoteTotal()
             }
         }, [JSONquoteDetail, window.location.href]
     )
     useEffect(
         () => {
-            if (JSONselectedQuoteUnit && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only')|| window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
+            if (JSONselectedQuoteUnit && ((window.location.href.includes('/project/quote')) || (window.location.href.includes('/quote-only') || window.location.href.includes('/project/design') || window.location.href.includes('/design-only')))) {
                 getUnitTotal()
             }
         }, [JSONselectedQuoteUnit, window.location.href]
@@ -52,6 +53,15 @@ const ProjectFooter = () => {
         )
         if (res?.success) {
             setquoteTotal(res.quoteTotal);
+        }
+    }
+
+    const exportPDF = async () => {
+        const res = await fetch(`${APP_API_URL}/api/fhapp-service/quote/generate/pdf/${projectID}`);
+        if(res.ok){
+            const resBolb = await res.blob();
+            const url = window.URL.createObjectURL(resBolb);
+            window.open(url);
         }
     }
     return <div className='flex w-full px-6 text-white font-ssp bg-linkSelected h-14'>
@@ -92,7 +102,7 @@ const ProjectFooter = () => {
                 <div onClick={() => {
                     history.push(selectedProject?.type === 'project' ? '/project/quote' : '/quote-only')
                 }} className='px-4 py-1 my-auto ml-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Exit Overall Budget</div>
-                <div onClick={() => { }} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Export PDF</div>
+                <div onClick={() => exportPDF()} className='px-4 py-1 my-auto mr-6 text-sm font-semibold bg-black cursor-pointer'>Export PDF</div>
             </>
         }
     </div>
