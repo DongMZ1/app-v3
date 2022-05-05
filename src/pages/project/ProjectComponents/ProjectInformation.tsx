@@ -110,9 +110,9 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
         })
     }
     return (
-        <div className='fixed top-0 right-0 z-10 flex w-full h-full overflow-auto bg-black bg-opacity-50'>
+        <div className='fixed top-0 right-0 z-10 flex w-screen h-screen bg-black bg-opacity-50'>
             <div className='w-1/2 h-full' onClick={() => close()}></div>
-            <div className='z-10 w-1/2 h-full overflow-auto border-l border-black border-solid opacity-100 bg-cream project-information'>
+            <div className='z-10 w-1/2 h-full overflow-y-auto border-l border-black border-solid opacity-100 bg-cream project-information'>
                 <div className='flex'>
                     <div className='text-2xl uppercase font-moret'>project information</div>
                     <ExitIcon onClick={() => close()} className='my-auto ml-auto cursor-pointer' />
