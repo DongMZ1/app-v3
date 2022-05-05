@@ -1,5 +1,5 @@
 import './ProjectInformation.scss'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Tappstate } from '../../../redux/reducers'
 import { ReactComponent as ExitIcon } from '../../../styles/images/exit.svg'
@@ -10,9 +10,19 @@ import { DropdownListInput } from '@fulhaus/react.ui.dropdown-list-input';
 import apiRequest from '../../../Service/apiRequest'
 import produce from 'immer'
 import debounce from 'lodash.debounce'
+import { replace } from 'lodash'
 
 type ProjectInformationType = {
     close: () => void
+}
+
+const convertFileToBase64 = async (imageFile: File) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(imageFile);
+        reader.onload = () => resolve((reader.result as string).split("base64,")[1]);
+        reader.onerror = reject;
+    });
 }
 
 const ProjectInformation = ({ close }: ProjectInformationType) => {
@@ -22,7 +32,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID)
     const dispatch = useDispatch();
     const [CopiedQuoteID, setCopiedQuoteID] = useState(false);
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
     // const [discountCode, setdiscountCode] = useState('');
 
     // const [installationUnit, setinstallationUnit] = useState('%');
@@ -33,6 +43,32 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
 
     const [editNotes, seteditNotes] = useState(false);
 
+    const uploadFile = async (file: any) => {
+        if (file) {
+            dispatch({
+                type: 'appLoader',
+                payload: true
+            })
+            const fileBase64 = await convertFileToBase64(file);
+            const res = await apiRequest({
+                url: `/api/fhapp-service/project/${currentOrgID}/${selectedProject?._id}`,
+                method: 'POST',
+                body: {
+                    fileURL: fileBase64
+                }
+            })
+            if (res?.success) {
+                dispatch({
+                    type: 'selectedProjectDetail',
+                    payload: res?.modifiedProject
+                })
+            }
+            dispatch({
+                type: 'appLoader',
+                payload: false
+            })
+        }
+    }
 
     const updateCurrency = async (v: string) => {
         const res = await apiRequest({
@@ -74,7 +110,7 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
         })
     }
     return (
-        <div className='fixed top-0 right-0 z-10 flex w-full h-full bg-black bg-opacity-50'>
+        <div className='fixed top-0 right-0 z-10 flex w-full h-full overflow-auto bg-black bg-opacity-50'>
             <div className='w-1/2 h-full' onClick={() => close()}></div>
             <div className='z-10 w-1/2 h-full overflow-auto border-l border-black border-solid opacity-100 bg-cream project-information'>
                 <div className='flex'>
@@ -133,11 +169,30 @@ const ProjectInformation = ({ close }: ProjectInformationType) => {
                         </div>
                     </div>
                 </div> */}
-                <div className='flex mt-8'>
+                <div className='flex mt-8 mb-4'>
                     <div className='my-auto text-sm font-semibold font-ssp'>Files</div>
                     <FilesIcon onClick={() => document.getElementById('project-info-fileupload')?.click()} className='my-auto ml-auto cursor-pointer' />
-                    <input id='project-info-fileupload' type='file' className='hidden' />
+                    <input id='project-info-fileupload' onChange={(e) => uploadFile(e.target.files?.[0])} type='file' className='hidden' />
                 </div>
+                {
+                    selectedProjectDetail?.fileURLs?.map((each: any) => <div onClick={() => window.open(each?.fileURL)} className='flex w-full px-4 py-1 mt-1 text-sm border border-black border-solid cursor-pointer font-ssp'>
+                        <div>
+                            {
+                                (each?.fileURL as string).split('/').pop()
+                            }
+                        </div>
+                        <div className='ml-auto mr-8'>
+                            {
+                                each?.createdBy
+                            }
+                        </div>
+                        <div className='mr-8'>
+                            {
+                                (each?.updatedAt as string).slice(0, 10)
+                            }
+                        </div>
+                    </div>)
+                }
                 <div className='flex mt-6 mb-4'>
                     <div className='my-auto text-sm font-semibold font-ssp'>Notes</div>
                     <EditPenIcon onClick={() => { if (editNotes) { seteditNotes(false) } else { seteditNotes(true) } }} className='my-auto ml-auto cursor-pointer' />
