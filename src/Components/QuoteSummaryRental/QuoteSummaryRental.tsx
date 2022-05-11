@@ -468,7 +468,6 @@ const QuoteSummaryRental = () => {
                             const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                 draft.rentalNotes = ['']
                             })
-                            debounceUpdateRentalNotes([''])
                             dispatch({
                                 type: 'quoteDetail',
                                 payload: newQuoteDetail
@@ -477,7 +476,6 @@ const QuoteSummaryRental = () => {
                             const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
                                 draft.rentalNotes?.push([''])
                             })
-                            debounceUpdateRentalNotes(newQuoteDetail?.rentalNotes)
                             dispatch({
                                 type: 'quoteDetail',
                                 payload: newQuoteDetail
