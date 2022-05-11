@@ -26,7 +26,7 @@ const QuoteSummaryRental = () => {
     const userRole = useSelector((state: Tappstate) => state?.selectedProject?.userRole);
     const dispatch = useDispatch()
     const currentOrgID = useSelector((state: Tappstate) => state.currentOrgID);
-    const projectID = useSelector((state:Tappstate) => state.selectedProject)?._id;
+    const projectID = useSelector((state: Tappstate) => state.selectedProject)?._id;
 
     const updateQuoteField = async ({
         field, value
@@ -65,11 +65,13 @@ const QuoteSummaryRental = () => {
 
     const debounceUpdateAdditionalDiscount = useCallback(debounce((value: any) => updateQuoteField({ field: 'additionalDiscount', value }), 1000), [currentOrgID, projectID, quoteDetail?._id]);
 
-    const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID,projectID, quoteDetail?._id]);
+    const debounceUpdateTax = useCallback(debounce((value: number) => updateQuoteField({ field: 'tax', value }), 1000), [currentOrgID, projectID, quoteDetail?._id]);
 
     const debounceUpdateCustomServiceCosts = useCallback(debounce((value: any) => updateQuoteField({ field: 'customServiceCosts', value }), 1000), [currentOrgID, projectID, quoteDetail?._id]);
 
     const debounceUpdateSetupFee = useCallback(debounce((value: number | null) => updateQuoteField({ field: 'customSetupFee', value }), 1000), [currentOrgID, projectID, quoteDetail?._id]);
+
+    const debounceUpdateRentalNotes = useCallback(debounce((value: string[]) => updateQuoteField({ field: 'rentalNotes', value }), 1000), [currentOrgID, projectID, quoteDetail?._id]);
 
     const updateSetUpfee = (v: number) => {
         const newQuoteDetail = produce(quoteDetail, (draft: any) => {
@@ -436,9 +438,60 @@ const QuoteSummaryRental = () => {
         </div>
         <div className='mt-4 text-2xl font-moret'>Notes</div>
         <div className='px-4 py-2 mt-4 mb-8 bg-white border border-black border-solid'>
-            <div>· Units include sofa bed in place of sofa</div>
-            <div>· Unbundled services: Assembly, Site Delivery, Install, Disposal and Photography</div>
-            <div>· Updated delivery probability due to Covid: 5 weeks</div>
+            {
+                editable ? <>
+                    {
+                        quoteDetail?.rentalNotes?.length > 0 && (quoteDetail.rentalNotes as string[]).map((each, key) => <div className='flex'><TextInput prefix={<span>·</span>} inputName='bullet points' variant='line' value={each}
+                            onChange={(e) => {
+                                const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                    draft.rentalNotes[key] = (e.target as any).value
+                                })
+                                debounceUpdateRentalNotes(newQuoteDetail?.rentalNotes)
+                                dispatch({
+                                    type: 'quoteDetail',
+                                    payload: newQuoteDetail
+                                })
+                            }}
+                        /><RiDeleteBin6Fill onClick={() => {
+                            const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                draft.rentalNotes.splice(key, 1)
+                            })
+                            debounceUpdateRentalNotes(newQuoteDetail?.rentalNotes)
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
+                        }} className='my-auto ml-auto cursor-pointer' /></div>)
+                    }
+                    <Button className='mt-2' variant='primary' onClick={() => {
+                        if (!quoteDetail?.rentalNotes) {
+                            const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                draft.rentalNotes = ['']
+                            })
+                            debounceUpdateRentalNotes([''])
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
+                        } else {
+                            const newQuoteDetail: any = produce(quoteDetail, (draft: any) => {
+                                draft.rentalNotes?.push([''])
+                            })
+                            debounceUpdateRentalNotes(newQuoteDetail?.rentalNotes)
+                            dispatch({
+                                type: 'quoteDetail',
+                                payload: newQuoteDetail
+                            })
+                        }
+                    }}>Add New Notes</Button>
+                </> : <>
+                    {
+                        quoteDetail?.rentalNotes?.length > 0 && (quoteDetail.rentalNotes as string[]).map((each) => <div className='flex'>
+                            · {each}
+                        </div>)
+                    }
+                </>
+            }
         </div>
     </div>
 }
